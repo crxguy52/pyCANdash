@@ -1,0 +1,17 @@
+[project]
+name = "pyCANdash"
+version = "1.0"
+description = ""
+authors = [
+    {name = "Victor Zaccardo", email = "victorzaccardo@gmail.com"},
+]
+dependencies = [
+    "pyqt6>=6.7.1",
+    "python-can>=4.4.2",
+    "cantools>=39.4.11",
+    "bokeh>=3.6.1",
+]
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "MIT"}
+

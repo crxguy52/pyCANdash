@@ -1,0 +1,184 @@
+# This is formatted as a dictionary, with "CHECK_RESP" being the top level
+# fmt: off
+{
+    # Plays back log file for debug (must include file extension). May be deleted or set to None to disable. 
+    "playbackFn":       "20241117_130733.blf",  
+    "startTab":         3,      # Tab to display at startup
+
+    # NOTE: signal names MUST be unique across all CAN databases
+    'can0':{
+        'name':         'GMLAN',
+        'interface':    'socketcan',
+        'channel':      'can0',
+        'baud':         500000,
+        'dbcName':      'gmlan_v1.4',
+        'arbIDdtc':     1906,           # Arbitration ID for diagnostic troubleshooting codes (DTCs). Set to -1 if unused
+        'RxHz':         60,             # How frequently for the worker to grab CAN data from the hardware. Do it at least as fast as the fastest update interval
+        'logFormat':    'log'           # File type to log to. Should be one of those defined here: https://python-can.readthedocs.io/en/stable/file_io.html#can.Logger
+                                        # Tested with 'log' and 'blf' formats, blf format is 92% smaller than a text format with default compression
+    },
+
+    "tabCfg":{
+        0:{
+        'name':     "Overview",
+        'dispHz':   15,            # How frequently to update the display with new CAN data
+        'cellCfg':{
+
+            # llim      = lower display limit (for gagues)
+            # lowlow    = start of dark red area
+            # low       = start of dark yellow area
+            # high      = start of yellow area
+            # highhigh  = start of red area
+            # ulim  = upper display limit (for gagues)
+
+            'colors':('darkRed', 'darkYellow', 'blue', 'yellow', 'red'),
+                                                
+            '0,0':{                                     # row,col
+                'sigName':'engine_speed',               # Signal name in the db
+                'dispName':'Engine Speed',              # display name  
+                'lims':(-1, -1, -1, 7000, 7200, 8000),  # llim, lowlow, low, high, highhigh, ulim 
+                'dispFmt':'%1.0f',                      # Display format
+                'convert2ips':False,                    # Convert to inch pound second units when displaying? If true, limits are in ips units, not database units
+                },
+            '0,1':{'sigName':'accelerator_actual_pos',      'dispName':'Accelerator Pos',   'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.0f', 'convert2ips':False,},
+            '0,2':{'sigName':'throttle_pos',                'dispName':'Throttle Pos',      'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.0f', 'convert2ips':False,},
+            '0,3':{'sigName':'vehicle_speed_avg_driven',    'dispName':'Speed',             'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.0f', 'convert2ips':False,},
+            '1,0':{'sigName':'engine_max_speed_limit',      'dispName':'Max Eng Speed',     'lims':(-1e3, -999, 	0, 		10e3,	10e3, 2001),'dispFmt':'%1.0f', 'convert2ips':False,},
+            '1,1':{'sigName':'engine_intake_air_temp',      'dispName':'Intake Air Temp',   'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f', 'convert2ips':False,},
+            '1,2':{'sigName':'engine_manifold_abs_pres',    'dispName':'Manifold Press abs','lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f', 'convert2ips':False,},
+            '1,3':{'sigName':'commanded_air_fuel_ratio',    'dispName':'Commanded AFR',     'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f', 'convert2ips':False,},   
+            '2,0':{'sigName':'engine_oil_pressure',         'dispName':'Oil Press',         'lims':(0, 6, 8, 80, 90, 100),                      'dispFmt':'%1.1f', 'convert2ips':True,},
+            '2,1':{'sigName':'ambient_air_temp',            'dispName':'Ambient Air Temp',  'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f', 'convert2ips':False,},
+            '2,2':{'sigName':'mass_air_flow',               'dispName':'Mass Airflow',      'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f', 'convert2ips':False,},
+            '2,3':{'sigName':'fuel_alcohol_composition',    'dispName':'Fuel Alcohol',      'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f', 'convert2ips':False,},  
+            '3,0':{'sigName':'engine_oil_temperature',      'dispName':'Oil Temp Est',      'lims':(0, 0, 75, 125, 135, 200),                   'dispFmt':'%1.1f', 'convert2ips':False,},
+            '3,1':{'sigName':'engine_coolant_temp',         'dispName':'Coolant Temp',      'lims':(0, 0, 75, 120, 130, 200),                   'dispFmt':'%1.1f', 'convert2ips':False,},
+            '3,2':{'sigName':'trans_oil_temp',              'dispName':'Trans Temp',        'lims':(0, 0, 50, 150, 175, 200),                   'dispFmt':'%1.1f', 'convert2ips':False,},
+            '3,3':{'sigName':'check_engine_ind_on',         'dispName':'Check Engine',      'lims':(-1e3, -999, 	-1,		1,	    2,      3), 'dispFmt':'%1.0f', 'convert2ips':False,},
+        }
+        },
+        1:{
+            'name':'Measurements',
+            'dispHz':15,            # How frequently to update the display with new CAN data            
+            'cellCfg':{        
+                'leftCol':{ 
+                    # Left column
+                    # Row: message                                                                              
+                    'colors':('darkRed', 'darkYellow', 'darkGray', 'yellow', 'red'),                   # llim, lowlow,   low,    high,   highhigh,   ulim 
+                    0:{ 'sigName':'engine_speed',                'dispName':'Engine Speed',      'lims':(-1,    -1,	    -1,     7000,	7200,   8000), 'dispFmt':'%1.0f', 'convert2ips':False,},
+                    1:{ 'sigName':'accelerator_actual_pos',      'dispName':'Accelerator Pos',   'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.0f', 'convert2ips':False,},
+                    2:{ 'sigName':'throttle_pos',                'dispName':'Throttle Pos',      'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.0f', 'convert2ips':False,},
+                    3:{ 'sigName':'mass_air_flow',               'dispName':'Mass Airflow',      'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f', 'convert2ips':False,},   
+                    4:{ 'sigName':'barometric_pressure_abs',     'dispName':'Baro Press abs',    'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f', 'convert2ips':False,},
+                    5:{ 'sigName':'eng_intake_air_boost_press',  'dispName':'Manifold Boost',    'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f', 'convert2ips':False,},
+                    6:{ 'sigName':'engine_manifold_abs_pres',    'dispName':'Manifold Press abs','lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f', 'convert2ips':False,},
+                    7:{ 'sigName':'engine_intake_air_temp',      'dispName':'Intake Air Temp',   'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f', 'convert2ips':False,},     
+                    8:{ 'sigName':'ambient_air_temp',            'dispName':'Ambient Air Temp',  'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f' , 'convert2ips':False,},
+                    9:{ 'sigName':'fuel_alcohol_composition',    'dispName':'Fuel Alcohol',      'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f' , 'convert2ips':False,},
+                    10:{'sigName':'engine_coolant_temp',         'dispName':'Coolant Temp',      'lims':(0, 0, 75, 120, 130, 200),                  'dispFmt':'%1.1f' , 'convert2ips':False,},
+                    11:{'sigName':'engine_oil_temperature',      'dispName':'Oil Temp Est',      'lims':(0, 0, 75, 125, 135, 200),                  'dispFmt':'%1.1f' , 'convert2ips':False,},   
+                    12:{'sigName':'engine_oil_pressure',         'dispName':'Oil Press',         'lims':(0, 6, 8, 80, 90, 100),                     'dispFmt':'%1.1f' , 'convert2ips':True,},
+                    13:{'sigName':'trans_oil_temp',              'dispName':'Trans Temp',        'lims':(0, 0, 50, 150, 175, 200),                  'dispFmt':'%1.1f' , 'convert2ips':False,},
+                    14:{'sigName':'commanded_air_fuel_ratio',    'dispName':'Commanded AFR',     'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f' , 'convert2ips':False,},        
+                },
+                'rightCol':{ # Right column
+                    # Row: message
+                    'colors':('darkRed', 'darkYellow', 'darkGray', 'yellow', 'red'),
+                    0:{'sigName':'trans_estimated_gear',             'dispName':'Est Gear',      'lims':(-1e3, -999, 	-1,		7,	    7,  2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    1:{'sigName':'vehicle_speed_avg_driven',         'dispName':'Speed',         'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    2:{'sigName':'fuel_level_percent',               'dispName':'Fuel Level',    'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    3:{'sigName':'ac_refrigerant_high_side_press',   'dispName':'AC Press',      'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},   
+                    4:{'sigName':'fuel_pmp_en_discrete_output',      'dispName':'Fuel Pump En',  'lims':(-1e3, -1, 	    0, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    5:{'sigName':'fuel_pressure_requested',          'dispName':'Fuel Pres Req', 'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    6:{'sigName':None,                               'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    7:{'sigName':None,                               'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},     
+                    8:{'sigName':None,                               'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    9:{'sigName':None,                               'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    10:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    11:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},   
+                    12:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    13:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    14:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                },
+            },
+        },
+        2:{
+            'name':'Status',
+            'dispHz':15,            # How frequently to update the display with new CAN data        
+            'cellCfg':{        
+                'leftCol':{ # Left column
+                    # Row: message
+                    'colors':('darkRed', 'darkYellow', 'darkGray', 'yellow', 'red'),
+                    0:{'sigName':'engine_speed_status',             'dispName':'Engine Speed Stat',     'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    1:{'sigName':'engine_fuel_control_state',       'dispName':'Fuel Ctrl State',       'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    2:{'sigName':'reduced_power_indicator',         'dispName':'Reduced Power',         'lims':(-1e3, -999, 	-1,		1,	    2,      3), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    3:{'sigName':'check_engine_ind_on',             'dispName':'Check Engine',          'lims':(-1e3, -999, 	-1,		1,	    2,      3), 'dispFmt':'%1.0f' , 'convert2ips':False,},   
+                    4:{'sigName':'engine_max_speed_limit',          'dispName':'Max Eng Speed',         'lims':(-1e3, -999, 	0, 		10e3,	10e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    5:{'sigName':'throttle_progression_status',     'dispName':'Throttle Prog',         'lims':(-1e3, -999, 	0, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    6:{'sigName':'engine_coast_fuel_cutoff_active', 'dispName':'Eng Coast Fuel Cut',    'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    7:{'sigName':'fuel_pmp_en_discrete_output',     'dispName':'Fuel Pump Output En',   'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},     
+                    8:{'sigName':'engine_oil_hot_indicator_on',     'dispName':'Hot Oil Indicator',     'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    9:{'sigName':'engine_oil_pres_low_indicator_on','dispName':'Low Oil Press Ind',     'lims':(-1e3, -999, 	-1,		1,	    2,   3), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    10:{'sigName':'eng_oil_starvation_indication_on','dispName':'Oil Starvation Ind',    'lims':(-1e3, -999, 	-1, 		1,	    2,   3), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    11:{'sigName':'engine_hot_stop_engine_ind_on',   'dispName':'Engine Hot Stop Ind',   'lims':(-1e3, -999, 	-1,		1,	    2,   3), 'dispFmt':'%1.0f' , 'convert2ips':False,},   
+                    13:{'sigName':None,                              'dispName':'',                      'lims':(-1e3, -999, 	0, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    14:{'sigName':None,                              'dispName':'',                      'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},   
+                },
+                'rightCol':{ # Right column
+                    # Row: message
+                    'colors':('darkRed', 'darkYellow', 'blue', 'yellow', 'red'),
+                    0:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    1:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    2:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    3:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},  
+                    4:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    5:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    6:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    7:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},     
+                    8:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    9:{ 'sigName':None,                             'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    10:{'sigName':None,                             'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    11:{'sigName':None,                             'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},   
+                    12:{'sigName':None,                             'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    13:{'sigName':None,                             'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    14:{'sigName':None,                             'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                },
+            },
+        },
+        3:{
+            'name':'Digital Dash',
+            'dispHz':60,                # How frequently to update the display with new CAN data
+            'colStretch':[1, 3, 1],     # Column stretch values, how wide to make each column
+            'gaugeCfg':{
+                # Origin is in the top left, so 00 is the top left gauge. Center gague is col 1, right gauges are col 2
+                'sideGauge00':{'signal':'engine_oil_temperature',   'lims':(0, 0, 75, 125, 135, 200),   'label':'Oil Temp\n', 'convert2ips':False,},
+                'sideGauge10':{'signal':'engine_oil_pressure',      'lims':(0, 6, 8, 80, 90, 100),      'label':'Oil Pres\n', 'convert2ips':True,},
+                #'sideGauge01':{'signal':'engine_oil_pressure',      'lims':(0, 50, 60, 550, 690, 800),  'label':'Oil Pres\n', 'convert2ips':False,},
+                #'sideGauge11':{'signal':'engine_oil_pressure',      'lims':(0, 50, 60, 550, 690, 800),  'label':'Oil Pres\n', 'convert2ips':False,},                                
+                'sideGauge02':{'signal':'engine_coolant_temp',      'lims':(0, 0, 75, 120, 130, 200),   'label':'Water Temp\n', 'convert2ips':False,},
+                'sideGauge12':{'signal':'trans_oil_temp',           'lims':(0, 0, 50, 150, 175, 200),   'label':'Trans Temp\n', 'convert2ips':False,},
+                'centerGauge':{'signal':'engine_speed',             'lims':(0, 0, 0, 7000, 7200, 8000), 'label':'', 'convert2ips':False, 
+                                'speedSignal':'vehicle_speed_avg_driven', 'dynamicRedline':True, 'speedUnit':'MPH', 'speedGain':0.621371},  # MPH per kph     
+                                # speed stuff is a hack but also I don't feel like doing it a better way
+            }
+        },   
+        4:{
+            'name':'DTCs',
+            'dispHz':10,            # How frequently to update the display with new CAN data
+            'colCfg':{
+                0:{'DisplayName':   'Number',                               'sigName': 'diag_trouble_code_number'},
+                1:{'DisplayName':   'Triggered?',                           'sigName': 'diag_trouble_code_triggered'},
+                2:{'DisplayName':   'Code supported?',                      'sigName': 'diag_code_supported'},            
+                3:{'DisplayName':   'Current Status',                       'sigName': 'diag_current_status'},            
+                4:{'DisplayName':   'Warn Ind Req?',                        'sigName': 'diag_warn_ind_reqested_stat'},            
+                5:{'DisplayName':   'Source',                               'sigName': 'diag_trouble_code_source'},
+                6:{'DisplayName':   'Fail Type',                            'sigName': 'diag_trouble_code_fail_type'},
+                7:{'DisplayName':   'Fault Type',                           'sigName': 'diag_trouble_code_fault_type'},            
+                8:{'DisplayName':   'Failed since power up?',               'sigName': 'diag_tst_fail_since_pwrup_stat'},
+                9:{'DisplayName':   'Test not passed since code cleared?',  'sigName': 'diag_tst_nopass_since_pwrup_stat'},
+            },
+        },                
+    },
+}
+
+# fmt: on
