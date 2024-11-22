@@ -57,7 +57,7 @@ class GaugeLayout1(QFrame):
                         self.gaugeCfg[pos]['scaleFactor'] * valDict[self.gaugeCfg[pos]['signal']] + self.gaugeCfg[pos]['scaleOffset'])  
 
                 # For the tach
-                if 'speedSignal' in self.gaugeCfg[pos]:
+                if 'speedSignal' in self.gaugeCfg[pos] and self.gaugeCfg[pos]['speedSignal'] in valDict:
                     self.gauges[pos].updateOtherValue(
                         self.gaugeCfg[pos]['speedGain'] * valDict[self.gaugeCfg[pos]['speedSignal']]) 
                     #self.gauges[pos].updateOtherValue(valDict[self.gaugeCfg[pos]['signal']]) 

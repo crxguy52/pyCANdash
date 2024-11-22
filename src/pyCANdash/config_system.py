@@ -30,6 +30,10 @@ def configCAN(logCfg, interface, statusFcn, logEn=True):
         logging.info(f'{canCfg["name"]}: Starting thread')
         canCfg['thread'] = QThread()
 
+        logging.info(f'Playing back file, causing {canCfg["name"]} to use virtual bus')
+        if 'playbackFn' in logCfg.keys():
+             canCfg['interface'] = 'usevitual'
+
         logging.info(f'{canCfg["name"]}: Starting CANWorker')
         canCfg['worker'] = CANWorker(canCfg, logEn=logEn)
 

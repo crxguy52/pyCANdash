@@ -2,7 +2,7 @@
 # fmt: off
 {
     # Plays back log file for debug (must include file extension). May be deleted or set to None to disable. 
-    "playbackFn":       "20241117_130733.blf",  
+    # "playbackFn":       "20241122_163025.log",  
     "startTab":         3,      # Tab to display at startup
 
     # NOTE: signal names MUST be unique across all CAN databases

@@ -3,10 +3,12 @@
 
 [metadata]
 groups = ["default"]
-cross_platform = true
-static_urls = false
-lock_version = "4.3"
-content_hash = "sha256:46d86464ece664d85f2a9e8c937e578ae25146a460a277dd4598926ebf400a1b"
+strategy = ["cross_platform"]
+lock_version = "4.5.0"
+content_hash = "sha256:26125d9b47f2ea7a5bfc8f331fbecee01208ee51c3309ecb7c2cfa174d152e50"
+
+[[metadata.targets]]
+requires_python = ">=3.11"
 
 [[package]]
 name = "argparse-addons"
@@ -60,20 +62,6 @@ dependencies = [
 files = [
     {file = "bokeh-3.6.1-py3-none-any.whl", hash = "sha256:6a97271bd4cc5b32c5bc7aa9c1c0dbe0beb0a8da2a22193e57c73f0c88d2075a"},
     {file = "bokeh-3.6.1.tar.gz", hash = "sha256:04d3fb5fac871423f38e4535838164cd90c3d32e707bcb74c8bf991ed28878fc"},
-]
-
-[[package]]
-name = "bokeh-sampledata"
-version = "2024.2"
-requires_python = ">=3.10"
-summary = "Sample datasets for Bokeh examples"
-dependencies = [
-    "icalendar",
-    "pandas>=1.2",
-]
-files = [
-    {file = "bokeh_sampledata-2024.2-py3-none-any.whl", hash = "sha256:b41f94472ea8ca9c8b8ee999de47236879b169034bb7b789421c6a20e10b7205"},
-    {file = "bokeh_sampledata-2024.2.tar.gz", hash = "sha256:e63daa96e79d563ec8b84f20672ffe94f905b21455fab8d83ee334e46da33624"},
 ]
 
 [[package]]
@@ -167,20 +155,6 @@ summary = "Disk Cache -- Disk and file backed persistent cache."
 files = [
     {file = "diskcache-5.6.3-py3-none-any.whl", hash = "sha256:5e31b2d5fbad117cc363ebaf6b689474db18a1f6438bc82358b024abd4c2ca19"},
     {file = "diskcache-5.6.3.tar.gz", hash = "sha256:2c3a3fa2743d8535d832ec61c2054a1641f41775aa7c556758a109941e33e4fc"},
-]
-
-[[package]]
-name = "icalendar"
-version = "6.0.1"
-requires_python = ">=3.8"
-summary = "iCalendar parser/generator"
-dependencies = [
-    "python-dateutil",
-    "tzdata",
-]
-files = [
-    {file = "icalendar-6.0.1-py3-none-any.whl", hash = "sha256:9bf3d69203bd0366a9a29a8b0e220574580b86d7918afcb628fc6920287922f3"},
-    {file = "icalendar-6.0.1.tar.gz", hash = "sha256:1ff44825d7b41c3f77eac9e09cc67a770dd3c2377430c23b0eb7d91603088892"},
 ]
 
 [[package]]
@@ -345,6 +319,7 @@ version = "2.2.3"
 requires_python = ">=3.9"
 summary = "Powerful data structures for data analysis, time series, and statistics"
 dependencies = [
+    "numpy>=1.22.4; python_version < \"3.11\"",
     "numpy>=1.23.2; python_version == \"3.11\"",
     "numpy>=1.26.0; python_version >= \"3.12\"",
     "python-dateutil>=2.8.2",
