@@ -1,8 +1,8 @@
 # This is formatted as a dictionary, with "CHECK_RESP" being the top level
 # fmt: off
 {
-    # Plays back log file for debug (must include file extension). May be deleted or set to None to disable. 
-    # "playbackFn":       "20241122_163025.log",  
+    # Plays back log file for debug (must include file extension). May be deleted or set to None to disable. Skips time gaps >5s 
+    # "playbackFn":       "20241124_141123.log",  
     "startTab":         3,      # Tab to display at startup
 
     # NOTE: signal names MUST be unique across all CAN databases
@@ -152,7 +152,7 @@
             'gaugeCfg':{
                 # Origin is in the top left, so 00 is the top left gauge. Center gague is col 1, right gauges are col 2
                 'sideGauge00':{'signal':'engine_oil_temperature',   'lims':(0, 0, 75, 125, 135, 200),   'label':'Oil Temp\n', 'convert2ips':False,},
-                'sideGauge10':{'signal':'engine_oil_pressure',      'lims':(0, 6, 8, 80, 90, 100),      'label':'Oil Pres\n', 'convert2ips':True,},
+                'sideGauge10':{'signal':'engine_oil_pressure',      'lims':(0, 10, 15, 120, 130, 140),      'label':'Oil Pres\n', 'convert2ips':True, 'nMainDivs':14,},
                 #'sideGauge01':{'signal':'engine_oil_pressure',      'lims':(0, 50, 60, 550, 690, 800),  'label':'Oil Pres\n', 'convert2ips':False,},
                 #'sideGauge11':{'signal':'engine_oil_pressure',      'lims':(0, 50, 60, 550, 690, 800),  'label':'Oil Pres\n', 'convert2ips':False,},                                
                 'sideGauge02':{'signal':'engine_coolant_temp',      'lims':(0, 0, 75, 120, 130, 200),   'label':'Water Temp\n', 'convert2ips':False,},

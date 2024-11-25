@@ -5,3 +5,4 @@
 # Except this file
 !.gitignore
 !logfiles/**
+!20241124_141123.log

@@ -36,7 +36,10 @@ class GaugeLayout1(QFrame):
 
             else:
                 # Side gauge
-                self.gauges[pos] = SideGauge(lims, label+unit)
+                if 'nMainDivs' in gaugeCfg[pos]:
+                    self.gauges[pos] = SideGauge(lims, label+unit, nMainDivs=gaugeCfg[pos]['nMainDivs'])
+                else:
+                    self.gauges[pos] = SideGauge(lims, label+unit)
                 row = int(pos[-2])
                 col = int(pos[-1])
                 self.layout.addWidget(self.gauges[pos], row, col)

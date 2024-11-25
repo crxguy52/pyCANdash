@@ -188,7 +188,7 @@ class CANplayerWorker(QObject):
                 with can.LogReader(self.logFile) as reader:
 
                     logging.info('Creating sync')
-                    in_sync = can.MessageSync(cast(Iterable[can.Message], reader))
+                    in_sync = can.MessageSync(cast(Iterable[can.Message], reader), skip=5)
 
                     logging.info(f"Can LogReader (Started on {datetime.now()})")
 

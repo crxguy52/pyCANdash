@@ -48,7 +48,7 @@ def Tach(lims, rpmUnits, speedUnits):
 
     return tach   
 
-def SideGauge(lims, units):
+def SideGauge(lims, units, nMainDivs=10):
     gauge = AnalogGaugeWidget()
     gauge.setGaugeTheme(25)     
 
@@ -60,7 +60,7 @@ def SideGauge(lims, units):
     angles["span_norm"] = angles["span"]/360
 
     gauge.set_gradiant_breaks(angles, lims) 
-    gauge.setScalaCount(10)      # Number of steps, not spacing  
+    gauge.setScalaCount(nMainDivs)      # Number of steps, not spacing  
     gauge.setScalaSubDivCount(5)
     gauge.unitAngle = 90
     gauge.enable_value_text = False
