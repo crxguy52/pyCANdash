@@ -8,6 +8,10 @@ from datetime import datetime
 import time
 import can
 from typing import Iterable, cast
+import os 
+import glob
+import ftplib
+
 
 CAN_MSG_EXT = 0x80000000
 CAN_ERR_FLAG = 0x20000000
@@ -203,3 +207,99 @@ class CANplayerWorker(QObject):
             self.finishedSignal.emit()
         except:
             configSys.handleException()
+
+
+class logUploaderWorker(QObject):
+    statusSignal = pyqtSignal(str, dict, int)
+    stopSignal = pyqtSignal()
+    initFinishedSignal = pyqtSignal()
+    finishedSignal = pyqtSignal()
+
+    def __init__(self, ip, remoteLogDir, localDir):
+        QObject.__init__(self)
+
+        self.ip = ip
+        self.remoteLogDir = remoteLogDir
+        self.localDir = localDir
+
+    def initConnections(self, statusFcn):
+        # Stop the worker when the stop signal is recieved
+        #self.stopSignal.connect(self.stop)
+        pass
+
+    def run(self):
+        # Connect to the FTP server
+        self.ftp = self.connect2ftp(self.ip)
+
+        if self.ftp is not None:        
+            # Change the the logging directory
+            self.ftp.cwd(self.remoteLogDir)
+
+            # Send the CAN logs
+            self.copyFiles('', '')
+
+            # Send the GUI log files
+            self.copyFiles('/logfiles/', 'logfiles')
+                
+            logging.info("logUploader: Finished syncing files, closing")
+            self.ftp.close()
+
+
+    def connect2ftp(self, ip, username=None, password=None):
+        # Try to connect to the server for 30 seconds
+        t_end = time.time() + 30
+        while time.time() < t_end:
+            try:
+                logging.info(f"logUploader: Connecting to {ip}")
+                ftp = ftplib.FTP(ip, username, password, timeout=1)
+                ftp.login()
+                logging.info(f'logUploader: Connected to {ip}')
+                return ftp
+            except:
+                time.sleep(5)   
+
+        if 'ftp' not in locals():
+            logging.info('logUploader: Unable to connect to FTP server, aborting') 
+            return None
+
+
+    def copyFiles(self, relRemoteDir, relLocalDir):
+        # relRemoteDir is relative path to the established remote directory
+        # relLocalDir is relative path to the established local directory
+
+        # Change the remote directory to the one we're looking for
+        if len(relRemoteDir) > 0:
+            self.ftp.cwd(self.remoteLogDir + '/' + relRemoteDir)        
+
+        # Get a list of what exists in the remote directory
+        remoteList = self.ftp.nlst()
+
+        # Make sure the local and remote directories have trailing slashes
+        localDir = os.path.join(self.localDir, relLocalDir, '')
+
+        logging.info(f'logUploader: Comparing {localDir} to {relRemoteDir}')
+
+        for file in [os.path.basename(x) for x in glob.glob(localDir + '*.*')]:
+            
+            # If the current file isn't in the remote directory, send it over
+            if file not in remoteList:
+
+                fullPath = localDir + file
+
+                with open(fullPath, 'rb') as f:
+
+                    logging.info(f'logUploader: Sending {fullPath}')
+                    status = self.ftp.storbinary(f"STOR {file}", f)
+                    logging.info(f'logUploader: {file}: {status}')
+
+        # Change remote directory back to the default
+        self.ftp.cwd(self.remoteLogDir)
+
+    @pyqtSlot()
+    def stop(self):
+        logging.info(f'LogUploader: Stopping')
+
+        self.ftp.close()
+
+        # Clean up
+        self.finishedSignal.emit()   

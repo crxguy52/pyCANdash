@@ -5,6 +5,12 @@
     # "playbackFn":       "20241124_141123.log",  
     "startTab":         3,      # Tab to display at startup
 
+    # Option to upload log files via FTP to a remote server
+    'logUploader':{
+        'ip':           '192.168.0.1',          # FTP copy disabled if IP is None
+        'remoteLogDir': '/G/CAN_logs'           # Where on the remote server to store CAN logs. Must start with /
+    },    
+
     # NOTE: signal names MUST be unique across all CAN databases
     'can0':{
         'name':         'GMLAN',

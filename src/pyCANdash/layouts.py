@@ -16,7 +16,7 @@ import can
 import cantools
 
 
-from pyCANdash.config_system import configCAN, startPlayer
+from pyCANdash.config_system import configCAN, startPlayer, startLogUploader
 from pyCANdash.TallStatusLayout import TallStatusLayout
 from pyCANdash.GridStatusLayout import GridStatusLayout
 from pyCANdash.DTCStatusLayout import DTCStatusLayout
@@ -172,6 +172,10 @@ class MainWindow(QMainWindow):
         # Configure the CAN buses - store them in a dictionary
         self.canChans = {}
         self.canChans["GMLAN"] = configCAN(self.logCfg, 'can0', self.rxCAN, logEn=logEn)
+
+        # Start the auto-uploader if it's enabled
+        if self.logCfg['logUploader']['ip'] is not None:
+            self.logUploader = startLogUploader(self.logCfg['logUploader'], self.logCfg['resDir'])
 
         # Set the window title and size
         self.setWindowTitle("CAN Monitor")

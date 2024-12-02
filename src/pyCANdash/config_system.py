@@ -4,7 +4,7 @@ from PyQt6.QtCore import QThread
 import sys
 import logging
 
-from pyCANdash.workers import CANWorker, CANplayerWorker
+from pyCANdash.workers import CANWorker, CANplayerWorker, logUploaderWorker
 import cantools
 
 
@@ -63,6 +63,24 @@ def startPlayer(logFile, printDebug=False):
         startThread(playbackDict['thread'], playbackDict['worker'], None)
         
         return playbackDict
+
+
+def startLogUploader(FTPcfg, resDir):
+    # Need to assign this to a variable in the main thread or else
+    # it gets deleted and the GUI crashes
+    logUploader = {}
+
+    logging.info('FTP: Creating thread')
+    logUploader['thread'] = QThread()
+
+    logging.info('FTP: Creating worker')
+    logUploader['worker'] = logUploaderWorker(FTPcfg['ip'], FTPcfg['remoteLogDir'], resDir)
+
+    # Start it upppp
+    logging.info('Playback: Starting thread')
+    startThread(logUploader['thread'], logUploader['worker'], None)
+
+    return logUploader
 
      
 def startThread(thread, worker, statusFcn):
