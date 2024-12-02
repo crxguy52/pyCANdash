@@ -92,9 +92,9 @@ def startThread(thread, worker, statusFcn):
     thread.started.connect(worker.run)
 
     # When the worker finishes, quit the thread and delete thread and worker
-    worker.finishedSignal.connect(thread.quit)
     worker.finishedSignal.connect(worker.deleteLater)
     thread.finished.connect(thread.deleteLater)
+    worker.finishedSignal.connect(thread.quit)    
 
     # Start the thread
     thread.start()

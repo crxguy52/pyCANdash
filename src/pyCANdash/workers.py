@@ -61,7 +61,7 @@ class CANWorker(QObject):
 
             if self.logEn:
                 # Start the log file
-                logFileName = f"{datetime.now():%Y%m%d_%H%M%S}" +  '.' + self.canCfg["logFormat"]
+                logFileName = f"{self.canCfg['name']}_{datetime.now():%Y%m%d_%H%M%S}.{self.canCfg['logFormat']}"
                 self.logFilePath = path.abspath(path.join(path.dirname(__file__), "..", "..", "data", logFileName)) 
                 logging.info(f'{self.canCfg["name"]}: Logging CAN data to ' + self.logFilePath)
                 self.logger = can.Logger(self.logFilePath)
@@ -153,13 +153,13 @@ class CANWorker(QObject):
             self.timer.deleteLater()
 
         # Close the CAN connection
-        logging.info("Closing CAN")
+        logging.info(f'{self.canCfg["name"]}: Shutting down bus')
         if hasattr(self, "bus"):
             self.bus.shutdown()
             if hasattr(self, 'logger'):
                 if self.logger is not None:
                     self.logger.stop()
-            logging.info("CAN closed")
+            logging.info(f'{self.canCfg["name"]}: Bus shut down')
 
         # Clean up
         self.finishedSignal.emit()
