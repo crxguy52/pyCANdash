@@ -6,7 +6,6 @@ from pyCANdash.layouts import MainWindow
 
 # TODO:
 # bokeh server to plot individual data files
-# Google drive \ direct wifi connection to offload data
 # Auto load signal properties from seperate file?
 # Start up \ shut down based on car power?
 

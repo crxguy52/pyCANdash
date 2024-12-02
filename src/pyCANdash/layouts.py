@@ -171,7 +171,9 @@ class MainWindow(QMainWindow):
 
         # Configure the CAN buses - store them in a dictionary
         self.canChans = {}
-        self.canChans["GMLAN"] = configCAN(self.logCfg, 'can0', self.rxCAN, logEn=logEn)
+        for chan in self.logCfg['canChans']:
+            canCfg = self.logCfg['canChans'][chan]
+            self.canChans[chan] = configCAN(canCfg, self.logCfg['dbcDir'], self.rxCAN, logEn=logEn)
 
         # Start the auto-uploader if it's enabled
         if self.logCfg['logUploader']['ip'] is not None:

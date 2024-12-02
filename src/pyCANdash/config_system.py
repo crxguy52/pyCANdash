@@ -8,16 +8,14 @@ from pyCANdash.workers import CANWorker, CANplayerWorker, logUploaderWorker
 import cantools
 
 
-def configCAN(logCfg, interface, statusFcn, logEn=True):
-
-    canCfg = logCfg[interface]
+def configCAN(canCfg, dbcDir, statusFcn, logEn=True):
 
     # Initialize the CAN port if the interface isn't None
     if canCfg['interface'] is not None:
         logging.info(f'Initializing {canCfg["name"]} on {canCfg["interface"]}')
 
         logging.info(f'{canCfg["name"]}: Loading database')
-        canCfg['db'] = cantools.database.load_file(logCfg["dbcDir"] + canCfg['dbcName'] + '.dbc')
+        canCfg['db'] = cantools.database.load_file(dbcDir + canCfg['dbcName'] + '.dbc')
 
         canCfg['sig2unit'] = {}
         # Create a dictionary correlating signal name to units
@@ -30,8 +28,8 @@ def configCAN(logCfg, interface, statusFcn, logEn=True):
         logging.info(f'{canCfg["name"]}: Starting thread')
         canCfg['thread'] = QThread()
 
-        logging.info(f'Playing back file, causing {canCfg["name"]} to use virtual bus')
-        if 'playbackFn' in logCfg.keys():
+        if logEn is False:
+             logging.info(f'Playing back file, forcing {canCfg["name"]} to use virtual bus')
              canCfg['interface'] = 'usevitual'
 
         logging.info(f'{canCfg["name"]}: Starting CANWorker')
