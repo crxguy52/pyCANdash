@@ -286,11 +286,17 @@ class logUploaderWorker(QObject):
 
                 fullPath = localDir + file
 
-                with open(fullPath, 'rb') as f:
+                # Only upload it if it's not empty
+                if os.path.getsize(fullPath) > 0:
 
-                    logging.info(f'logUploader: Sending {fullPath}')
-                    status = self.ftp.storbinary(f"STOR {file}", f)
-                    logging.info(f'logUploader: {file}: {status}')
+                    with open(fullPath, 'rb') as f:
+
+                        logging.info(f'logUploader: Sending {fullPath}')
+                        status = self.ftp.storbinary(f"STOR {file}", f)
+                        logging.info(f'logUploader: {file}: {status}')
+                        
+                else:
+                    logging.info(f'logUploader: {file} was 0 bytes, skipping')
 
         # Change remote directory back to the default
         self.ftp.cwd(self.remoteLogDir)
