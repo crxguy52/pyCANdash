@@ -153,7 +153,7 @@ class FileDropDown():
             label='Select Log to View', 
             button_type='primary', 
             menu=[], 
-            min_width=400, 
+            min_width=200, 
             sizing_mode='stretch_width')
 
     def update_values(self):
@@ -203,7 +203,7 @@ class PresetDropDown():
             label='Preset Views',
             menu = self.menu, 
             button_type='default', 
-            min_width=300, 
+            min_width=200, 
             width_policy='min') 
 
 
