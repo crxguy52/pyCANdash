@@ -222,27 +222,37 @@ class logUploaderWorker(QObject):
         self.remoteLogDir = remoteLogDir
         self.localDir = localDir
 
+
     def initConnections(self, statusFcn):
         # Stop the worker when the stop signal is recieved
         #self.stopSignal.connect(self.stop)
         pass
 
+
     def run(self):
         # Connect to the FTP server
         self.ftp = self.connect2ftp(self.ip)
 
-        if self.ftp is not None:        
-            # Change the the logging directory
-            self.ftp.cwd(self.remoteLogDir)
+        if self.ftp is not None:      
+            try:  
+                # Change the the logging directory
+                self.ftp.cwd(self.remoteLogDir)
 
-            # Send the CAN logs
-            self.copyFiles('', '')
+                # Send the CAN logs
+                self.copyFiles('', '')
 
-            # Send the GUI log files
-            self.copyFiles('/logfiles/', 'logfiles')
-                
-            logging.info("logUploader: Finished syncing files, closing")
-            self.ftp.close()
+                # Send the GUI log files
+                self.copyFiles('/logfiles/', 'logfiles')
+                    
+                logging.info("logUploader: Finished syncing files, closing")
+                self.ftp.close()
+            except:
+                logging.error('logUploader: Unable to sync files')
+                try:
+                    self.ftp.close()
+                except:
+                    pass
+
 
 
     def connect2ftp(self, ip, username=None, password=None):
