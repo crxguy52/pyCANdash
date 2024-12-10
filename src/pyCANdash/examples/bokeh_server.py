@@ -50,6 +50,7 @@ class SigSelectAndPlot():
                             active_inspect = None,
                             active_tap = None,
                             name=name,
+                            output_backend='webgl',
                             )
         else:
             self.fig = figure(
@@ -631,5 +632,5 @@ if __name__ == "__main__":
 
     # TODO:
     # Resample rate dropdown
-    # Move deleting of temp files to main app before server starts
+    # Move deleting of temp files to main app before sync and server starts
     # Add server to GUI
