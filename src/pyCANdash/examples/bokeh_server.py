@@ -27,6 +27,7 @@ from bokeh.plotting import figure
 from bokeh.palettes import Category10
 from bokeh.models.widgets import Paragraph, Div
 from tornado.web import StaticFileHandler
+from bokeh.events import ButtonClick
 
 from bokeh.server.server import Server
 
@@ -162,6 +163,28 @@ class FileDropDown():
             files.append([file, file])
 
         self.obj.menu = files
+
+
+class ResampleDropDown():
+    def __init__(self):
+        super(ResampleDropDown, self).__init__()
+
+        # Create a dropdown with a list of available resample rates
+        self.rates = [
+            # Fs,       Ts (ms)
+            ('100Hz',   '10'),
+            ('50Hz',    '20'),
+            ('20Hz',    '50'),
+            ('10Hz',   '100'),
+            ('5Hz',    '200'),
+            ('1Hz',    '1000'),
+        ]
+        self.obj = Dropdown(
+            label='Resample at: 100Hz', 
+            button_type='primary', 
+            menu=self.rates, 
+            width_policy='min',
+            )
 
 
 class PresetDropDown():
@@ -370,7 +393,8 @@ class MainLayout():
         self.arbIDdtc = arbIDdtc
         self.logfilename = ''
         self.logDict = {}
-        self.N_PLOTS = n_plots
+        self.N_PLOTS = n_plots      # Initial value
+        self.Ts_ms = 10             # Inital Ts value for resampling data
 
         # Delete the temporary files we created last time for downloading
         for filename in os.listdir(self.dataDir):
@@ -411,15 +435,31 @@ class MainLayout():
         self.nPlotButton = NPlotDropDown()
 
         self.nPlotButton.obj.on_click(self.update_n_plots)
+        self.resampleDropDown = ResampleDropDown()
+
+        self.nPlotButton.obj.on_click(self.update_n_plots)
+        self.resampleDropDown.obj.on_click(self.update_Ts)
 
         # Put them in a layout
         self.layout = layout(
                         [
-                            row(self.fileDropDown.obj, self.nPlotButton.obj, self.logButton.obj, self.csvButton.obj, self.csvButton.dummyDiv, self.presetDropDown.obj, sizing_mode='stretch_width'),
+                            row(self.fileDropDown.obj, self.resampleDropDown.obj, self.nPlotButton.obj, self.logButton.obj, self.csvButton.obj, self.csvButton.dummyDiv, self.presetDropDown.obj, sizing_mode='stretch_width'),
                             row(self.statusTextLabel, self.statusText, self.DTCtext, sizing_mode='stretch_width'),
                             column(self.plots_layout, sizing_mode='stretch_both'),
                         ], sizing_mode='stretch_both'
                     )
+
+    def update_Ts(self, event):
+        # Update the resampling rate
+        self.Ts_ms = int(event.item)
+
+        # Update the dropdown box text
+        self.resampleDropDown.obj.label = f'{1000/float(event.item):.0f} Hz'
+
+        # Re-load the data at the new sample rate
+        event = ButtonClick(None)
+        event.item = self.fileDropDown.obj.label
+        self.load_data_callback(event)
 
     def update_n_plots(self, event):
         # Get all the signals currently selected so we can re-select them at the end
@@ -474,7 +514,7 @@ class MainLayout():
 
     def load_data(self, event):
         # Load the selected file
-        self.logDict, DTCs = self.log2dict(self.dataDir + event.item, self.dbcDir + 'gmlan_v1.4_decode.dbc')
+        self.logDict, DTCs = self.log2dict(self.dataDir + event.item, self.dbcDir + 'gmlan_v1.4_decode.dbc', sample_time_ms=self.Ts_ms)
         self.csvButton.logDict = self.logDict
 
         # Update the multiselect values
