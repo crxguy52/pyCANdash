@@ -251,7 +251,7 @@ class MainWindow(QMainWindow):
         stderr_log_handler.setFormatter(self.logFormatter)
 
         # Start a log file
-        logFileName = f"{datetime.now():%Y%m%d_%H%M%S}" + ".log"
+        logFileName = f"{datetime.now():%Y-%m-%d_%H-%M-%S}" + ".log"
         logFilePath = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "logfiles", logFileName))
         #logging.info(f"Logging to {logFilePath}")
         self.logFileHandler = logging.FileHandler(logFilePath)      

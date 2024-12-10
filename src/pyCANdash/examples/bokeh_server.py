@@ -729,6 +729,5 @@ if __name__ == "__main__":
     #server.io_loop.stop()
 
     # TODO:
-    # Resample rate dropdown
     # Move deleting of temp files to main app before sync and server starts
     # Add server to GUI

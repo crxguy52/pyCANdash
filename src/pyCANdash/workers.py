@@ -61,7 +61,7 @@ class CANWorker(QObject):
 
             if self.logEn:
                 # Start the log file
-                logFileName = f"{self.canCfg['name']}_{datetime.now():%Y%m%d_%H%M%S}.{self.canCfg['logFormat']}"
+                logFileName = f"{self.canCfg['name']}_{datetime.now():%Y-%m-%d_%H-%M-%S}.{self.canCfg['logFormat']}"
                 self.logFilePath = path.abspath(path.join(path.dirname(__file__), "..", "..", "data", logFileName)) 
                 logging.info(f'{self.canCfg["name"]}: Logging CAN data to ' + self.logFilePath)
                 self.logger = can.Logger(self.logFilePath)
