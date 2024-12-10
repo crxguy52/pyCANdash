@@ -347,6 +347,20 @@ class LogButton():
         self.obj.js_on_click(self.fileSendCallback)       
 
 
+class NPlotDropDown():
+    def __init__(self):
+        super(NPlotDropDown, self).__init__()
+
+        self.obj = Dropdown(
+            label='N plots', 
+            menu=[
+                ('1', '1'),
+                ('2', '2'),
+                ('3', '3'),
+                ('4', '4')], 
+                width_policy='min')
+
+
 class MainLayout():
     def __init__(self, dataDir, dbcDir, doc, arbIDdtc=1906, n_plots=3):
         super(MainLayout, self).__init__()  
@@ -394,16 +408,60 @@ class MainLayout():
         self.statusTextLabel = Paragraph(text='Status: ')
         self.csvButton = CsvButton(self.source.data, self.dataDir, self.fileDropDown.obj, self.doc)
         self.logButton = LogButton(self.dataDir, self.fileDropDown.obj,)
+        self.nPlotButton = NPlotDropDown()
+
+        self.nPlotButton.obj.on_click(self.update_n_plots)
 
         # Put them in a layout
         self.layout = layout(
                         [
-                            row(self.fileDropDown.obj, self.logButton.obj, self.csvButton.obj, self.csvButton.dummyDiv, self.presetDropDown.obj, sizing_mode='stretch_width'),
+                            row(self.fileDropDown.obj, self.nPlotButton.obj, self.logButton.obj, self.csvButton.obj, self.csvButton.dummyDiv, self.presetDropDown.obj, sizing_mode='stretch_width'),
                             row(self.statusTextLabel, self.statusText, self.DTCtext, sizing_mode='stretch_width'),
                             column(self.plots_layout, sizing_mode='stretch_both'),
                         ], sizing_mode='stretch_both'
                     )
 
+    def update_n_plots(self, event):
+        # Get all the signals currently selected so we can re-select them at the end
+        selected = []
+        col = self.plots_layout
+        for i in range(0, len(col)):
+            selected.append(col[i].children[0].value)
+            logging.info(f'Saving {col[i].children[0].value} to {i}' )
+
+        # Create the new layout
+        self.plots = []
+        self.plots_layout = []
+        for i in range(0, int(event.item)):
+            if i > 0:
+                other_x_range = self.plots[0].fig.x_range
+            else:
+                other_x_range = None
+                
+            self.plots.append(SigSelectAndPlot(self.source, name=str(i), other_x_range=other_x_range))
+            self.plots_layout.append(
+                row([self.plots[i].sigSelect, self.plots[i].fig],
+                 sizing_mode='stretch_both', height_policy='max', width_policy='max'))
+
+        # Update the layout
+        self.layout.children[2] = column(self.plots_layout, sizing_mode='stretch_both')
+
+        # Update the multiselect values
+        logging.info('Creating multselect keys')
+        sigList = [[key, key] for key in sorted(self.logDict.keys())]
+
+        for i in range(0, len(self.plots)):
+            plot = self.plots[i]
+
+            # Update all the sig select boxes
+            logging.info(f'Updating signal list for plot {plot.name}')
+            plot.update_sigList(sigList)        
+
+            # Re-select the values
+            if i < len(selected):
+                logging.info(selected[i])
+                # Re-select the values in the multi-select
+                self.plots[i].sigSelect.value = selected[i]      
 
     def load_data_callback(self, event):
         # We need to split this up into a callback and a a function to do the actual work, 
