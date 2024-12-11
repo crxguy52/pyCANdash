@@ -246,8 +246,8 @@ class logUploaderWorker(QObject):
                     
                 logging.info("logUploader: Finished syncing files, closing")
                 self.ftp.close()
-            except:
-                logging.error('logUploader: Unable to sync files')
+            except Exception as e:
+                logging.error(f'logUploader: Unable to sync files: {e}')
                 try:
                     self.ftp.close()
                 except:
@@ -261,7 +261,7 @@ class logUploaderWorker(QObject):
         while time.time() < t_end:
             try:
                 logging.info(f"logUploader: Connecting to {ip}")
-                ftp = ftplib.FTP(ip, username, password, timeout=1)
+                ftp = ftplib.FTP(ip, username, password, timeout=5)
                 ftp.login()
                 logging.info(f'logUploader: Connected to {ip}')
                 return ftp
