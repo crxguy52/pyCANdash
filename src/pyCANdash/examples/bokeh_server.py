@@ -163,7 +163,9 @@ class FileDropDown():
         # Refresh the files in the directory
         files = []
         for file in [os.path.basename(x) for x in sorted(glob.glob(self.dataDir + '*.*'))]:
-            files.append([file, file])
+            # Only display it if it's not empty
+                if os.path.getsize(self.dataDir + file) > 0:            
+                    files.append([file, file])
 
         self.obj.menu = files
 
