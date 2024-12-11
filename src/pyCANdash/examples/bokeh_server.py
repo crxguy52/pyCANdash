@@ -580,84 +580,78 @@ class MainLayout():
         db = cantools.database.load_file(db_file_path)
 
         noDecode = []   # Arbitration IDs not in the database
-        decoded = []    # List of lists of decoded data. One entry is [timestamp, signal, value]
         sigNames = []   # A list of unique signals in the log
         DTCs = []       # A list of DTCs present in the log file
 
         # Iterate over the log file and decode all the messages
         logging.info('Decoding messages')
-        for msg in can.LogReader(log_file_path):
-            if msg.arbitration_id not in noDecode:
-                    try:
-                        dbMessage = db.get_message_by_frame_id(msg.arbitration_id)
-                        signals = dbMessage.decode(msg.data)
-
-                        # If this is the first message we're decoding, take note of the time
-                        #  and subtract it from all others
-                        if len(decoded) == 0:
-                            t0 = msg.timestamp
-
-                        for signal in signals:
-                            # Add it to the list
-                            decoded.append([msg.timestamp - t0, signal, self.tryConvert2float(signals[signal])])
-                            TIMESTAMP_COL = 0
-                            SIGNAME_COL = 1
-                            VAL_COL = 2
-
-                            if signal not in sigNames:
-                                sigNames.append(signal)
-
-                        # if it's a DTC, log it to the DTCs list
-                        if msg.arbitration_id == self.arbIDdtc:
-                            if signals['diag_trouble_code_triggered'] > 0 and signals['diag_trouble_code_number'] not in DTCs:
-                                    DTCs.append(signals['diag_trouble_code_number'])
-
-                    except KeyError:
-                        # Skip it next time if there was an error decoding
-                        exc_type, exc_value, exc_traceback = sys.exc_info()
-                        logging.info(f'Couldnt decode ArbID {msg.arbitration_id} ({f"0x{msg.arbitration_id:02x}"}), skipping')
-                        noDecode.append(msg.arbitration_id)
-                    except Exception as e:
-                        logging.error(e)
 
 
-        # Append timestamp to signal names
-        sigNames.append('timestamp')
+        # Get a list of all possible signal names from the can database
+        for message in db.messages:
+            for signal in message.signals:
+                sigNames.append(signal.name)
+        sigNames.insert(0, 'timestamp')
 
         currentValues: dict[str, Any]   = {key:fill_val for key in sigNames}  # Current values for the row we're in
-        dict_out                        = {key:[] for key in sigNames}  # Dictionary that gets returned, initialize all values to -1
+        dict_out                        = {key:[] for key in sigNames}  # Dictionary that gets returned, initialize all values to -1  
+        t0                              = None
         increment = sample_time_ms / 1000
+        next_row_timestamp = None
 
         logging.info("Creating output dictionary")
-        next_row_timestamp = 0
-        for row in decoded:
+        
+        for msg in can.LogReader(log_file_path):
+            if msg.arbitration_id not in noDecode:
 
-            timestamp = row[TIMESTAMP_COL]
+                timestamp = msg.timestamp
 
-            if next_row_timestamp is None:
+                # It's the first time, so take not of t0
+                if t0 is None:
+                    t0 = timestamp
+
                 # determine the first row timestamp as the next round sample_time ms increment
-                next_row_timestamp = increment
+                if next_row_timestamp is None:
+                    next_row_timestamp = t0 + increment
 
-            elif timestamp > next_row_timestamp:
-                # since each row will have the latest value up to that timestamp, as soon as we go past that
-                # timestamp we are done with that row, so write the row, and increment timestamp
-                currentValues["timestamp"] = next_row_timestamp
+                elif timestamp > next_row_timestamp:
+                    # since each row will have the latest value up to that timestamp, as soon as we go past that
+                    # timestamp we are done with that row, so write the row, and increment timestamp
+                    currentValues["timestamp"] = next_row_timestamp - t0
 
-                # Write the current values to the dictionary
-                for key in currentValues:
-                    dict_out[key].append(currentValues[key])
+                    # Write the current values to the dictionary
+                    for key in currentValues:
+                        dict_out[key].append(currentValues[key])
 
-                # Find the next row value
-                while next_row_timestamp <= timestamp:
-                    # find next timestamp increment greater than current timestamp
-                    next_row_timestamp += round(increment, 3)
-            
-            # Update the currentValues dictionary
-            currentValues[row[SIGNAME_COL]] = row[VAL_COL]
+                    # Find the next row value
+                    while next_row_timestamp <= timestamp:
+                        # find next timestamp increment greater than current timestamp
+                        next_row_timestamp += round(increment, 3)
+                
+                try:
+                    # Update the currentVals dictionary with the latest values
+                    dbMessage = db.get_message_by_frame_id(msg.arbitration_id)
+                    signals = dbMessage.decode(msg.data)
+
+                    for signal in signals:
+                        # Update the current values
+                        currentValues[signal] = signals[signal]
+
+                    # if it's a DTC, log it to the DTCs list
+                    if msg.arbitration_id == self.arbIDdtc:
+                        if signals['diag_trouble_code_triggered'] > 0 and signals['diag_trouble_code_number'] not in DTCs:
+                                DTCs.append(signals['diag_trouble_code_number'])
+
+                except KeyError:
+                    # Skip it next time if there was an error decoding
+                    logging.info(f'Couldnt decode ArbID {msg.arbitration_id} ({f"0x{msg.arbitration_id:02x}"}), skipping')
+                    noDecode.append(msg.arbitration_id)
+                except Exception as e:
+                    logging.error(e)
 
         # write the last row -- there will always be at least one more value received since last write
         if next_row_timestamp is not None:
-            currentValues["timestamp"] = next_row_timestamp 
+            currentValues["timestamp"] = next_row_timestamp - t0
 
         # Write the current values to the dictionary
         for key in currentValues:
