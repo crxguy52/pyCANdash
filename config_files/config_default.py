@@ -22,7 +22,7 @@
             'dbcName':      'gmlan_v1.5',
             'arbIDdtc':     1906,           # Arbitration ID for diagnostic troubleshooting codes (DTCs). Set to -1 if unused
             'RxHz':         60,             # How frequently for the worker to grab CAN data from the hardware. Do it at least as fast as the fastest update interval
-            'logFormat':    'log'           # File type to log to. Should be one of those defined here: https://python-can.readthedocs.io/en/stable/file_io.html#can.Logger
+            'logFormat':    'blf'           # File type to log to. Should be one of those defined here: https://python-can.readthedocs.io/en/stable/file_io.html#can.Logger
                                             # Tested with 'log' and 'blf' formats, blf format is 92% smaller than a text format with default compression
         },
         # Uncomment if a second CAN channel is used
