@@ -102,8 +102,11 @@ class SigSelectAndPlot():
                 self.lines[i].glyph.y = new[i]
                 self.lines[i].visible = True
                 legendItems.append(LegendItem(label=new[i], renderers=[self.lines[i]]))
-                minVal = min(j for j in self.source.data[new[i]] + [minVal] if j is not None)
-                maxVal = max(j for j in self.source.data[new[i]] + [maxVal] if j is not None)
+                try:
+                    minVal = min(j for j in self.source.data[new[i]] + [minVal] if j is not None)
+                    maxVal = max(j for j in self.source.data[new[i]] + [maxVal] if j is not None)
+                except:
+                    logging.info(f'No values for {new[i]}')
             else:
                 self.lines[i].visible = False
 
@@ -217,19 +220,19 @@ class PresetDropDown():
 
         presetDict = {
             'engine_temps_and_pressures':[
-                    ['engine_speed', 'engine_max_speed_limit'],
-                    ['engine_oil_pressure'],
-                    ['engine_coolant_temp', 'engine_oil_temperature', 'trans_oil_temp', 'ambient_air_temp'],
+                    ['eng_speed', 'eng_max_speed_limit'],
+                    ['eng_oil_pressure'],
+                    ['eng_coolant_temp', 'eng_oil_temperature', 'trans_oil_temp', 'ambient_air_temp'],
             ],
             'accelerator_and_throttle':[
-                ['engine_speed', 'engine_max_speed_limit'],
+                ['eng_speed', 'eng_max_speed_limit'],
                 ['accelerator_actual_pos', 'throttle_pos'],
-                ['barometric_pressure_abs', 'engine_manifold_abs_pres'],
+                ['barometric_pressure_abs', 'eng_manifold_abs_pres'],
             ],
             'torque_requests':[
-                [],
-                [],
-                [],
+                ['eng_speed', 'eng_max_speed_limit'],
+                ['eng_torque_act_extnd_rng', 'eng_trq_drvr_req_ext_rng'],
+                ['accelerator_actual_pos', 'accelerator_eff_pos'],
             ],
             'clear_selection':[
                 [],
@@ -514,7 +517,7 @@ class MainLayout():
 
     def load_data(self, event):
         # Load the selected file
-        self.logDict, DTCs = self.log2dict(self.dataDir + event.item, self.dbcDir + 'gmlan_v1.4_decode.dbc', sample_time_ms=self.Ts_ms)
+        self.logDict, DTCs = self.log2dict(self.dataDir + event.item, self.dbcDir + 'gmlan_v1.5_decode.dbc', sample_time_ms=self.Ts_ms)
         self.csvButton.logDict = self.logDict
 
         # Update the multiselect values
