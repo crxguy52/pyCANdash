@@ -180,7 +180,7 @@ class ResampleDropDown():
             ('1Hz',    '1000'),
         ]
         self.obj = Dropdown(
-            label='Resample at: 100Hz', 
+            label='Resample at: 20Hz', 
             button_type='primary', 
             menu=self.rates, 
             width_policy='min',
@@ -394,7 +394,7 @@ class MainLayout():
         self.logfilename = ''
         self.logDict = {}
         self.N_PLOTS = n_plots      # Initial value
-        self.Ts_ms = 10             # Inital Ts value for resampling data
+        self.Ts_ms = 50             # Inital Ts value for resampling data
 
         # Delete the temporary files we created last time for downloading
         for filename in os.listdir(self.dataDir):
