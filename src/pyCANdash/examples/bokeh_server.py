@@ -16,13 +16,12 @@ import glob
 from typing import Any
 import cantools
 import can
-import sys
 import logging
 from functools import partial
 import socket
 
 from bokeh.layouts import column, row, layout
-from bokeh.models import ColumnDataSource, MultiSelect, Dropdown, Range1d, LegendItem, Button, CustomJS
+from bokeh.models import ColumnDataSource, MultiSelect, Dropdown, HoverTool, LegendItem, Button, CustomJS
 from bokeh.plotting import figure
 from bokeh.palettes import Category10
 from bokeh.models.widgets import Paragraph, Div
@@ -42,28 +41,21 @@ class SigSelectAndPlot():
         self.N_LINES = 10
 
         # Create the figure
-        if other_x_range is None:
-            self.fig = figure(
-                            min_width=400,
-                            sizing_mode='stretch_both',
-                            tools="hover,pan,reset,save,wheel_zoom,box_zoom,",
-                            active_drag = 'pan',
-                            active_inspect = None,
-                            active_tap = None,
-                            name=name,
-                            output_backend='webgl',
-                            )
-        else:
-            self.fig = figure(
-                            min_width=400,
-                            sizing_mode='stretch_both',
-                            tools="hover,pan,reset,save,wheel_zoom,box_zoom,",
-                            active_drag = 'pan',
-                            active_inspect = None,
-                            active_tap = None,                            
-                            name=name,
-                            x_range = other_x_range,
-                            )
+        self.fig = figure(
+                        min_width=400,
+                        sizing_mode='stretch_both',
+                        tools="pan,reset,save,wheel_zoom,box_zoom,",
+                        active_drag = 'pan',
+                        active_inspect = None,
+                        active_tap = None,
+                        name=name,
+                        output_backend='webgl',
+                        )
+                
+        # Link to the other axes if we specified an other x axis
+        if other_x_range is not None:
+            self.fig.x_range = other_x_range
+
 
         # Create the multiselect for selecting signals
         self.sigSelect = MultiSelect(
@@ -85,8 +77,20 @@ class SigSelectAndPlot():
                     y='y', 
                     source=self.source, 
                     legend_label='', 
+                    name='',
                     visible=False, 
                     color=colors[i]))
+            
+        # Add a custom hover tool
+        self.ht = HoverTool(
+                    tooltips=[
+                        ("", "$name"),
+                        ("(t, y) ", "$x, @$name{0.0}"),
+                        ],
+                    mode='vline',
+                    renderers=self.lines,
+                    )
+        self.fig.add_tools(self.ht)
 
         self.fig.legend.location = 'bottom_right'
         self.fig.legend.click_policy = 'hide'
@@ -100,6 +104,7 @@ class SigSelectAndPlot():
             if i < len(new):
                 self.lines[i].glyph.x = 'timestamp'
                 self.lines[i].glyph.y = new[i]
+                self.lines[i].__setattr__('name', new[i]) #line.name = 'abcd' throws an error, this is a workaround
                 self.lines[i].visible = True
                 legendItems.append(LegendItem(label=new[i], renderers=[self.lines[i]]))
                 try:
@@ -111,6 +116,7 @@ class SigSelectAndPlot():
                 self.lines[i].visible = False
 
         self.fig.legend.items = legendItems
+        self.ht.renderers = self.lines
 
         # Handle the case where minVal and maxVal are the same
         if minVal is None or maxVal is None:
@@ -128,15 +134,17 @@ class SigSelectAndPlot():
             yMax = maxVal + rng * 0.1
             
         # Re-scale the figure
-        # Don't re-scale x since it breaks the link
-        #if self.other_x_range is None:
-        #    self.fig.x_range = Range1d(min(self.logDict['timestamp']), max(self.logDict['timestamp']))
-        #    pass
-        #else:
-        #    self.fig.x_range = self.other_x_range
-        #    pass
+        if self.other_x_range is None:
+           # If this is the first figure, update the existing x-range start and end values
+           # Assigning a new Range object breaks the link between figures
+           self.fig.x_range.start   = min(self.source.data['timestamp'])
+           self.fig.x_range.end     = max(self.source.data['timestamp'])
+        else:
+           # Don't do anything, it already shares the x range with the first figure
+           pass
 
-        self.fig.y_range = Range1d(yMin, yMax)
+        self.fig.y_range.start  = yMin
+        self.fig.y_range.end    = yMax
 
     def update_sigList(self, sigList):
         self.sigSelect.options = sigList      
