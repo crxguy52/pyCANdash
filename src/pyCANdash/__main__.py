@@ -5,9 +5,7 @@ from PyQt6.QtWidgets import QApplication
 from pyCANdash.layouts import MainWindow
 
 # TODO:
-# bokeh server to plot individual data files
-# Auto load signal properties from seperate file?
-# Start up \ shut down based on car power?
+# Start up \ shut down based on car power
 
 
 def mainApp():

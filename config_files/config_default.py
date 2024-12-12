@@ -5,6 +5,11 @@
     # "playbackFn":       "20241124_141123.log",  
     "startTab":         3,      # Tab to display at startup
 
+    'bokehServer':{                             # Bokeh web server to view recorded data
+        'enable':       True,                   # Enable it?
+        'dbcName':      'gmlan_v1.5_decode',    # Which can DBC file to use. Must return all numbers (no strings)
+    },
+
     # Option to upload log files via FTP to a remote server
     'logUploader':{
         'ip':           '192.168.0.1',          # FTP copy disabled if IP is None

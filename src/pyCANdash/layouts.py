@@ -12,11 +12,10 @@ import os
 import ast
 import logging
 from datetime import datetime
-import can
-import cantools
+import time
 
 
-from pyCANdash.config_system import configCAN, startPlayer, startLogUploader
+from pyCANdash.config_system import configCAN, startPlayer, startLogUploader, startBokehServer
 from pyCANdash.TallStatusLayout import TallStatusLayout
 from pyCANdash.GridStatusLayout import GridStatusLayout
 from pyCANdash.DTCStatusLayout import DTCStatusLayout
@@ -175,12 +174,31 @@ class MainWindow(QMainWindow):
             canCfg = self.logCfg['canChans'][chan]
             self.canChans[chan] = configCAN(canCfg, self.logCfg['dbcDir'], self.rxCAN, logEn=logEn)
 
+        # Delete the temporary files we created last time for downloading
+        for filename in os.listdir(self.logCfg['resDir']):
+
+            fpath = os.path.join(self.logCfg['resDir'], filename)
+            lastModTime = os.path.getmtime(fpath)
+            oldFlag = lastModTime < (time.time() - 24*60*60)
+            zeroSizeFlag = os.path.getsize(fpath) < 145 # empty BLF files are 145 bytes
+            fileExtFlag = '.blf' in filename or '.log' in filename
+
+            # Delete the file if it's an export file ('_wide.csv' in the filename) OR
+            # If it's more than a day old AND it's zero size
+            if '_wide.csv' in filename or (oldFlag and zeroSizeFlag and fileExtFlag):
+                logging.warning(f'Deleting {filename}')
+                os.remove(self.logCfg['resDir'] + filename)           
+
         # Start the auto-uploader if it's enabled
         if self.logCfg['logUploader']['ip'] is not None:
             self.logUploader = startLogUploader(self.logCfg['logUploader'], self.logCfg['resDir'])
 
+        # Start the bokeh server if it's enabled
+        if self.logCfg['bokehServer']['enable'] is True:
+            self.bokehServer = startBokehServer(self.logCfg['resDir'], self.logCfg['dbcDir'], self.logCfg['bokehServer'])
+
         # Set the window title and size
-        self.setWindowTitle("CAN Monitor")
+        self.setWindowTitle("pyCANdash")
         self.setMinimumSize(self.guiCfg["WINDOW_SIZE_MIN_WIDTH"], self.guiCfg["WINDOW_SIZE_MIN_HEIGHT"])
 
         # Create instances of each of the layouts
@@ -217,15 +235,6 @@ class MainWindow(QMainWindow):
         widget = QWidget()
         widget.setLayout(self.mainLayout)
         self.setCentralWidget(widget)
-
-        # Create a dictionary to store threads in
-        self.threads = {}
-
-        # Create a dictionary to store device and other references in
-        self.refs = {}
-
-        # Create a dictionary to store references to workers
-        self.workers = {}
 
         # Add the status bar to the logger. This happens after everthing else bc when the
         # logger is initially configured the statusbar doesn't exist
@@ -356,3 +365,15 @@ class MainWindow(QMainWindow):
             if not sip.isdeleted(worker):
                 logging.info(f"Stopping worker {self.canChans[chan]['name']}")
                 worker.stopSignal.emit()
+
+        # Shut down the loguploader
+        if hasattr(self, 'logUploader'):
+            if not sip.isdeleted(self.logUploader['worker']):
+                logging.info(f"Stopping logUploader worker")
+                self.logUploader['worker'].stopSignal.emit()
+
+                # Shut down the loguploader
+        if hasattr(self, 'bokehServer'):
+            if not sip.isdeleted(self.bokehServer['worker']):
+                logging.info(f"Stopping bokehServer worker")
+                self.bokehServer['worker'].stopSignal.emit()

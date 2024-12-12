@@ -1,5 +1,6 @@
 
 import pyCANdash.config_system as configSys
+from pyCANdash.bokeh_classes import bkapp, get_ip
 import logging
 from PyQt6.QtCore import pyqtSignal, QTimer, QObject, pyqtSlot
 import os.path as path
@@ -7,10 +8,22 @@ from datetime import datetime
 
 import time
 import can
-from typing import Iterable, cast
+from typing import Iterable, cast, Any
 import os 
 import glob
 import ftplib
+from functools import partial
+import socket
+
+from bokeh.layouts import column, row, layout
+from bokeh.models import ColumnDataSource, MultiSelect, Dropdown, HoverTool, LegendItem, Button, CustomJS
+from bokeh.plotting import figure
+from bokeh.palettes import Category10
+from bokeh.models.widgets import Paragraph, Div
+from tornado.web import StaticFileHandler
+from bokeh.events import ButtonClick
+from bokeh.server.server import Server
+
 
 
 CAN_MSG_EXT = 0x80000000
@@ -254,7 +267,6 @@ class logUploaderWorker(QObject):
                     pass
 
 
-
     def connect2ftp(self, ip, username=None, password=None):
         # Try to connect to the server for 30 seconds
         t_end = time.time() + 30
@@ -296,8 +308,8 @@ class logUploaderWorker(QObject):
 
                 fullPath = localDir + file
 
-                # Only upload it if it's not empty
-                if os.path.getsize(fullPath) > 0:
+                # Only upload it if it's not empty - an empty BLF file is 145 bytes
+                if os.path.getsize(fullPath) > 145: 
 
                     with open(fullPath, 'rb') as f:
 
@@ -316,6 +328,54 @@ class logUploaderWorker(QObject):
         logging.info(f'LogUploader: Stopping')
 
         self.ftp.close()
+
+        # Clean up
+        self.finishedSignal.emit()   
+
+
+class bokehServerWorker(QObject):
+    statusSignal = pyqtSignal(str, dict, int)
+    stopSignal = pyqtSignal()
+    initFinishedSignal = pyqtSignal()
+    finishedSignal = pyqtSignal()
+
+    def __init__(self, dataDir, dbcPath):
+        QObject.__init__(self)
+
+        self.dataDir = dataDir
+        self.dbcPath = dbcPath
+
+
+
+    def initConnections(self, statusFcn):
+        # Stop the worker when the stop signal is recieved
+        #self.stopSignal.connect(self.stop)
+        pass
+
+
+    def run(self):
+        # Add the data directory to the web server's static path so we can use it to download files from
+        # https://github.com/bokeh/bokeh/blob/3.6.2/examples/server/api/tornado_embed.py
+
+        logging.info('bokehServer: Starting on ' + get_ip() + ' and localhost')           
+
+        self.server = Server({'/': partial(bkapp, dataDir=self.dataDir, dbcPath=self.dbcPath)},
+                        allow_websocket_origin=[get_ip()+":5006", "localhost:5006"],
+                        extra_patterns=[(r'/data/(.*)', StaticFileHandler, {'path': self.dataDir}),],
+                        )
+
+        self.server.start()
+        self.server.io_loop.start()
+
+        # TODO:
+        # Move deleting of temp files to main app before sync and server starts     
+
+
+    @pyqtSlot()
+    def stop(self):
+
+        logging.info(f'bokehServer: Stopping server')
+        self.server.io_loop.stop()
 
         # Clean up
         self.finishedSignal.emit()   

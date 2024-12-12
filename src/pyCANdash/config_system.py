@@ -4,7 +4,7 @@ from PyQt6.QtCore import QThread
 import sys
 import logging
 
-from pyCANdash.workers import CANWorker, CANplayerWorker, logUploaderWorker
+from pyCANdash.workers import CANWorker, CANplayerWorker, logUploaderWorker, bokehServerWorker
 import cantools
 
 
@@ -79,6 +79,25 @@ def startLogUploader(FTPcfg, resDir):
     startThread(logUploader['thread'], logUploader['worker'], None)
 
     return logUploader
+
+
+def startBokehServer(resDir, dbcDir, cfgDict):
+        # Need to assign this to a variable in the main thread or else
+        # it gets deleted and the GUI crashes
+        serverDict = {}
+
+        # Create thread and worker
+        logging.info(f'bokehServer: Creating thread')
+        serverDict['thread'] = QThread()
+
+        logging.info(f'bokehServer: Creating worker {resDir} {dbcDir + cfgDict["dbcName"]}')
+        serverDict['worker'] = bokehServerWorker(resDir, dbcDir + cfgDict['dbcName'])
+
+        # Start it upppp
+        logging.info('bokehServer: Starting thread')
+        startThread(serverDict['thread'], serverDict['worker'], None)
+        
+        return serverDict
 
      
 def startThread(thread, worker, statusFcn):
