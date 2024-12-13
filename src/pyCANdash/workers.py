@@ -243,6 +243,9 @@ class logUploaderWorker(QObject):
 
 
     def run(self):
+        # Wait 10 seconds to give the PC a chance to connecto to wifi
+        time.sleep(10)
+
         # Connect to the FTP server
         self.ftp = self.connect2ftp(self.ip)
 
@@ -356,6 +359,9 @@ class bokehServerWorker(QObject):
     def run(self):
         # Add the data directory to the web server's static path so we can use it to download files from
         # https://github.com/bokeh/bokeh/blob/3.6.2/examples/server/api/tornado_embed.py
+
+        # Wait 10 seconds to give the PC a chance to connecto to wifi
+        time.sleep(10)        
 
         logging.info('bokehServer: Starting on ' + get_ip() + ' and localhost')           
 

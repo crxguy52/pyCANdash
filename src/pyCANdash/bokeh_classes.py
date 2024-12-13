@@ -159,7 +159,7 @@ class FileDropDown():
         files = []
         for file in [os.path.basename(x) for x in sorted(glob.glob(self.dataDir + '*.*'))]:
             # Only display it if it's not empty
-                if os.path.getsize(self.dataDir + file) > 0:            
+                if os.path.getsize(self.dataDir + file) > 145:  # Size of an empty BLF file is 144 bytes            
                     files.append([file, file])
 
         self.obj.menu = files
