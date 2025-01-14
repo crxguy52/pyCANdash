@@ -251,6 +251,10 @@ class MainWindow(QMainWindow):
         self.dispTimer.timeout.connect(self.updateDisplay)
         self.dispTimer.start()            
 
+    # Start maximized
+    def showEvent(self, event):
+        self.showMaximized()        
+
     def configLogger(self):
         # Configure the logger
         self.logFormatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", datefmt="%d-%b-%Y %H:%M:%S")
