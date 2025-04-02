@@ -1,0 +1,246 @@
+VERSION ""
+
+
+NS_ : 
+    NS_DESC_
+    CM_
+    BA_DEF_
+    BA_
+    VAL_
+    CAT_DEF_
+    CAT_
+    FILTER
+    BA_DEF_DEF_
+    EV_DATA_
+    ENVVAR_DATA_
+    SGTYPE_
+    SGTYPE_VAL_
+    BA_DEF_SGTYPE_
+    BA_SGTYPE_
+    SIG_TYPE_REF_
+    VAL_TABLE_
+    SIG_GROUP_
+    SIG_VALTYPE_
+    SIGTYPE_VALTYPE_
+    BO_TX_BU_
+    BA_DEF_REL_
+    BA_REL_
+    BA_DEF_DEF_REL_
+    BU_SG_REL_
+    BU_EV_REL_
+    BU_BO_REL_
+    SG_MUL_VAL_
+
+BS_:
+
+BU_:
+
+
+BO_ 201 engine_general_status_1: 8 ECM
+	SG_ engine_run_active : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ powertrain_crank_active : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ powertrain_crank_aborted : 5|1@0+ (1,0) [0|0] "" Vector__XXX
+	SG_ powertrain_run_aborted : 4|1@0+ (1,0) [0|0] "" Vector__XXX
+	SG_ PTO_powertrain_run_aborted : 3|1@0+ (1,0) [0|0] "" Vector__XXX
+	SG_ eng_idle_active : 2|1@0+ (1,0) [0|0] "" Vector__XXX
+	SG_ eng_speed_status : 1|2@0+ (1,0) [0|0] "" Vector__XXX
+	SG_ eng_speed : 15|16@0+ (0.25,0) [0|16383.8] "rpm" Vector__XXX
+	SG_ accelerator_actual_pos_valid : 31|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ cruise_control_active : 30|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ cruise_control_enabled : 29|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ driver_throttle_override_detect : 28|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ driver_throttle_override_ARC : 27|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ driver_thrtl_ovride_dtct_protct : 25|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ accelerator_actual_pos : 39|8@0+ (0.3922,0) [0|100] "%" Vector__XXX
+	SG_ platform_eng_spd_cmd_superceeded : 45|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ platform_eng_spd_cmd_inhbt_req : 44|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_cylinder_deactivation_mode : 43|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ pwt_brake_pdl_dscrt_in_stat_vld : 41|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ pwt_brake_pdl_dscrt_in_stat : 40|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ remote_vehicle_start_eng_running : 55|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_cyl_deact_event_pending : 54|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_intke_air_boost_press_valid : 51|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_intake_air_boost_press : 63|8@0+ (1,-127) [-127|128] "kPa gage" Vector__XXX
+
+BO_ 249 transmission_general_status_1: 8 ECM
+	SG_ trans_overall_est_tq_ratio_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_overall_est_tq_ratio : 6|15@0+ (0.0039,0) [0|64] "ratio" Vector__XXX
+	SG_ trans_out_shaft_ang_vel_valid : 23|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_out_shaft_ang_vel_sns_pres : 22|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_out_rot_roll_cnt_reset : 21|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_out_rot_roll_ct_valid : 20|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_out_shaft_ang_vel : 31|16@0+ (0.25,0) [0|16384] "rpm" Vector__XXX
+	SG_ trans_out_rotations_roll_ct : 47|16@0+ (1,0) [0|99999] "none" Vector__XXX
+	SG_ trans_cruisectrl_spd_shft_evnt : 63|8@0+ (1,0) [0|99999] "none" Vector__XXX
+
+BO_ 417 PTEI_engine_general_status: 8 ECM
+	SG_ ac_comp_clutch_engaged_ptei : 13|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ eng_cold_idle_high_active: 23|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ accelerator_pos_perc_ful_rng_vld: 17|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ eng_idle_speed_red_rng: 39|8@0+ (8,0) [0|2040] "rpm" Vector__XXX
+    SG_ eng_base_trgt_idle_speed: 47|8@0+ (8,0) [0|2040] "rpm" Vector__XXX
+    SG_ accelerator_pos_perc_ful_rng: 55|8@0+ (0.392156,0) [0|100] "percent" Vector__XXX
+
+BO_ 451 engine_torque_status_2: 8 ECM
+    SG_ eng_torque_act_extnd_rng: 3|12@0+ (0.5,-848) [-848|1199.5] "Nm" Vector__XXX
+	SG_ eng_torque_act_extnd_rng_vld : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_torque_reduct_fail_stat : 7|3@0+ (1,0) [0|4] "" Vector__XXX     
+	SG_ eng_trq_drvr_req_ext_rng : 19|12@0+ (0.5,-848) [-848|1199.5] "Nm" Vector__XXX
+	SG_ eng_trq_drvr_req_ext_rng_vld : 20|1@0+ (1,0) [0|1] "" Vector__XXX 
+	SG_ accelerator_eff_pos_vld : 21|1@0+ (1,0) [0|1] "" Vector__XXX  
+	SG_ genratr_regltd_actv_ctrl_actv : 22|1@0+ (1,0) [0|1] "" Vector__XXX     
+	SG_ genratr_current : 46|7@0+ (1,0) [0|127] "" Vector__XXX    
+	SG_ genratr_current_vld : 47|1@0+ (1,0) [0|1] "" Vector__XXX    
+	SG_ accelerator_eff_pos : 55|8@0+ (0.392156,0) [0|1] "percent" Vector__XXX     
+
+BO_ 452 torque_request_status: 8 ECM
+    SG_ acclerator_pdl_ovrrde_actv: 4|1@0+ (1,0) [0|1] "" Vector__XXX    
+
+BO_ 453 driver_intended_alxe_torque_status: 8 ECM 
+    SG_ driver_intnded_ax_torq_vld: 7|1@0+ (1,0) [0|1] "" Vector__XXX    
+    SG_ driver_intnded_ax_torq: 6|15@0+ (2,-22534) [-22534|43000] "Nm" Vector__XXX              
+
+BO_ 491 fuel_system_status: 4 ECM
+	SG_ fuel_est_pres_delivered : 1|10@0+ (1,0) [0|1] "kPa" Vector__XXX
+    SG_ fuel_est_pres_delivered_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 493 fuel_system_request: 8 ECM
+	SG_ fuel_ctrl_system_fault_present : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ fuel_pmp_en_discrete_output : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ fuel_pressure_requested : 1|10@0+ (1,0) [0|1023] "kPa" Vector__XXX
+	SG_ instantaneous_fuel_flow_est : 23|16@0+ (0.0009765625,0) [0|63.9990234375] "g/s" Vector__XXX
+	SG_ advanced_fuel_flow_estimated : 39|16@0+ (0.0009765625,0) [0|63.9990234375] "g/s" Vector__XXX
+	SG_ commanded_air_fuel_ratio : 55|16@0+ (0.00048828125,0) [0|31.99951171875] "afr" Vector__XXX
+
+BO_ 495 fuel_system_request_2: 4 ECM
+	SG_ mass_air_flow_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ mass_air_flow : 23|16@0+ (0.01,0) [0|655.35] "g/s" Vector__XXX
+	
+BO_ 501 trans_general_status_2: 8 ECM
+	SG_ trans_estimated_gear : 3|4@0+ (1,0) [0|16] "gear_number" Vector__XXX
+
+BO_ 707 engine_torque_status_3: 8 ECM
+	SG_ eng_manifold_abs_pres_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_manifold_abs_pres : 55|8@0+ (0.5,0) [0|127.5] "kPa" Vector__XXX	
+
+BO_ 961 pwrtrain_immobilizer_data: 8 ECM
+
+BO_ 977 engine_general_status_2: 8 ECM
+	SG_ throttle_pos_valid: 7|1@0+ (1,0) [0|1] "" Vector__XXX	
+	SG_ throttle_progression_status : 6|2@0+ (1,0) [0|3] "" Vector__XXX		
+	SG_ throttle_pos : 15|8@0+ (0.392156862745098,0) [0|100] "percent" Vector__XXX	
+	SG_ eng_coast_fuel_cutoff_active : 22|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_oil_starvation_indication_on : 21|1@0+ (1,0) [0|1] "" Vector__XXX		
+	SG_ instant_fuel_consumption_rate : 35|12@0+ (0.025,0) [0|102.375] "liter/hr" Vector__XXX
+	SG_ ac_comp_command : 37|1@0+ (1,0) [0|1] "" Vector__XXX		
+	SG_ ac_comp_norm_load_grad_allowed : 63|8@0+ (0.1,0) [0|25.5] "((dm^3/minute)/s" Vector__XXX    
+
+BO_ 1001 vehicle_speed_and_distance: 8 ECM
+    SG_ vehicle_speed_avg_driven_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX    			
+    SG_ vehicle_speed_avg_driven : 6|15@0+ (0.015625,0) [0|511.984375] "kph" Vector__XXX
+    SG_ vehicle_speed_average_driven_src : 23|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ dist_roll_cnt_avg_driven_valid : 22|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ dist_roll_cnt_avg_drvn_rest_occr : 21|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ dist_roll_cnt_avg_driven : 20|13@0+ (0.125,0) [0|1023.875] "m" Vector__XXX
+    SG_ dist_speed_avg_non_driven_valid : 39|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ vehicle_speed_avg_non_driven : 38|15@0+ (0.015625,0) [0|511.984375] "kph" Vector__XXX
+    SG_ dist_roll_cnt_avg_driven_src : 55|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ dist_roll_cnt_avg_nondriven_vld : 54|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ dist_roll_cnt_avg_nondirven_rst : 53|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ dist_roll_cnt_avg_non_drive : 52|13@0+ (0.125,0) [0|1023.875] "m" Vector__XXX
+
+BO_ 1017 engine_general_status_3: 8 ECM
+    SG_ ac_refrigerant_high_side_press : 55|8@0+ (1,0) [0|256] "" Vector__XXX
+
+BO_ 1019 engine_fuel_status: 2 ECM
+    SG_ fuel_alcohol_coposition_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX    
+    SG_ emissions_related_fuel_lvl_low : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ fuel_lvl_emissions_reltd_valid : 5|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ fuel_alcohol_comp_adapt_in_prog : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ eng_fuel_control_state : 1|2@0+ (1,0) [0|3] "" Vector__XXX
+    SG_ fuel_alcohol_composition : 15|8@0+ (0.392156862745098,0) [0|100] "percent" Vector__XXX
+
+BO_ 1217 engine_general_status_4: 8 ECM
+    SG_ barometric_pressure_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ eng_coolant_temperature_valid : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ inlet_temperature_validity : 5|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ ambient_temperature_pwrtrn_mask : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ ambient_temperature_pwrtrn_valid : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ diag_cond_met : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ diag_cond_fault_present : 1|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ eng_warmup_cycle_achieved : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ barometric_pressure_abs : 15|8@0+ (0.5,0) [0|127.5] "kpa" Vector__XXX
+    SG_ eng_coolant_temp : 23|8@0+ (1,-40) [-40|215] "degC" Vector__XXX
+    SG_ eng_intake_air_temp : 31|8@0+ (1,-40) [-40|215] "degC" Vector__XXX
+    SG_ ambient_air_temp : 39|8@0+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+    SG_ cold_start_cond_met : 47|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ cold_start_cond_fault_present : 46|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ eng_oil_hot_indicator_on : 45|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ def_remaining_distance : 49|10@0+ (100,0) [0|102300] "km" Vector__XXX
+    SG_ eng_economy_mode_commanded : 54|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ def_remaining_distance_validity : 50|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ def_warning_rem_dist_valid : 53|3@0+ (1,0) [0|7] "" Vector__XXX
+
+BO_ 1225 transmission_general_status_3: 4 ECM
+    SG_ trans_oil_temp_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ trans_oil_temp_sensor_present : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ trans_thermal_mgmt_status : 1|2@0+ (1,0) [0|3] "" Vector__XXX 
+    SG_ trans_oil_temp : 15|8@0+ (1,-40) [-40|215] "degC" Vector__XXX 
+
+BO_ 1233 engine_general_status_5: 8 ECM
+    SG_ eng_oil_temperature_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ eng_oil_pres_valid : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ eng_oil_pres_low_indicator_on : 5|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ eng_oil_lvl_low_indicator_on : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ eng_oil_change_indicator_on : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ eng_hot_fuel_enrichm_ind_on : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ eng_hot_stop_engine_ind_on : 1|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ air_conditioning_off_ind_on : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ eng_oil_temperature : 15|8@0+ (1,-40) [-40|215] "degC" Vector__XXX
+    SG_ eng_oil_pressure : 23|8@0+ (4,0) [0|1020] "kPa" Vector__XXX
+    SG_ reduced_power_indicator : 31|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ starting_disabled_indicator : 30|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ check_fuel_cap_indicator : 29|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ fuel_level_percent_valid : 28|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ fuel_total_capacity : 27|12@0+ (0.125,0) [0|511.875] "l" Vector__XXX
+    SG_ fuel_level_percent : 47|8@0+ (0.392156862745098,0) [0|100] "%" Vector__XXX
+    SG_ eng_shutdown_pending_ind_on : 49|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ eng_shutdown_active : 48|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ diesel_glow_plug_ind_on : 55|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ eng_water_in_fuel_ind_on : 54|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ exhaust_particulate_fltr_warn_on : 53|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ high_electrical_load_requested : 52|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ change_fuel_filter_ind_on : 51|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ check_engine_ind_on : 50|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ eng_max_speed_limit : 63|8@0+ (32,0) [0|8160] "rpm" Vector__XXX
+
+BO_ 1265 pwrtrain_config_data: 8 ECM
+    SG_ wheel_dst_per_rev_drvn : 1|10@0+ (3,800) [800|3869] "mm" Vector__XXX
+    SG_ wheel_dst_per_rev_non_drvn : 17|10@0+ (3,800) [800|3869] "mm" Vector__XXX  
+    SG_ final_axle_ratio: 32|9@0+ (0.01,2) [2|7.11] "mm" Vector__XXX  
+
+BO_ 1906 diag_trouble_code_info_extended: 7 ECM
+    SG_ diag_trouble_code_triggered : 0|1@0+ (1,0) [0|1] "" Vector__XXX 
+    SG_ diag_trouble_code_source : 15|8@0+ (1,0) [0|255] "" Vector__XXX
+    SG_ diag_trouble_code_number : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
+    SG_ diag_trouble_code_fail_type : 39|8@0+ (1,0) [0|1] "" Vector__XXX    
+    SG_ diag_warn_ind_reqested_stat : 47|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ diag_tst_fail_since_pwrup_stat : 46|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ diag_tst_nopass_since_pwrup_stat : 45|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ diag_history_status : 44|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ diag_tst_failed_since_code_clrd : 43|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ diag_tst_nt_pass_since_code_clrd : 42|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ diag_current_status : 41|1@0+ (1,0) [0|1] "" Vector__XXX
+    SG_ diag_code_supported : 40|1@0+ (1,0) [0|1] "" Vector__XXX    
+    SG_ diag_trouble_code_fault_type : 55|8@0+ (1,0) [0|1] "" Vector__XXX           
+                                         
+                                         
+VAL_ 201 eng_speed_status 3 "Invalid" 1 "Degraded _Operation" 0 "Normal_Operation" ;
+VAL_ 201 platform_eng_spd_cmd_superceeded 1 "Inhibit Platform Engine Speed Control" 0 "Allow Platform Engine Speed Control" ;
+VAL_ 201 eng_cylinder_deactivation_mode 3 "Reactivation In Progress" 2 "Half Of Total Cylinders Active" 1 "Deactivation In Progress" 0 "All Cylinders Active" ;
+VAL_ 1001 vehicle_speed_average_driven_src 1 "Wheel Speed" 0 "Transmission Output Speed" ;
+VAL_ 1001 dist_roll_cnt_avg_driven_src 1 "Wheel Speed" 0 "Transmission Output Speed" ;
+VAL_ 977 throttle_progression_status 0 "Map A" 1 "Map B" 2 "Map C" 3 "ECM Selected Progression";
+VAL_ 1019 eng_fuel_control_state 2 "Stoichiometric Closed Loop" 1 "Non-Stoichiometric Closed Loop" 0 "Open Loop" ;
+VAL_ 1225 trans_thermal_mgmt_status 2 "Driver Intervention Required" 1 "Counter-measures Active" 0 "Normal" ;
+VAL_ 1233 trans_thermal_mgmt_status 3 "Type C" 2 "Type B" 1 "Type A" 0 "Not Supported" ;
