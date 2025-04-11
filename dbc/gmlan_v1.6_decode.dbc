@@ -239,4 +239,8 @@ BO_ 1906 diag_trouble_code_info_extended: 7 ECM
     SG_ diag_code_supported : 40|1@0+ (1,0) [0|1] "" Vector__XXX    
     SG_ diag_trouble_code_fault_type : 55|8@0+ (1,0) [0|1] "" Vector__XXX           
                                          
-                                         
+BO_ 1920 canDash: 4 ECM
+    SG_ v_batt : 0|32@1+ (1,0) [0|9999] "" Vector__XXX 
+
+
+SIG_VALTYPE_ 1920 v_batt : 1;

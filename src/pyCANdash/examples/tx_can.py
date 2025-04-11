@@ -59,11 +59,11 @@ if 0:
         n_tx += 1
 
 else:
-        rpmMsg = create_message(db, 'engine_general_status_1', 'eng_speed', 8000)
+        rpmMsg = create_message(db, 'engine_general_status_1', 'eng_speed', 7950)
         bus.send(msg=rpmMsg)
         time.sleep(0.10)
 
-        speedMsg = create_message(db, 'vehicle_speed_and_distance', 'vehicle_speed_avg_driven', 15/0.6213712)
+        speedMsg = create_message(db, 'vehicle_speed_and_distance', 'vehicle_speed_avg_driven', 5/0.6213712)
         bus.send(speedMsg)
         time.sleep(0.10)
 

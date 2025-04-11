@@ -10,8 +10,10 @@ dependencies = [
     "python-can>=4.4.2",
     "cantools>=39.4.11",
     "bokeh>=3.6.1",
+    "pglive>=0.5.6",
 ]
 requires-python = ">=3.11"
 readme = "README.md"
 license = {text = "MIT"}
 
+[tool.pdm]

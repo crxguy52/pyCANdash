@@ -5,7 +5,7 @@
 groups = ["default"]
 strategy = ["cross_platform"]
 lock_version = "4.5.0"
-content_hash = "sha256:26125d9b47f2ea7a5bfc8f331fbecee01208ee51c3309ecb7c2cfa174d152e50"
+content_hash = "sha256:146aedbd3253eeef8eba73ec6b31781e2a305cc43cd886a03ee68851853a3900"
 
 [[metadata.targets]]
 requires_python = ">=3.11"
@@ -358,6 +358,19 @@ files = [
 ]
 
 [[package]]
+name = "pglive"
+version = "0.5.6"
+requires_python = ">=3.7"
+summary = "Pyqtgraph live plot"
+dependencies = [
+    "pyqtgraph",
+]
+files = [
+    {file = "pglive-0.5.6-py3-none-any.whl", hash = "sha256:e4c1cb89290fa78f21fcb110796cab4081ca138acc8738ca34cc893b5332ddd5"},
+    {file = "pglive-0.5.6.tar.gz", hash = "sha256:6ffe96b4d735008d1e0cea24b8adb25f3e0212f9e506a37749964f7df03a66b8"},
+]
+
+[[package]]
 name = "pillow"
 version = "11.0.0"
 requires_python = ">=3.9"
@@ -464,6 +477,19 @@ files = [
     {file = "PyQt6_sip-13.8.0-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:08dd81037a2864982ece2bf9891f3bf4558e247034e112993ea1a3fe239458cb"},
     {file = "PyQt6_sip-13.8.0-cp312-cp312-win_amd64.whl", hash = "sha256:fbb249b82c53180f1420571ece5dc24fea1188ba435923edd055599dffe7abfb"},
     {file = "PyQt6_sip-13.8.0.tar.gz", hash = "sha256:2f74cf3d6d9cab5152bd9f49d570b2dfb87553ebb5c4919abfde27f5b9fd69d4"},
+]
+
+[[package]]
+name = "pyqtgraph"
+version = "0.13.7"
+requires_python = ">=3.9"
+summary = "Scientific Graphics and GUI Library for Python"
+dependencies = [
+    "numpy>=1.22.0",
+]
+files = [
+    {file = "pyqtgraph-0.13.7-py3-none-any.whl", hash = "sha256:7754edbefb6c367fa0dfb176e2d0610da3ada20aa7a5318516c74af5fb72bf7a"},
+    {file = "pyqtgraph-0.13.7.tar.gz", hash = "sha256:64f84f1935c6996d0e09b1ee66fe478a7771e3ca6f3aaa05f00f6e068321d9e3"},
 ]
 
 [[package]]
