@@ -506,6 +506,20 @@ class MainLayout():
 
     def load_data(self, event):
         # Load the selected file
+        # If a pkl exists load that, otherwise load the blf and save a pkl. blfs take WAY longer to load
+        # TODO: Add sampling rate to filename
+        # if os.path.exists(self.dataDir + event.item(:-3) + 'pkl'):
+        #     logging.info('Pickle file found, loading')
+        #     with open(self.dataDir + event.item(:-3) + 'pkl', 'rb') as file:
+        #         self.logDict, DTCs = pickle.load(file)
+        # else:
+        #     logging.info('Pickle file not found, creating from .blf')
+        #     self.logDict, DTCs = self.log2dict(self.dataDir + event.item, self.dbcPath, sample_time_ms=self.Ts_ms)
+    
+        #     logging.info('Saving pickle file')
+        #     with open(self.dataDir + event.item(:-3) + 'pkl', 'wb') as file:
+        #         pickle.dump([d, DTCs], file)
+
         self.logDict, DTCs = self.log2dict(self.dataDir + event.item, self.dbcPath, sample_time_ms=self.Ts_ms)
         self.csvButton.logDict = self.logDict
 
