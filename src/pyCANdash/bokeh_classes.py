@@ -6,6 +6,7 @@ import can
 import logging
 from functools import partial
 import socket
+# import compress_pickle as cp #<---------------
 
 from bokeh.layouts import column, row, layout
 from bokeh.models import ColumnDataSource, MultiSelect, Dropdown, HoverTool, LegendItem, Button, CustomJS
@@ -395,6 +396,7 @@ class MainLayout():
         self.logDict = {}
         self.N_PLOTS = n_plots      # Initial value
         self.Ts_ms = 50             # Inital Ts value for resampling data
+        self.Fs_hz = int(1e3/self.Ts_ms)
 
         # Create variables
         self.files = []     # List of files in the data directory
@@ -444,6 +446,7 @@ class MainLayout():
     def update_Ts(self, event):
         # Update the resampling rate
         self.Ts_ms = int(event.item)
+        self.Fs_hz = int(1e3/self.Ts_ms)
 
         # Update the dropdown box text
         self.resampleDropDown.obj.label = f'{1000/float(event.item):.0f} Hz'
@@ -506,19 +509,21 @@ class MainLayout():
 
     def load_data(self, event):
         # Load the selected file
-        # If a pkl exists load that, otherwise load the blf and save a pkl. blfs take WAY longer to load
+        # If a pkl exists load that, otherwise load the blf and save a compressed pkl. blfs take WAY longer to load and .pkl.gz is smaller
         # TODO: Add sampling rate to filename
-        # if os.path.exists(self.dataDir + event.item(:-3) + 'pkl'):
-        #     logging.info('Pickle file found, loading')
-        #     with open(self.dataDir + event.item(:-3) + 'pkl', 'rb') as file:
-        #         self.logDict, DTCs = pickle.load(file)
+        # pklpath = self.dataDir + event.item(:-4) + f'_{str(self.Fs_hz)}hz' +  + '.pkl.gz'
+        # logpath = self.dataDir + event.item
+        # if os.path.exists(pklpath):
+        #     logging.info('Pickle file found, loading %s' % (pklpath))
+        #     with open(pklpath, 'rb') as file:
+        #         self.logDict, DTCs = cp.load(file, compression='gzip')
         # else:
-        #     logging.info('Pickle file not found, creating from .blf')
-        #     self.logDict, DTCs = self.log2dict(self.dataDir + event.item, self.dbcPath, sample_time_ms=self.Ts_ms)
+        #     logging.info('Pickle file not found, creating from log: %s' % (logpath)
+        #     self.logDict, DTCs = self.log2dict(logpath, self.dbcPath, sample_time_ms=self.Ts_ms)
     
-        #     logging.info('Saving pickle file')
-        #     with open(self.dataDir + event.item(:-3) + 'pkl', 'wb') as file:
-        #         pickle.dump([d, DTCs], file)
+        #     logging.info('Saving pickle file: %s' % (pklpath))
+        #     with open(pklpath, 'wb') as file:
+        #         cp.dump([d, DTCs], file, compression='gzip)
 
         self.logDict, DTCs = self.log2dict(self.dataDir + event.item, self.dbcPath, sample_time_ms=self.Ts_ms)
         self.csvButton.logDict = self.logDict
