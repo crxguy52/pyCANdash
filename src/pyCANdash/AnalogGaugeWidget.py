@@ -77,6 +77,7 @@ class AnalogGaugeWidget(QWidget):
         self.setDisplayValueColor(0, 0, 0, 255)         # DEFAULT VALUE COLOR              
         self.scale_angle_start_value = 135
         self.scale_angle_size = 270
+        self.scale_text_radius_factor = 0.8
         self.angle_offset = 0
         self.draw_360_bg = True             # Draw the background in a full circle? Otherwise stop at the end of the scale
 
@@ -1092,8 +1093,7 @@ class AnalogGaugeWidget(QWidget):
         pen_shadow.setBrush(self.ScaleValueColor)
         painter.setPen(pen_shadow)
 
-        text_radius_factor = 0.8
-        text_radius = self.widget_diameter/2 * text_radius_factor
+        text_radius = self.widget_diameter/2 * self.scale_text_radius_factor
 
         scale_per_div = int((self.maxValue - self.minValue) / self.scalaCount)
 
@@ -1624,4 +1624,5 @@ def namedColor(colorName):
         logging.info(f'Color {colorName} not found')
 
     return QColor(color)
+
 # END ==>
