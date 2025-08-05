@@ -63,6 +63,7 @@ def SideGauge(lims, units, nMainDivs=10):
     gauge.setScalaCount(nMainDivs)      # Number of steps, not spacing  
     gauge.setScalaSubDivCount(5)
     gauge.unitAngle = 90
+    gauge.scale_text_radius_factor = 0.75  
     gauge.enable_value_text = False
 
     gauge.initial_scale_fontsize = 25 # default is 14
@@ -75,3 +76,4 @@ def SideGauge(lims, units, nMainDivs=10):
     gauge.updateValue(0)     
 
     return gauge   
+
