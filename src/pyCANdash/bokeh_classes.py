@@ -551,10 +551,10 @@ class MainLayout():
         # Update the DTCs in this log
         DTCtext = 'DTCs present in this log: '
         for code in DTCs:
-            DTCtext += f'p{code:04}, '
+            DTCtext += f'p{code:04x}, '
         self.DTCtext.text = DTCtext
 
-        self.statusText.text = f'<b>{event.item} loaded<b>'
+        self.statusText.text = f'<b>Data Loaded<b>'
 
     def set_preset(self, event):
         try:
@@ -725,3 +725,4 @@ if __name__ == "__main__":
 
     # server.io_loop.add_callback(server.show, "/")
     server.io_loop.start()
+
