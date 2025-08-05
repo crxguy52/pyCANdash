@@ -1208,7 +1208,7 @@ class AnalogGaugeWidget(QWidget):
 
         text = str(self.units)
         w = fm.horizontalAdvance(text) + 1
-        h = fm.height()*2
+        h = fm.height()*(text.count('\n') + 1)
         painter.setFont(font)
       
         if self.unitAngle is not None:
@@ -1626,3 +1626,4 @@ def namedColor(colorName):
     return QColor(color)
 
 # END ==>
+
