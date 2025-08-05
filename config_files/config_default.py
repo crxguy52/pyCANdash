@@ -78,8 +78,8 @@
             '2,2':{'sigName':'mass_air_flow',               'dispName':'Mass Airflow',      'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f', 'convert2ips':False,},
             '2,3':{'sigName':'fuel_alcohol_composition',    'dispName':'Fuel Alcohol',      'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f', 'convert2ips':False,},  
             '3,0':{'sigName':'eng_oil_temperature',      'dispName':'Oil Temp Est',      'lims':(0, 0, 75, 125, 135, 200),                   'dispFmt':'%1.1f', 'convert2ips':False,},
-            '3,1':{'sigName':'eng_coolant_temp',         'dispName':'Coolant Temp',      'lims':(0, 0, 75, 120, 130, 200),                   'dispFmt':'%1.1f', 'convert2ips':False,},
-            '3,2':{'sigName':'trans_oil_temp',              'dispName':'Trans Temp',        'lims':(0, 0, 50, 150, 175, 200),                   'dispFmt':'%1.1f', 'convert2ips':False,},
+            '3,1':{'sigName':'eng_coolant_temp',         'dispName':'Coolant Temp',      'lims':(0, 0, 75, 110, 130, 200),                   'dispFmt':'%1.1f', 'convert2ips':False,},
+            '3,2':{'sigName':'trans_oil_temp',              'dispName':'Trans Temp',        'lims':(0, 0, 15, 100, 175, 200),                   'dispFmt':'%1.1f', 'convert2ips':False,},
             '3,3':{'sigName':'check_engine_ind_on',         'dispName':'Check Engine',      'lims':(-1e3, -999, 	-1,		1,	    2,      3), 'dispFmt':'%1.0f', 'convert2ips':False,},
         }
         },
@@ -101,10 +101,10 @@
                     7:{ 'sigName':'eng_intake_air_temp',      'dispName':'Intake Air Temp',   'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f', 'convert2ips':False,},     
                     8:{ 'sigName':'ambient_air_temp',            'dispName':'Ambient Air Temp',  'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f' , 'convert2ips':False,},
                     9:{ 'sigName':'fuel_alcohol_composition',    'dispName':'Fuel Alcohol',      'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f' , 'convert2ips':False,},
-                    10:{'sigName':'eng_coolant_temp',         'dispName':'Coolant Temp',      'lims':(0, 0, 75, 120, 130, 200),                  'dispFmt':'%1.1f' , 'convert2ips':False,},
+                    10:{'sigName':'eng_coolant_temp',         'dispName':'Coolant Temp',      'lims':(0, 0, 75, 110, 130, 200),                  'dispFmt':'%1.1f' , 'convert2ips':False,},
                     11:{'sigName':'eng_oil_temperature',      'dispName':'Oil Temp Est',      'lims':(0, 0, 75, 125, 135, 200),                  'dispFmt':'%1.1f' , 'convert2ips':False,},   
                     12:{'sigName':'eng_oil_pressure',         'dispName':'Oil Press',         'lims':(0, 6, 8, 80, 90, 100),                     'dispFmt':'%1.1f' , 'convert2ips':True,},
-                    13:{'sigName':'trans_oil_temp',              'dispName':'Trans Temp',        'lims':(0, 0, 50, 150, 175, 200),                  'dispFmt':'%1.1f' , 'convert2ips':False,},
+                    13:{'sigName':'trans_oil_temp',              'dispName':'Trans Temp',        'lims':(0, 0, 15, 100, 175, 200),                  'dispFmt':'%1.1f' , 'convert2ips':False,},
                     14:{'sigName':'commanded_air_fuel_ratio',    'dispName':'Commanded AFR',     'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f' , 'convert2ips':False,},        
                 },
                 'rightCol':{ # Right column
@@ -181,9 +181,9 @@
                 'sideGauge10':{'signal':'eng_oil_pressure',      'lims':(0, 10, 15, 120, 130, 140),      'label':'Oil Pres\n', 'convert2ips':True, 'nMainDivs':14,},
                 #'sideGauge01':{'signal':'eng_oil_pressure',      'lims':(0, 50, 60, 550, 690, 800),  'label':'Oil Pres\n', 'convert2ips':False,},
                 #'sideGauge11':{'signal':'eng_oil_pressure',      'lims':(0, 50, 60, 550, 690, 800),  'label':'Oil Pres\n', 'convert2ips':False,},                                
-                'sideGauge02':{'signal':'eng_coolant_temp',      'lims':(0, 0, 75, 120, 130, 200),   'label':'Water Temp\n', 'convert2ips':False,},
-                'sideGauge12':{'signal':'trans_oil_temp',           'lims':(0, 0, 50, 150, 175, 200),   'label':'Trans Temp\n', 'convert2ips':False,},
-                'centerGauge':{'signal':'eng_speed',             'lims':(0, 0, 0, 7000, 7200, 8000), 'label':'', 'convert2ips':False, 
+                'sideGauge02':{'signal':'eng_coolant_temp',      'lims':(0, 0, 75, 110, 130, 200),   'label':'Water Temp\n', 'convert2ips':False,},
+                'sideGauge12':{'signal':'trans_oil_temp',        'lims':(0, 0, 15, 100, 175, 200),   'label':'Trans Temp\n', 'convert2ips':False,},
+                'centerGauge':{'signal':'eng_speed',             'lims':(0, 0, 0, 6800, 7200, 8000), 'label':'', 'convert2ips':False, 
                                 'speedSignal':'vehicle_speed_avg_driven', 'dynamicRedline':True, 'speedUnit':'MPH', 'speedGain':0.621371},  # MPH per kph     
                                 # speed stuff is a hack but also I don't feel like doing it a better way
             }
@@ -208,3 +208,4 @@
 }
 
 # fmt: on
+
