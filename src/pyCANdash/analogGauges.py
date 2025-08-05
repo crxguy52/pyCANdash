@@ -7,12 +7,13 @@ def Tach(lims, rpmUnits, speedUnits):
     tach.setGaugeTheme(25)   
 
     tach.needle_scale_factor    = 0.8       # NEEDLE SCALE FACTOR/LENGTH    
-    tach.needle_back_width      = 10         # Width of needle on the non-indicating side
-    tach.needle_tip_width       = 5         # Width of needle at the indicating side
+    tach.needle_back_width      = 8         # Width of needle on the non-indicating side
+    tach.needle_tip_width       = 4         # Width of needle at the indicating side
     tach.needle_tip_prominance  = 0         # How far to stick the center of the needle out to make it pointy
     tach.needle_back_length     = 45        # Distance from the center to the non-indicating extremity     
     tach.chngBGonVal            = True      # Update gauge background color based on value
     tach.unitAngle              = -90
+    tach.unit_font_size         = 25
     
 
     tach.units = rpmUnits
@@ -63,7 +64,8 @@ def SideGauge(lims, units, nMainDivs=10):
     gauge.setScalaCount(nMainDivs)      # Number of steps, not spacing  
     gauge.setScalaSubDivCount(5)
     gauge.unitAngle = 90
-    gauge.scale_text_radius_factor = 0.75  
+    gauge.scale_text_radius_factor = 0.72  
+    gauge.unit_text_radius_factor = 0.35 # Default is 0.5
     gauge.enable_value_text = False
 
     gauge.initial_scale_fontsize = 25 # default is 14

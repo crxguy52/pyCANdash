@@ -105,7 +105,7 @@ class AnalogGaugeWidget(QWidget):
         self.initial_value_fontsize = 40
         self.unit_font_size = int(self.initial_value_fontsize/3)
         self.value_fontsize = self.initial_value_fontsize
-        self.text_radius_factor = 0.5
+        self.unit_text_radius_factor = 0.5
 
         # Center point
         self.set_CenterPointColor(0, 0, 0, 255)         # DEFAULT CENTER POINTER COLOR     
@@ -129,7 +129,7 @@ class AnalogGaugeWidget(QWidget):
 
         self.otherValEn     = False             # Display other value? Speed on a tach, for example
         self.otherValAngle  = None              # Other value text position
-        self.otherValRadScale = self.text_radius_factor     # How far out to put the text
+        self.otherValRadScale = self.unit_text_radius_factor     # How far out to put the text
         self.otherValUnits  = 'abc'    
         self.otherValFontSize = self.initial_value_fontsize
 
@@ -1160,7 +1160,7 @@ class AnalogGaugeWidget(QWidget):
         pen_shadow.setBrush(self.DisplayValueColor)
         painter.setPen(pen_shadow)
 
-        text_radius = self.widget_diameter / 2 * self.text_radius_factor
+        text_radius = self.widget_diameter / 2 * self.unit_text_radius_factor
 
         # angle_distance = (float(self.scale_angle_size) / float(self.scalaCount))
         # for i in range(self.scalaCount + 1):
@@ -1204,7 +1204,7 @@ class AnalogGaugeWidget(QWidget):
         pen_shadow.setBrush(self.DisplayValueColor)
         painter.setPen(pen_shadow)
 
-        text_radius = self.widget_diameter / 2 * self.text_radius_factor
+        text_radius = self.widget_diameter / 2 * self.unit_text_radius_factor
 
         text = str(self.units)
         w = fm.horizontalAdvance(text) + 1
