@@ -31,7 +31,7 @@ class GaugeLayout1(QFrame):
 
             if 'center' in pos:
                 # Center gauge
-                self.gauges[pos] = Tach(lims, label+unit.upper(), gaugeCfg[pos]['speedUnit'])
+                self.gauges[pos] = Tach(lims, label+unit, gaugeCfg[pos]['speedUnit'])
                 self.layout.addWidget(self.gauges[pos], 0, 1, 2, 1)                 
 
             else:

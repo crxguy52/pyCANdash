@@ -102,6 +102,7 @@ class AnalogGaugeWidget(QWidget):
         self.unitAngle = None
         self.value_fontname = "Orbitron"
         self.initial_value_fontsize = 40
+        self.unit_font_size = int(self.initial_value_fontsize/3)
         self.value_fontsize = self.initial_value_fontsize
         self.text_radius_factor = 0.5
 
@@ -1194,7 +1195,7 @@ class AnalogGaugeWidget(QWidget):
 
 
         painter.translate(self.width() / 2, self.height() / 2)
-        font = QFont(self.value_fontname, int(self.value_fontsize / 2.5))
+        font = QFont(self.value_fontname, self.unit_font_size)
         font.setBold(True)
         fm = QFontMetrics(font)
 

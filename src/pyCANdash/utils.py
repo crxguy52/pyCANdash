@@ -78,6 +78,7 @@ def convert2ips(unit:str):
         'kpa':{'gain':0.145038, 'offset':0, 'newUnit':'psi'},
         'kph':{'gain':0.621371, 'offset':0, 'newUnit':'mph'},
         '°c':{'gain':9/5, 'offset':32, 'newUnit':'°F'},
+        'rpm':{'gain':1e-3, 'offset':0, 'newUnit':'kRPM'},
     }
 
     if unit.lower() in conversions:
