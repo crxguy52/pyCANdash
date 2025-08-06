@@ -5,4 +5,5 @@
 # Except this file
 !.gitignore
 !logfiles/**
+!borked_files/**
 !20241124_141123.log
