@@ -125,7 +125,7 @@ class CANWorker(QObject):
                 if msg.arbitration_id in self.arbID2decode:
 
                     # Decode it
-                    decodedDict = self.canCfg['db'].decode_message(msg.arbitration_id, msg.data, decode_choices=False)
+                    decodedDict = self.canCfg['db'].decode_message(msg.arbitration_id, msg.data)
 
                     # If it's not a DTC, put it in the decodedDict
                     if msg.arbitration_id != self.canCfg['arbIDdtc']:
@@ -385,4 +385,5 @@ class bokehServerWorker(QObject):
 
         # Clean up
         self.finishedSignal.emit()   
+
 
