@@ -7,7 +7,7 @@
 
     'bokehServer':{                             # Bokeh web server to view recorded data
         'enable':       True,                   # Enable it?
-        'dbcName':      'gmlan_v1.6_decode',    # Which can DBC file to use. Must return all numbers (no strings)
+        'dbcName':      'gmlan_v1.6',           # Which can DBC file to use
     },
 
     # Option to upload log files via FTP to a remote server
@@ -208,5 +208,6 @@
 }
 
 # fmt: on
+
 
 
