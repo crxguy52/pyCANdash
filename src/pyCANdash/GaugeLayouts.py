@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import (
     QFrame,
     QGridLayout,
 )
-from pyCANdash.utils import convert2ips, findUnit
+from pyCANdash.utils import findUnit
 from pyCANdash.analogGauges import Tach, SideGauge
 
 

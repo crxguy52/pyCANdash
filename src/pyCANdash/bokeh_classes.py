@@ -525,16 +525,26 @@ class MainLayout():
         #     with open(pklpath, 'wb') as file:
         #         cp.dump([d, DTCs], file, compression='gzip)
 
-        self.logDict, DTCs = self.log2dict(self.dataDir + event.item, self.dbcPath, sample_time_ms=self.Ts_ms)
+        try:
+            self.logDict, DTCs = self.log2dict(self.dataDir + event.item, self.dbcPath, sample_time_ms=self.Ts_ms)
+            # Update the data sources
+            logging.info(f'Updating data source')
+            self.source.data = self.logDict 
+
+        except:
+            self.fix_log(event.item)
+            self.logDict, DTCs = self.log2dict(self.dataDir + event.item, self.dbcPath, sample_time_ms=self.Ts_ms)
+            # Update the data sources
+            logging.info(f'Updating data source')
+            self.source.data = self.logDict             
+
         self.csvButton.logDict = self.logDict
 
         # Update the multiselect values
         logging.info('Creating multselect keys')
         sigList = [[key, key] for key in sorted(self.logDict.keys())]
 
-        # Update the data sources
-        logging.info(f'Updating data source')
-        self.source.data = self.logDict        
+       
 
         for plot in self.plots:
             # Update all the sig select boxes
@@ -609,7 +619,7 @@ class MainLayout():
         next_row_timestamp = None
 
         logging.info("Creating output dictionary")
-        
+
         for msg in can.LogReader(log_file_path):
             if msg.arbitration_id not in noDecode:
 
@@ -640,7 +650,7 @@ class MainLayout():
                 try:
                     # Update the currentVals dictionary with the latest values
                     dbMessage = db.get_message_by_frame_id(msg.arbitration_id)
-                    signals = dbMessage.decode(msg.data)
+                    signals = dbMessage.decode(msg.data, decode_choices=False)
 
                     for signal in signals:
                         # Update the current values
@@ -667,6 +677,27 @@ class MainLayout():
             dict_out[key].append(currentValues[key])
 
         return dict_out, DTCs
+
+    def fix_log(self, fileName):
+            logging.info('Failed to load data, attempting to fix')
+            
+            logging.info(f'Moving {fileName} to borked_files')
+            import shutil, datetime
+            borkedFn = f"{datetime.datetime.now():%Y-%m-%d_%H-%M-%S}_" + fileName
+            shutil.move(self.dataDir + fileName, self.dataDir + '/borked_files/' + borkedFn)
+
+            logging.info(f'Creating new clean file {fileName}')
+
+            log_in = can.LogReader(self.dataDir + '/borked_files/' + borkedFn)
+            log_out = can.Logger(self.dataDir + fileName)
+
+            try:
+                for msg in log_in:
+                    log_out.on_message_received(msg)
+            except:
+                pass
+
+            log_out.stop()
 
     def tryConvert2float(self, val :str):
         try:

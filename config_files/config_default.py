@@ -1,5 +1,4 @@
-# This is formatted as a dictionary, with "CHECK_RESP" being the top level
-# fmt: off
+# This is formatted as a dictionary
 {
     # Plays back log file for debug (must include file extension). May be deleted or set to None to disable. Skips time gaps >5s 
     # "playbackFn":       "GMLAN_2025-08-01_12-03-36.blf",  
@@ -207,7 +206,6 @@
     },
 }
 
-# fmt: on
 
 
 
