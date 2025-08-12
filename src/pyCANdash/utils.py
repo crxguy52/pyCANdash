@@ -43,6 +43,7 @@ def colorName2hex(colorName):
         'darkmagenta': '#800080', 
         'darkyellow': '#808000', 
         'transparent': '#00000000',
+        'black': "#000000FF",        
     }
     if colorName.lower() in color2hex.keys():
         color = color2hex[colorName.lower()]
@@ -264,4 +265,5 @@ if __name__ == "__main__":
     #    p.line(source=source, x='timestamp', y=plotVars[idx], legend_label=plotVars[idx], color=colors[idx])
 
     ## show both plots next to each other in a gridplot layout
+
     #show(p)
