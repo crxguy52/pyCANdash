@@ -10,7 +10,7 @@ from pyCANdash.utils import colorName2hex, findUnit
 
 class TallStatusLayout(QFrame):
     # Empty widget with a gridlayout in it, each cell containing a label
-    def __init__(self, title="", bgcolor="gray"):
+    def __init__(self, title="", bgcolor="black"):
         super(TallStatusLayout, self).__init__()
 
         self.N_COLS = 2
@@ -28,7 +28,7 @@ class TallStatusLayout(QFrame):
 
         self.nameLabel = QLabel(title)
         self.nameLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignTop)
-        self.nameLabel.setStyleSheet("QLabel {border-bottom: 1px solid black; }")
+        self.nameLabel.setStyleSheet("QLabel {border-bottom: 1px solid grey; }")
         # Read the current font, modify it, and set it back
         # Matches system font
         self.labelFont = self.nameLabel.font()
@@ -72,7 +72,7 @@ class TallStatusLayout(QFrame):
             font.setPointSize(14)
             font.setBold(True)
             label.setFont(font)
-            label.setStyleSheet("QLabel {border-bottom: 1px solid black; }")
+            label.setStyleSheet("QLabel {border-bottom: 1px solid grey; }")
             label.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.grid.addWidget(label, row, labelCol)
 
@@ -80,7 +80,7 @@ class TallStatusLayout(QFrame):
             self.statusLabels[row].setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)            
             font.setBold(False)
             self.statusLabels[row].setFont(font)
-            self.statusLabels[row].setStyleSheet("QLabel {background-color:transparent; border-bottom: 1px solid black; }")
+            self.statusLabels[row].setStyleSheet("QLabel {background-color:transparent; border-bottom: 1px solid grey; }")
             self.grid.addWidget(self.statusLabels[row], row, statusCol)
            
             unit, gain, offset = findUnit(rowCfg['sigName'], self.canChans, rowCfg['convert2ips'])
@@ -91,7 +91,7 @@ class TallStatusLayout(QFrame):
             unitLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)            
             font.setBold(True)
             unitLabel.setFont(font)
-            unitLabel.setStyleSheet("QLabel {background-color:transparent; border-bottom: 1px solid black; }")
+            unitLabel.setStyleSheet("QLabel {background-color:transparent; border-bottom: 1px solid grey; }")
             self.grid.addWidget(unitLabel, row, unitsCol)
 
 
@@ -143,4 +143,5 @@ class TallStatusLayout(QFrame):
     def setBgColor(self, label:QLabel, color:str):
         colorHex = colorName2hex(color)
         label.setStyleSheet("QLabel {border-bottom: 1px solid black; background-color:" + colorHex + ";" + "}")
+
 
