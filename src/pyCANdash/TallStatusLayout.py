@@ -142,6 +142,7 @@ class TallStatusLayout(QFrame):
 
     def setBgColor(self, label:QLabel, color:str):
         colorHex = colorName2hex(color)
-        label.setStyleSheet("QLabel {border-bottom: 1px solid black; background-color:" + colorHex + ";" + "}")
+        label.setStyleSheet("QLabel {border-bottom: 1px solid grey; background-color:" + colorHex + ";" + "}")
+
 
 
