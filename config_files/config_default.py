@@ -1,7 +1,7 @@
 # This is formatted as a dictionary
 {
     # Plays back log file for debug (must include file extension). May be deleted or set to None to disable. Skips time gaps >5s 
-    # "playbackFn":       "GMLAN_2025-08-01_12-03-36_fixed.blf",  
+    #"playbackFn":       "20241124_141123.log",  
     "startTab":         3,      # Tab to display at startup
 
     'bokehServer':{                             # Bokeh web server to view recorded data
@@ -11,8 +11,8 @@
 
     # Option to upload log files via FTP to a remote server
     'logUploader':{
-        'ip':           '192.168.0.1'          # FTP copy disabled if IP is None
-        'remoteLogDir': '/G/CAN_logs'           # Where on the remote server to store CAN logs. Must start with /
+        'ip':           '192.168.0.1',          # FTP copy disabled if IP is None
+        'remoteLogDir': '/G/CAN_logs',           # Where on the remote server to store CAN logs. Must start with /
     },    
 
     # NOTE: signal names MUST be unique across all CAN databases
