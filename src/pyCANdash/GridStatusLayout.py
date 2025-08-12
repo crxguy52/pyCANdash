@@ -36,7 +36,11 @@ class GridStatusLayout(QGridLayout):
     def updateCellsFromCfg(self, cfgDict):
 
         self.cfgDict = cfgDict
-        self.colors = cfgDict['colors']
+        self.bgColors = cfgDict['bgColors']  
+        if 'fontColors' in cfgDict:       
+            self.fontColors = cfgDict['fontColors'] 
+        else:
+            self.fontColors = None
 
         # Update all of the cells from the config file
         try:
@@ -55,7 +59,7 @@ class GridStatusLayout(QGridLayout):
                     self.statusCells[addr].setUnits(unit)
                     self.cfgDict[addr]['gain'] = gain
                     self.cfgDict[addr]['offset'] = offset
-                    self.statusCells[addr].setBgColor("blue")
+                    self.statusCells[addr].setBgColor("transparent") #######
 
         except Exception:
             logging.error("Error loading scope configuration")
@@ -88,8 +92,13 @@ class GridStatusLayout(QGridLayout):
                             # If the new value is outside the normal limits, update the background color
                             # Remove the lower and upper display limits
                             lims = self.cfgDict[addr]['lims'][1:-1]
-                            bgColor = self.checkLims(calVal, lims, self.colors)
+                            bgColor = self.checkLims(calVal, lims, self.bgColors)
                             self.statusCells[addr].setBgColor(bgColor)
+
+                            if self.fontColors is not None:
+                                fontColor = self.checkLims(calVal, lims, self.fontColors)
+                                self.statusCells[addr].setFontColor(fontColor)
+                            
                         else:
                             valStr = str(val)
                         
@@ -180,6 +189,13 @@ class StatusCell(QFrame):
     def setOffset(self, offset):
         self.offset = offset
 
-    def setBgColor(self, color:str):
-        colorHex = colorName2hex(color)
-        self.setStyleSheet("QFrame { " + "background-color:" + colorHex + ";" + "}")
+    def setBgColor(self, bgColor:str):
+        bgColorHex = colorName2hex(bgColor)
+        self.setStyleSheet("QFrame { " + "background-color:" + bgColorHex + ";" + "}")
+
+    def setFontColor(self, fontColor:str):
+        #fontColorHex = colorName2hex(fontColor)        # Qt doesn't like hex colors for fonts for some reason
+        self.name.setStyleSheet("color: " + fontColor + "; ")
+        self.value.setStyleSheet("color: " + fontColor + "; ")
+        self.units.setStyleSheet("color: " + fontColor + "; ")
+
