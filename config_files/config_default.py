@@ -176,12 +176,10 @@
             'colStretch':[1, 3, 1],     # Column stretch values, how wide to make each column
             'gaugeCfg':{
                 # Origin is in the top left, so 00 is the top left gauge. Center gague is col 1, right gauges are col 2
-                'sideGauge00':{'signal':'eng_oil_temperature',   'lims':(0, 0, 75, 125, 135, 200),   'label':'Oil\n', 'convert2ips':False,},
-                'sideGauge10':{'signal':'eng_oil_pressure',      'lims':(0, 10, 15, 120, 130, 140),      'label':'Oil\n', 'convert2ips':True, 'nMainDivs':14,},
-                #'sideGauge01':{'signal':'eng_oil_pressure',      'lims':(0, 50, 60, 550, 690, 800),  'label':'Oil Pres\n', 'convert2ips':False,},
-                #'sideGauge11':{'signal':'eng_oil_pressure',      'lims':(0, 50, 60, 550, 690, 800),  'label':'Oil Pres\n', 'convert2ips':False,},                                
-                'sideGauge02':{'signal':'eng_coolant_temp',      'lims':(0, 0, 75, 110, 130, 200),   'label':'Water\n', 'convert2ips':False,},
-                'sideGauge12':{'signal':'trans_oil_temp',        'lims':(0, 0, 15, 100, 175, 200),   'label':'Trans\n', 'convert2ips':False,},
+                'sideGauge00':{'signal':'eng_oil_temperature',   'lims':(60, 60, 75, 125, 135, 140),   'label':'Oil\n', 'convert2ips':False, 'nMainDivs':8,},
+                'sideGauge10':{'signal':'eng_oil_pressure',      'lims':(0, 10, 15, 120, 130, 140),      'label':'Oil\n', 'convert2ips':True, 'nMainDivs':14,},                         
+                'sideGauge02':{'signal':'eng_coolant_temp',      'lims':(60, 60, 75, 110, 115, 140),   'label':'Water\n', 'convert2ips':False, 'nMainDivs':8,},
+                'sideGauge12':{'signal':'trans_oil_temp',        'lims':(20, 20, 15, 100, 110, 120),   'label':'Trans\n', 'convert2ips':False, 'nMainDivs':10,},
                 'centerGauge':{'signal':'eng_speed',             'lims':(0, 0, 0, 6.8, 7.2, 8), 'label':'', 'convert2ips':True,        # if convert2ips is true, converts to kRPM
                                 'speedSignal':'vehicle_speed_avg_driven', 'dynamicRedline':True, 'speedUnit':'MPH', 'speedGain':0.621371},  # MPH per kph     
                                 # speed stuff is a hack but also I don't feel like doing it a better way
@@ -205,6 +203,7 @@
         },                
     },
 }
+
 
 
 
