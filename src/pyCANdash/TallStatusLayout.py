@@ -10,7 +10,7 @@ from pyCANdash.utils import colorName2hex, findUnit
 
 class TallStatusLayout(QFrame):
     # Empty widget with a gridlayout in it, each cell containing a label
-    def __init__(self, title="", bgcolor="black"):
+    def __init__(self, title="", bgcolor="black"):              
         super(TallStatusLayout, self).__init__()
 
         self.N_COLS = 2
@@ -28,7 +28,7 @@ class TallStatusLayout(QFrame):
 
         self.nameLabel = QLabel(title)
         self.nameLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignTop)
-        self.nameLabel.setStyleSheet("QLabel {border-bottom: 1px solid grey; }")
+        self.nameLabel.setStyleSheet("QLabel {border-bottom: 1px solid grey; }")   
         # Read the current font, modify it, and set it back
         # Matches system font
         self.labelFont = self.nameLabel.font()
@@ -46,10 +46,11 @@ class TallStatusLayout(QFrame):
     def updateFromCfg(self, cfgDict, canChans):
 
         self.cfgDict = cfgDict
-        self.colors = cfgDict['colors']
-        self.cfgDict.pop('colors')
+        self.bgColors = cfgDict['bgColors']
+        self.cfgDict.pop('bgColors')
+        self.fontColors = cfgDict['fontColors']
+        self.cfgDict.pop('fontColors')    
         self.canChans = canChans
-
         self.statusLabels = {}
         labelCol = 0
         statusCol = 1
@@ -72,7 +73,7 @@ class TallStatusLayout(QFrame):
             font.setPointSize(14)
             font.setBold(True)
             label.setFont(font)
-            label.setStyleSheet("QLabel {border-bottom: 1px solid grey; }")
+            label.setStyleSheet("QLabel {border-bottom: 1px solid grey; }")         
             label.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.grid.addWidget(label, row, labelCol)
 
@@ -80,7 +81,7 @@ class TallStatusLayout(QFrame):
             self.statusLabels[row].setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)            
             font.setBold(False)
             self.statusLabels[row].setFont(font)
-            self.statusLabels[row].setStyleSheet("QLabel {background-color:transparent; border-bottom: 1px solid grey; }")
+            self.statusLabels[row].setStyleSheet("QLabel {background-color:transparent; border-bottom: 1px solid grey; }")  
             self.grid.addWidget(self.statusLabels[row], row, statusCol)
            
             unit, gain, offset = findUnit(rowCfg['sigName'], self.canChans, rowCfg['convert2ips'])
@@ -91,7 +92,7 @@ class TallStatusLayout(QFrame):
             unitLabel.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)            
             font.setBold(True)
             unitLabel.setFont(font)
-            unitLabel.setStyleSheet("QLabel {background-color:transparent; border-bottom: 1px solid grey; }")
+            unitLabel.setStyleSheet("QLabel {background-color:transparent; border-bottom: 1px solid grey; }")   
             self.grid.addWidget(unitLabel, row, unitsCol)
 
 
@@ -128,8 +129,10 @@ class TallStatusLayout(QFrame):
                         # If the new value is outside the normal limits, update the background color
                         # Remove the lower and upper display limits
                         lims = self.cfgDict[row]['lims'][1:-1]
-                        bgColor = self.checkLims(calVal, lims, self.colors)
-                        self.setBgColor(self.statusLabels[row], bgColor)
+                        bgColor = self.checkLims(calVal, lims, self.bgColors)
+                        fontColor = self.checkLims(calVal, lims, self.fontColors)                        
+                        self.setBgColor(self.statusLabels[row], bgColor, fontColor)
+
                     else:
                         valStr = str(val)
 
@@ -140,9 +143,7 @@ class TallStatusLayout(QFrame):
         idx = bisect_left(lims, val)
         return colors[idx]
 
-    def setBgColor(self, label:QLabel, color:str):
-        colorHex = colorName2hex(color)
-        label.setStyleSheet("QLabel {border-bottom: 1px solid grey; background-color:" + colorHex + ";" + "}")
-
-
+    def setBgColor(self, label:QLabel, bgColor:str, fontColor:str):
+        bgColorHex = colorName2hex(bgColor)
+        label.setStyleSheet("QLabel {border-bottom: 1px solid grey; background-color:" + bgColorHex + "; " + "color: " + fontColor + ";" + "}")      #####
 
