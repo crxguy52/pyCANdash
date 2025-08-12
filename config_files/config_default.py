@@ -1,7 +1,7 @@
 # This is formatted as a dictionary
 {
     # Plays back log file for debug (must include file extension). May be deleted or set to None to disable. Skips time gaps >5s 
-    # "playbackFn":       "GMLAN_2025-08-01_12-03-36.blf",  
+    # "playbackFn":       "GMLAN_2025-08-01_12-03-36_fixed.blf",  
     "startTab":         3,      # Tab to display at startup
 
     'bokehServer':{                             # Bokeh web server to view recorded data
@@ -11,7 +11,7 @@
 
     # Option to upload log files via FTP to a remote server
     'logUploader':{
-        'ip':           '192.168.0.1',          # FTP copy disabled if IP is None
+        'ip':           None,          # FTP copy disabled if IP is None
         'remoteLogDir': '/G/CAN_logs'           # Where on the remote server to store CAN logs. Must start with /
     },    
 
@@ -56,7 +56,7 @@
             # highhigh  = start of red area
             # ulim  = upper display limit (for gagues)
 
-            'colors':('darkRed', 'darkYellow', 'blue', 'yellow', 'red'),
+            'colors':('darkRed', 'darkYellow', 'transparent', 'yellow', 'red'),
                                                 
             '0,0':{                                     # row,col
                 'sigName':'eng_speed',               # Signal name in the db
@@ -89,7 +89,7 @@
                 'leftCol':{ 
                     # Left column
                     # Row: message                                                                              
-                    'colors':('darkRed', 'darkYellow', 'darkGray', 'yellow', 'red'),                   # llim, lowlow,   low,    high,   highhigh,   ulim 
+                    'colors':('darkRed', 'darkYellow', 'transparent', 'yellow', 'red'),                   # llim, lowlow,   low,    high,   highhigh,   ulim 
                     0:{ 'sigName':'eng_speed',                'dispName':'Engine Speed',      'lims':(-1,    -1,	    -1,     7000,	7200,   8000), 'dispFmt':'%1.0f', 'convert2ips':False,},
                     1:{ 'sigName':'accelerator_actual_pos',      'dispName':'Accelerator Pos',   'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.0f', 'convert2ips':False,},
                     2:{ 'sigName':'throttle_pos',                'dispName':'Throttle Pos',      'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.0f', 'convert2ips':False,},
@@ -108,7 +108,7 @@
                 },
                 'rightCol':{ # Right column
                     # Row: message
-                    'colors':('darkRed', 'darkYellow', 'darkGray', 'yellow', 'red'),
+                    'colors':('darkRed', 'darkYellow', 'transparent', 'yellow', 'red'),
                     0:{'sigName':'trans_estimated_gear',             'dispName':'Est Gear',      'lims':(-1e3, -999, 	-1,		7,	    7,  2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
                     1:{'sigName':'vehicle_speed_avg_driven',         'dispName':'Speed',         'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
                     2:{'sigName':'fuel_level_percent',               'dispName':'Fuel Level',    'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
@@ -133,7 +133,7 @@
             'cellCfg':{        
                 'leftCol':{ # Left column
                     # Row: message
-                    'colors':('darkRed', 'darkYellow', 'darkGray', 'yellow', 'red'),
+                    'colors':('darkRed', 'darkYellow', 'transparent', 'yellow', 'red'),
                     0:{'sigName':'eng_speed_status',             'dispName':'Engine Speed Stat',     'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
                     1:{'sigName':'eng_fuel_control_state',       'dispName':'Fuel Ctrl State',       'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
                     2:{'sigName':'reduced_power_indicator',         'dispName':'Reduced Power',         'lims':(-1e3, -999, 	-1,		1,	    2,      3), 'dispFmt':'%1.0f' , 'convert2ips':False,},
@@ -151,7 +151,7 @@
                 },
                 'rightCol':{ # Right column
                     # Row: message
-                    'colors':('darkRed', 'darkYellow', 'blue', 'yellow', 'red'),
+                    'colors':('darkRed', 'darkYellow', 'transparent', 'yellow', 'red'),
                     0:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
                     1:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
                     2:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
@@ -203,8 +203,3 @@
         },                
     },
 }
-
-
-
-
-
