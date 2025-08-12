@@ -6,10 +6,7 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem,
     QHeaderView
 )
-from PyQt6.QtGui import QColor
 
-
-from pyCANdash.utils import colorName2hex
 
 class DTCStatusLayout(QFrame):
     # Empty widget with a gridlayout in it, each cell containing a label
@@ -34,18 +31,18 @@ class DTCStatusLayout(QFrame):
         #self.table.horizontalHeader().setDefaultAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.Alignment())
 
         # Set the default font and size
-        font = self.table.font()
-        font.setPointSize(14)
-        self.table.setFont(font)
+        #font = self.table.font()
+        #font.setPointSize(14)
+        #self.table.setFont(font)
 
 
         # Update the header 
         for colNum in range(0, len(self.colCfg)):
             self.table.setItem(0, colNum, QTableWidgetItem("   " + self.colCfg[colNum]['DisplayName'] + "   "))  
             self.table.item(0, colNum).setTextAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)   
-            self.table.item(0, colNum).setBackground(QColor(colorName2hex('darkgray')))
+            #self.table.item(0, colNum).setBackground(QColor(colorName2hex('grey'))) ######
             font = self.table.item(0, colNum).font()   
-            font.setPointSize(12)
+            #font.setPointSize(12)                  #################
             font.setBold(True)
             self.table.item(0, colNum).setFont(font)
 
@@ -53,6 +50,8 @@ class DTCStatusLayout(QFrame):
         self.table.verticalHeader().hide()
         self.table.setWordWrap(True)        
         self.table.resizeColumnsToContents()
+
+        self.table.setStyleSheet("QTableWidget::item {border-bottom: 1px solid grey; }")  #######
 
         # Create a gridlayout and put the appropriate labels in them
         self.grid = QGridLayout()
