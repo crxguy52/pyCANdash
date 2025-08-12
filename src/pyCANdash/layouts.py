@@ -147,6 +147,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
+        # Set the background as black and text as white
+        self.setStyleSheet("color: white; background-color: black;")
+
         # Configure the logger
         self.configLogger()
 
@@ -380,4 +383,5 @@ class MainWindow(QMainWindow):
         if hasattr(self, 'bokehServer'):
             if not sip.isdeleted(self.bokehServer['worker']):
                 logging.info(f"Stopping bokehServer worker")
+
                 self.bokehServer['worker'].stopSignal.emit()
