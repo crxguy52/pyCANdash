@@ -305,9 +305,12 @@ class logUploaderWorker(QObject):
         logging.info(f'logUploader: Comparing {localDir} to {relRemoteDir}')
 
         for file in [os.path.basename(x) for x in glob.glob(localDir + '*.*')]:
+            dT = getSecondsDelta(file)
+            dT_thresh = 5*60    # 5 minutes
             
-            # If the current file isn't in the remote directory, send it over
-            if file not in remoteList:
+            # If the current file isn't in the remote directory AND it was created
+            # more than 5 minute ago (IE, not the file we're writing to now), send it over
+            if file not in remoteList and dT > dT_thresh:
 
                 fullPath = localDir + file
 
@@ -322,6 +325,9 @@ class logUploaderWorker(QObject):
                         
                 else:
                     logging.info(f'logUploader: {file} was 0 bytes, skipping')
+                    
+            elif dT < dT_thresh:
+                logging.info(f'logUploader: {file} was created {dT} seconds ago (less than {dT_thresh}), skipping')
 
         # Change remote directory back to the default
         self.ftp.cwd(self.remoteLogDir)
@@ -334,6 +340,20 @@ class logUploaderWorker(QObject):
 
         # Clean up
         self.finishedSignal.emit()   
+
+    def getSecondsDelta(fn:str):
+        # Determine how long ago the file was created based on the name
+    
+        import re
+        try:
+            parts = re.split('_|\.', fn)     
+            datestr = parts[-3] + '_' + parts[-2]
+            seconds = (datetime.now() - datetime.strptime(datestr, '%Y-%m-%d_%H-%M-%S')).seconds   
+        except Exception as e:
+            logging.error(f'logUploader: Could not determine how long ago {fn} was created: {e}')
+            seconds = -1
+    
+        return seconds
 
 
 class bokehServerWorker(QObject):
@@ -385,5 +405,6 @@ class bokehServerWorker(QObject):
 
         # Clean up
         self.finishedSignal.emit()   
+
 
 
