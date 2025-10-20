@@ -620,53 +620,54 @@ class MainLayout():
 
         logging.info("Creating output dictionary")
 
-        for msg in can.LogReader(log_file_path):
-            if msg.arbitration_id not in noDecode:
+        with can.LogReader(log_file_path) as reader:
+            for msg in reader:
+                if msg.arbitration_id not in noDecode:
 
-                timestamp = msg.timestamp
+                    timestamp = msg.timestamp
 
-                # It's the first time, so take not of t0
-                if t0 is None:
-                    t0 = timestamp
+                    # It's the first time, so take not of t0
+                    if t0 is None:
+                        t0 = timestamp
 
-                # determine the first row timestamp as the next round sample_time ms increment
-                if next_row_timestamp is None:
-                    next_row_timestamp = t0 + increment
+                    # determine the first row timestamp as the next round sample_time ms increment
+                    if next_row_timestamp is None:
+                        next_row_timestamp = t0 + increment
 
-                elif timestamp > next_row_timestamp:
-                    # since each row will have the latest value up to that timestamp, as soon as we go past that
-                    # timestamp we are done with that row, so write the row, and increment timestamp
-                    currentValues["timestamp"] = next_row_timestamp - t0
+                    elif timestamp > next_row_timestamp:
+                        # since each row will have the latest value up to that timestamp, as soon as we go past that
+                        # timestamp we are done with that row, so write the row, and increment timestamp
+                        currentValues["timestamp"] = next_row_timestamp - t0
 
-                    # Write the current values to the dictionary
-                    for key in currentValues:
-                        dict_out[key].append(currentValues[key])
+                        # Write the current values to the dictionary
+                        for key in currentValues:
+                            dict_out[key].append(currentValues[key])
 
-                    # Find the next row value
-                    while next_row_timestamp <= timestamp:
-                        # find next timestamp increment greater than current timestamp
-                        next_row_timestamp += round(increment, 3)
-                
-                try:
-                    # Update the currentVals dictionary with the latest values
-                    dbMessage = db.get_message_by_frame_id(msg.arbitration_id)
-                    signals = dbMessage.decode(msg.data, decode_choices=False)
+                        # Find the next row value
+                        while next_row_timestamp <= timestamp:
+                            # find next timestamp increment greater than current timestamp
+                            next_row_timestamp += round(increment, 3)
+                    
+                    try:
+                        # Update the currentVals dictionary with the latest values
+                        dbMessage = db.get_message_by_frame_id(msg.arbitration_id)
+                        signals = dbMessage.decode(msg.data, decode_choices=False)
 
-                    for signal in signals:
-                        # Update the current values
-                        currentValues[signal] = signals[signal]
+                        for signal in signals:
+                            # Update the current values
+                            currentValues[signal] = signals[signal]
 
-                    # if it's a DTC, log it to the DTCs list
-                    if msg.arbitration_id == self.arbIDdtc:
-                        if signals['diag_trouble_code_triggered'] > 0 and signals['diag_trouble_code_number'] not in DTCs:
-                                DTCs.append(signals['diag_trouble_code_number'])
+                        # if it's a DTC, log it to the DTCs list
+                        if msg.arbitration_id == self.arbIDdtc:
+                            if signals['diag_trouble_code_triggered'] > 0 and signals['diag_trouble_code_number'] not in DTCs:
+                                    DTCs.append(signals['diag_trouble_code_number'])
 
-                except KeyError:
-                    # Skip it next time if there was an error decoding
-                    logging.info(f'Couldnt decode ArbID {msg.arbitration_id} ({f"0x{msg.arbitration_id:02x}"}), skipping')
-                    noDecode.append(msg.arbitration_id)
-                except Exception as e:
-                    logging.error(e)
+                    except KeyError:
+                        # Skip it next time if there was an error decoding
+                        logging.info(f'Couldnt decode ArbID {msg.arbitration_id} ({f"0x{msg.arbitration_id:02x}"}), skipping')
+                        noDecode.append(msg.arbitration_id)
+                    except Exception as e:
+                        logging.error(e)
 
         # write the last row -- there will always be at least one more value received since last write
         if next_row_timestamp is not None:
@@ -738,9 +739,9 @@ if __name__ == "__main__":
     # https://github.com/bokeh/bokeh/blob/3.6.2/examples/server/api/tornado_embed.py
 
     dataDir = os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data")), "")
-    dbcDir = os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "dbc")), "")
+    dbcPath = os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "dbc")), "gmlan_v1.6")
 
-    server = Server({'/': partial(bkapp, dataDir=dataDir, dbcDir=dbcDir)},
+    server = Server({'/': partial(bkapp, dataDir=dataDir, dbcPath=dbcPath)},
                     allow_websocket_origin=[get_ip()+":5006", "localhost:5006"],
                     extra_patterns=[(r'/data/(.*)', StaticFileHandler, {'path': dataDir}),],
                     )
@@ -756,4 +757,5 @@ if __name__ == "__main__":
 
     # server.io_loop.add_callback(server.show, "/")
     server.io_loop.start()
+
 
