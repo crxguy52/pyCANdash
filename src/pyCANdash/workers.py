@@ -341,7 +341,7 @@ class logUploaderWorker(QObject):
         # Clean up
         self.finishedSignal.emit()   
 
-    def getSecondsDelta(fn:str):
+    def getSecondsDelta(self, fn:str):
         # Determine how long ago the file was created based on the name
     
         import re
@@ -405,6 +405,7 @@ class bokehServerWorker(QObject):
 
         # Clean up
         self.finishedSignal.emit()   
+
 
 
 
