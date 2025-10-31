@@ -305,7 +305,7 @@ class logUploaderWorker(QObject):
         logging.info(f'logUploader: Comparing {localDir} to {relRemoteDir}')
 
         for file in [os.path.basename(x) for x in glob.glob(localDir + '*.*')]:
-            dT = getSecondsDelta(file)
+            dT = self.getSecondsDelta(file)
             dT_thresh = 5*60    # 5 minutes
             
             # If the current file isn't in the remote directory AND it was created
@@ -405,6 +405,7 @@ class bokehServerWorker(QObject):
 
         # Clean up
         self.finishedSignal.emit()   
+
 
 
 
