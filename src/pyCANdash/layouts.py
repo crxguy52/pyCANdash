@@ -4,6 +4,8 @@ from PyQt6.QtWidgets import (
     QLabel,
     QGridLayout,
     QTabWidget,
+    QProgressBar,
+    QFrame,
 )
 from PyQt6.QtCore import QTimer
 import PyQt6.sip as sip
@@ -125,12 +127,62 @@ class tab4Widget(QWidget):
         self.tbl.updateVals(vals)
 
 
-class StatusBar(QLabel):
+class StatusBar(QFrame):
     def __init__(self, mainWindow):
         super(StatusBar, self).__init__()
         self.mainWindow = mainWindow
-        self.setStyleSheet("QLabel{border-top: 1px outset grey;}")
-        self.statusHandler = self.StatusHandler(self)
+        #self.statusHandler = self.StatusHandler(self)
+        progBarWidth = 75
+
+        self.layout = QGridLayout()
+        self.setLayout(self.layout) 
+
+        self.can0ProgressBar = QProgressBar()
+        self.can0ProgressBar.setRange(0, 4000) # Set the range for 0% to 100%. at 500kbaud 4k messages is 100%
+        self.can0ProgressBar.setValue(0)     
+        self.can0ProgressBar.setTextVisible(False)
+        self.can0ProgressBar.setFixedWidth(progBarWidth)  
+
+        self.can1ProgressBar = QProgressBar()
+        self.can1ProgressBar.setRange(0, 4000) # Set the range for 0% to 100%. at 500kbaud 4k messages is 100%
+        self.can1ProgressBar.setValue(0)     
+        self.can1ProgressBar.setTextVisible(False)
+        self.can1ProgressBar.setFixedWidth(progBarWidth)  
+
+        self.divider = QFrame()
+        self.divider.setFrameShape(QFrame.Shape.HLine)
+
+        self.statusLabel = QLabel('')
+
+        self.layout.addWidget(self.divider, 0, 0, 1, 5)
+
+        progBarStretch = 1
+        
+        self.layout.addWidget(QLabel('can0:'), 1, 0)
+        self.layout.setColumnStretch(0, 0)        
+        self.layout.addWidget(self.can0ProgressBar, 1, 1)
+        self.layout.setColumnStretch(1, progBarStretch)          
+        self.layout.addWidget(QLabel('can1:'), 1, 2)
+        self.layout.setColumnStretch(2, 0)        
+        self.layout.addWidget(self.can1ProgressBar, 1, 3)        
+        self.layout.setColumnStretch(3, progBarStretch)        
+        self.layout.addWidget(self.statusLabel, 1, 4)
+        self.layout.setColumnStretch(4, 100)
+
+        self.layout.setHorizontalSpacing(15)
+        self.layout.setVerticalSpacing(0)
+
+    def setText(self, text):
+        self.statusLabel.setText(text)
+
+    def setProgress(self, canChan:str, value:int):
+        if canChan.lower().strip() == 'can0':
+            self.can0ProgressBar.setValue(value)
+        elif canChan.lower().strip() == 'can1':
+            self.can1ProgressBar.setValue(value)
+        else:
+            logging.warning(f'StatusBar: can channel {canChan} not recognized, bus load not updated')
+
 
     # Logging handler to update status wiget
     class StatusHandler(logging.Handler):
@@ -140,8 +192,8 @@ class StatusBar(QLabel):
 
         def emit(self, record):
             # Append message (record) to the widget
-            self.widget.setText("  " + datetime.now().strftime("%d-%b-%Y %H:%M:%S") + ": " + record.message)
-
+            #self.widget.setText("  " + datetime.now().strftime("%d-%b-%Y %H:%M:%S") + ": " + record.message)
+            self.widget.setText(record.message)
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -207,7 +259,7 @@ class MainWindow(QMainWindow):
         # Create instances of each of the layouts
         self.mainLayout = QGridLayout()
         self.tabWidget = tabWidget(self.guiCfg, self.logCfg, self.canChans)        
-        self.statusBar = StatusBar(self)
+        self.statBar = StatusBar(self)      # Dont' call it statusbar since that's a property of QMainWindow
 
         # Create a dictionary to store the current CAN status in
         self.statusDict = {}
@@ -218,18 +270,18 @@ class MainWindow(QMainWindow):
 
         # Add them to the main layout
         tabrow = 0
-        statusBarRow = 1
+        statBarRow = 1
 
         self.mainLayout.addWidget(self.tabWidget, tabrow, 0)
-        self.mainLayout.addWidget(self.statusBar, statusBarRow, 0)
+        self.mainLayout.addWidget(self.statBar, statBarRow, 0)
 
         # Configure the size and stretch of each grid item
         self.mainLayout.setRowStretch(tabrow, 1)        
-        self.mainLayout.setRowStretch(statusBarRow, 0)
+        self.mainLayout.setRowStretch(statBarRow, 0)
         self.mainLayout.setRowMinimumHeight(tabrow, 50)
 
         # Set the initial status
-        self.statusBar.setText(" Initialized")
+        self.statBar.setText(" Initialized")
 
         # Set margins
         self.mainLayout.setContentsMargins(0, 0, 0, 0)
@@ -240,10 +292,10 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
 
         # Add the status bar to the logger. This happens after everthing else bc when the
-        # logger is initially configured the statusbar doesn't exist
-        stathandlr = self.statusBar.StatusHandler(self.statusBar)
+        # logger is initially configured the statBar doesn't exist
+        stathandlr = self.statBar.StatusHandler(self.statBar)
         stathandlr.setFormatter(self.logFormatter)
-        logging.getLogger().addHandler(self.statusBar.statusHandler)
+        #logging.getLogger().addHandler(self.statusBar.statusHandler)
         logging.getLogger().addHandler(stathandlr)   
 
         # Configure the timer to display info
@@ -332,7 +384,8 @@ class MainWindow(QMainWindow):
 
         if msgCount is not None:
             # Update the display with how many messages we've recieved 
-            self.statusBar.setText(f" {sender} recieved {msgCount:1.0f} messages")
+            #self.statusBar.setText(f" {sender} recieved {msgCount:1.0f} messages")
+            self.statBar.setProgress(self.logCfg['canChans'][sender]['channel'], msgCount * self.logCfg['canChans'][sender]['RxHz'])
             pass
 
 
@@ -342,7 +395,7 @@ class MainWindow(QMainWindow):
         interval = int(1000/self.logCfg["tabCfg"][tabIdx]["dispHz"])
 
         if self.dispTimer.interval() != interval:
-            logging.info('Setting display interval to %i ms' % self.dispTimerInterval)        
+            #logging.info('Setting display interval to %i ms' % self.dispTimerInterval)        
             self.dispTimer.setInterval(interval)
 
         # Update the tab that's currently displayed
@@ -351,7 +404,8 @@ class MainWindow(QMainWindow):
 
     def tabChanged(self, tabIdx):
         # Update stuff when the tab changes
-        logging.info('Tab changed to %i' % tabIdx)
+        #logging.info('Tab changed to %i' % tabIdx)
+        pass
 
 
     def closeEvent(self, event):
