@@ -34,13 +34,13 @@ class tabWidget(QTabWidget):
         self.tab.insert(1, tab1Widget(logCfg["tabCfg"][1]["cellCfg"], canChans))
         self.tab.insert(2, tab2Widget(logCfg["tabCfg"][2]["cellCfg"], canChans))
         self.tab.insert(3, tab3Widget(logCfg["tabCfg"][3]['gaugeCfg'], canChans, colStretch=logCfg["tabCfg"][3]['colStretch']))   
-        self.tab.insert(4, tab4Widget(logCfg["tabCfg"][4]['colCfg']))  
+        # self.tab.insert(4, tab4Widget(logCfg["tabCfg"][4]['colCfg']))  # DTC doesn't do what I thought it did so I'm disabling it
 
         self.addTab(self.tab[0], logCfg["tabCfg"][0]['name'])
         self.addTab(self.tab[1], logCfg["tabCfg"][1]['name'])  
         self.addTab(self.tab[2], logCfg["tabCfg"][2]['name'])   
         self.addTab(self.tab[3], logCfg["tabCfg"][3]['name']) 
-        self.addTab(self.tab[4], logCfg["tabCfg"][4]['name'])     
+        # self.addTab(self.tab[4], logCfg["tabCfg"][4]['name'])     
 
         self.setCurrentIndex(logCfg["startTab"])   
 
@@ -113,18 +113,18 @@ class tab3Widget(QWidget):
         self.gaugeLayout.update(vals)
            
 
-class tab4Widget(QWidget):
-    def __init__(self, colCfg):
-        super(tab4Widget, self).__init__()
+# class tab4Widget(QWidget):
+#     def __init__(self, colCfg):
+#         super(tab4Widget, self).__init__()
 
-        self.tbl = DTCStatusLayout(colCfg)
+#         self.tbl = DTCStatusLayout(colCfg)
 
-        self.layout = QGridLayout()
-        self.layout.addWidget(self.tbl, 0, 0)    
-        self.setLayout(self.layout)       
+#         self.layout = QGridLayout()
+#         self.layout.addWidget(self.tbl, 0, 0)    
+#         self.setLayout(self.layout)       
 
-    def update(self, vals):
-        self.tbl.updateVals(vals)
+#     def update(self, vals):
+#         self.tbl.updateVals(vals)
 
 
 class StatusBar(QFrame):
@@ -439,3 +439,4 @@ class MainWindow(QMainWindow):
                 logging.info(f"Stopping bokehServer worker")
 
                 self.bokehServer['worker'].stopSignal.emit()
+
