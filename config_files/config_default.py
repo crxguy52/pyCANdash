@@ -190,24 +190,25 @@
                                 # speed stuff is a hack but also I don't feel like doing it a better way
             }
         },   
-        4:{
-            'name':'DTCs',
-            'dispHz':10,            # How frequently to update the display with new CAN data
-            'colCfg':{
-                0:{'DisplayName':   'Number',                               'sigName': 'diag_trouble_code_number'},
-                1:{'DisplayName':   'Triggered?',                           'sigName': 'diag_trouble_code_triggered'},
-                2:{'DisplayName':   'Code supported?',                      'sigName': 'diag_code_supported'},            
-                3:{'DisplayName':   'Current Status',                       'sigName': 'diag_current_status'},            
-                4:{'DisplayName':   'Warn Ind Req?',                        'sigName': 'diag_warn_ind_reqested_stat'},            
-                5:{'DisplayName':   'Source',                               'sigName': 'diag_trouble_code_source'},
-                6:{'DisplayName':   'Fail Type',                            'sigName': 'diag_trouble_code_fail_type'},
-                7:{'DisplayName':   'Fault Type',                           'sigName': 'diag_trouble_code_fault_type'},            
-                8:{'DisplayName':   'Failed since power up?',               'sigName': 'diag_tst_fail_since_pwrup_stat'},
-                9:{'DisplayName':   'Test not passed since code cleared?',  'sigName': 'diag_tst_nopass_since_pwrup_stat'},
-            },
-        },                
+        # 4:{
+        #     'name':'DTCs',
+        #     'dispHz':10,            # How frequently to update the display with new CAN data
+        #     'colCfg':{
+        #         0:{'DisplayName':   'Number',                               'sigName': 'diag_trouble_code_number'},
+        #         1:{'DisplayName':   'Triggered?',                           'sigName': 'diag_trouble_code_triggered'},
+        #         2:{'DisplayName':   'Code supported?',                      'sigName': 'diag_code_supported'},            
+        #         3:{'DisplayName':   'Current Status',                       'sigName': 'diag_current_status'},            
+        #         4:{'DisplayName':   'Warn Ind Req?',                        'sigName': 'diag_warn_ind_reqested_stat'},            
+        #         5:{'DisplayName':   'Source',                               'sigName': 'diag_trouble_code_source'},
+        #         6:{'DisplayName':   'Fail Type',                            'sigName': 'diag_trouble_code_fail_type'},
+        #         7:{'DisplayName':   'Fault Type',                           'sigName': 'diag_trouble_code_fault_type'},            
+        #         8:{'DisplayName':   'Failed since power up?',               'sigName': 'diag_tst_fail_since_pwrup_stat'},
+        #         9:{'DisplayName':   'Test not passed since code cleared?',  'sigName': 'diag_tst_nopass_since_pwrup_stat'},
+        #     },
+        # },                
     },
 }
+
 
 
 
