@@ -11,9 +11,6 @@ Tiles:
 And lists
 ![alt tag](https://github.com/crxguy52/pyCANdash/blob/main/photos/lists.png?raw=true)
 
-pyCANdash also supports reading and displaying current diagnostic troubleshooting codes (DTCs):
-![alt tag](https://github.com/crxguy52/pyCANdash/blob/main/photos/DTCs.png?raw=true)
-
 Inidividual displays can be customized via the config files in /config_files (which signals go where, what are lowlow, low, high, highhigh values and colors, etc.), and the code is written such that additional displays should be straightforward to add - CAN acquisition and decoding are decoupled from displaying data. Log files can be played back via a setting in the config file, mostly useful for software development.
 
 Ships with the GMLAN CAN database, used to decode 5th gen GM ECU data (LS, LFX, etc.). 
