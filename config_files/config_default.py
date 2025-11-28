@@ -15,6 +15,11 @@
         'remoteLogDir': '/G/CAN_logs',           # Where on the remote server to store CAN logs. Must start with /
     },    
 
+    'odometer':{ 
+        'enable':       True,                           # Enable the odometer?
+        'signalName':   'vehicle_speed_avg_driven',     # Signal name used for incrementing odometer, speed
+    },       
+
     # NOTE: signal names MUST be unique across all CAN databases
     'canChans':{
         # Physical channel: params
@@ -208,6 +213,7 @@
         # },                
     },
 }
+
 
 
 
