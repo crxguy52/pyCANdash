@@ -192,6 +192,9 @@ class StatusBar(QFrame):
         else:
             logging.warning(f'StatusBar: can channel {canChan} not recognized, bus load not updated')
 
+    def setOdometer(self, val:float):
+        self.odoLabel.setText(f"{val:.1f} mi")
+
 
     # Logging handler to update status wiget
     class StatusHandler(logging.Handler):
@@ -236,21 +239,21 @@ class MainWindow(QMainWindow):
         if self.logCfg['odometer']['enable'] and logEn is True:        
 
             # Load the odometer file and initialize it to the correct value
-            odoPath = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "odometer.txt"))
+            self.odoPath = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "odometer.txt"))
 
             # If the file doesn't exist, create it and initalize to zero
-            if not os.path.isfile(odoPath):
-                with open(odoPath, "w") as f:
+            if not os.path.isfile(self.odoPath):
+                with open(self.odoPath, "w") as f:
                     f.write("0")
                     self.odometer = 0
             else:
-                with open(odoPath, "r") as f:
-                    self.odometer = int(f.read())
+                with open(self.odoPath, "r") as f:
+                    self.odometer = float(f.read())
 
             # Initialize last time to zero
             self.odometer_t_last = datetime.now()
             self.odometer_speed_last = 0
-            self.odometer_distance_last_written = 0         
+            self.odometer_distance_last_written = self.odometer       
 
         # Configure the CAN buses - store them in a dictionary
         self.canChans = {}
@@ -428,25 +431,28 @@ class MainWindow(QMainWindow):
             # Convert from km to miles
             # TODO: base this on the actual units, not a hardxoded number
             dx_miles = dx * 0.621371
-
             self.odometer += dx_miles
 
-            self.statBar.odoLabel.setText(f'{self.odometer:.1f} mi')
+            self.statBar.setOdometer(self.odometer)
 
             distance_delta = self.odometer - self.odometer_distance_last_written
-            #logging.info(f'present = {current}, next = {self.distance_traveled_last}')
 
-            if distance_delta > 1:
-
+            if distance_delta > 0.1:
+                
                 # Write the new value to the odometer file
-                odoPath = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "odometer.txt"))
-
-                with open(odoPath, "w") as f:
+                # Save it to a temp file first, then copy over to the real file to avoid corruption
+                path_temp = self.odoPath + '.tmp'
+                with open(path_temp, 'w') as f:
                     f.write(str(self.odometer))
-                    #logging.info(f"odometer = {self.odometer}")                    
+                    f.flush()
+                    os.fsync(f.fileno()) # Force write to physical media
+
+                #Atomic rename (POSIX standard guarantees this is atomic)
+                # If power fails here, you either have the old file or the new one, never a half-written one.
+                os.replace(path_temp, self.odoPath)                      
 
                 # Update the last distance traveled value
-                self.odometer_distance_last_written = self.odometer        
+                self.odometer_distance_last_written = self.odometer     
 
         if msgCount is not None:
             # Update the display with how many messages we've recieved 
@@ -504,5 +510,6 @@ class MainWindow(QMainWindow):
                 logging.info(f"Stopping bokehServer worker")
 
                 self.bokehServer['worker'].stopSignal.emit()
+
 
 
