@@ -1,111 +1,19 @@
-[build-system]
-requires = ["pdm-pep517"]
-build-backend = "pdm.pep517.api"
-
-[tool.pdm]
-build.includes = ["beta"]
-version.source = "scm"
-
-[[tool.pdm.source]]
-url = "https://gitlab.beta.team/api/v4/projects/beta%2Fpypi/packages/pypi/simple"
-verify_ssl = true
-name = "pypi"
-
-[tool.pdm.dev-dependencies]
-# Add new dev dependencies with pdm add -d <dependency>
-dev = [
-    "mypy>=0.971",
-    "pytest-cov>=3.0.0",
-    "pytest-xdist>=2.5.0",
-    "pytest>=7.1.2",
-    "types-deprecated>=1.2.9",
-    "ruff>=0.1.5",
-]
-
-docs = [
-    # base tool
-    "mkdocs>=1.3.1",
-    # theme
-    "mkdocs-material>=8.3.9",
-    # api reference
-    "mkdocstrings[python]>=0.19.0",
-    "mkdocs-gen-files>=0.3.5",
-    "mkdocs-literate-nav>=0.4.1",
-    "mkdocs-section-index>=0.3.4",
-    # include files
-    "mkdocs-include-markdown-plugin>=3.6.1",
-    # cli reference
-    "mkdocs-click>=0.8.0",
-]
-[tool.pdm.scripts]
-format.shell = "ruff format beta tests"
-lint.shell = "ruff check beta tests"
-lint-fix.shell = "ruff check beta tests --fix"
-
 [project]
-name = "hvir_control"  
-description = "Python GUI to control the high voltage integration rig (HVIR)"  
+name = "pyCANdash"
+version = "1.0"
+description = ""
 authors = [
-    { email = "info@beta.team", name = "Beta Technologies" },
+    {name = "Victor Zaccardo", email = "victorzaccardo@gmail.com"},
 ]
-dynamic = ["version"]
-requires-python = ">=3.10, <3.12"
-# add new dependencies with pdm add <dependency>
 dependencies = [
-    "deprecated>=1.2.13",
-    "click>=8.1.3",
-    "py-beta-visa-instr-ctrl>=1.0.7",
-    "pyvisa>=1.13",
-    "pyvisa-py>=0.7",
-    "scipy>=1.11.0",
-    "numpy<=1.26.4",
-    "pyqt6>=6.5.2",
-    "pyqtgraph>=0.13.3",
-    "opencv-python>=4.9.0.80",
-    "py-beta-brainbox-ed-series>=0.0.5",
-    "nidaqmx>=0.9.0",
-    "py-beta-can>=8.2.0",
-    "py-beta-can-utils>=1.21.0",
-    "py-beta-pcan-gateway>=0.0.1",
-    "cantools>=39.4.5",
+    "pyqt6>=6.7.1",
+    "python-can>=4.4.2",
+    "cantools>=39.4.11",
     "bokeh>=3.6.1",
-    "asammdf>=8.0.1",
+    "pglive>=0.5.6",
+    "gpiozero>=2.0.1",
 ]
-
-
-[project.optional-dependencies]
-distribution = ["PyInstaller>=5.6", "py-beta-common"]
-
-[project.scripts]
-build-hvir-control-distribution = "beta.hvir_control.distribution:main"
-
-[tool.mypy]
-namespace_packages = true  # handle namespace packages like "beta"
-explicit_package_bases = true  # find namespace packages in the current dir
-files = ["."]  # check all python files
-strict = true  # enable stricter type checking
-
-# [tool.pytest.ini_options]
-# testpaths = ["tests", "beta"]
-# addopts = "--doctest-modules"
-
-
-
-
-
-
-
-
-[tool.ruff]  # See https://github.com/astral-sh/ruff#configuration
-line-length = 120
-target-version = "py310"  # defaults to 3.8, but our CI default is 3.10 now
-
-[tool.ruff.lint]
-# select = ["F", "E", "I001", "W", "D"]  # TODO: change defaults as needed
-# missing blank line after last section, to me is is needless whitespace
-ignore = ["D413"]
-
-[tool.ruff.lint.pydocstyle]
-convention = "pep257"
-
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "MIT"}
 
