@@ -20,6 +20,14 @@
         'signalName':   'vehicle_speed_avg_driven',     # Signal name used for incrementing odometer, speed
     },       
 
+    # Monitor a GPIO (power) pin and shut down if it's low for more than lowTime seconds
+    'GPIOmonitor':{
+        'Enable':       False,      # Enable monitoring of GPIO to shutdown Pi?
+        'gpioPin':      1,          # What pin to monitor?
+        'lowTime':      20,         # How long the pin must be low (continuously) to shut down
+        'Ts':           40e-3,      # How often to check the status of the pin
+    },    
+
     # NOTE: signal names MUST be unique across all CAN databases
     'canChans':{
         # Physical channel: params
@@ -213,6 +221,7 @@
         # },                
     },
 }
+
 
 
 
