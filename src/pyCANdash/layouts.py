@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import (
     QMainWindow,
+    QApplication,   
     QWidget,
     QLabel,
     QGridLayout,
@@ -7,7 +8,7 @@ from PyQt6.QtWidgets import (
     QProgressBar,
     QFrame,
 )
-from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import QTimer, QThread
 import PyQt6.sip as sip
 
 import os
@@ -17,7 +18,7 @@ from datetime import datetime
 import time
 
 
-from pyCANdash.config_system import configCAN, startPlayer, startLogUploader, startBokehServer
+from pyCANdash.config_system import configCAN, startPlayer, startLogUploader, startBokehServer, startGPIOmonitor 
 from pyCANdash.TallStatusLayout import TallStatusLayout
 from pyCANdash.GridStatusLayout import GridStatusLayout
 from pyCANdash.DTCStatusLayout import DTCStatusLayout
@@ -274,7 +275,16 @@ class MainWindow(QMainWindow):
             # If it's more than a day old AND it's zero size
             if '_wide.csv' in filename or (oldFlag and zeroSizeFlag and fileExtFlag):
                 logging.warning(f'Deleting {filename}')
-                os.remove(self.logCfg['resDir'] + filename)           
+                os.remove(self.logCfg['resDir'] + filename)   
+
+        # Start the GPIO monitor 
+        if self.logCfg['GPIOmonitor']['Enable']:
+            self.GPIOmonitor = startGPIOmonitor(self.logCfg['GPIOmonitor'], self.GPIOshutdownStatus)  
+        else:
+            logging.info('GPIO monitoring is disabled')     
+        
+        self.exitCode = 0       # Default to not shutting down when we exit
+        
 
         # Start the auto-uploader if it's enabled
         if self.logCfg['logUploader']['ip'] is not None:
@@ -479,17 +489,25 @@ class MainWindow(QMainWindow):
         pass
 
 
+    def GPIOshutdownStatus(self, val):
+        if val >= 1:
+            self.exitCode = 1
+            self.close()
+
+
     def closeEvent(self, event):
         # Shut down all the devices
         self.shutdownDevices()
 
         # Close the app
         event.accept()
-
-
+        QApplication.instance().exit(self.exitCode) 
+        
+        
     def shutdownDevices(self):
         # Stop all the timers
         logging.info("Stopping all workers")
+        threads = {}
         
         chans = list(self.canChans.keys())
         for chan in chans:
@@ -497,19 +515,52 @@ class MainWindow(QMainWindow):
             if not sip.isdeleted(worker):
                 logging.info(f"Stopping worker {self.canChans[chan]['name']}")
                 worker.stopSignal.emit()
+                threads.update({self.canChans[chan]['name']: self.canChans[chan]['thread']})
 
         # Shut down the loguploader
         if hasattr(self, 'logUploader'):
             if not sip.isdeleted(self.logUploader['worker']):
                 logging.info(f"Stopping logUploader worker")
                 self.logUploader['worker'].stopSignal.emit()
+                threads.update({'logUploader': self.logUploader['thread']})
 
-                # Shut down the loguploader
+        # Shut down the bokeh server
         if hasattr(self, 'bokehServer'):
             if not sip.isdeleted(self.bokehServer['worker']):
                 logging.info(f"Stopping bokehServer worker")
-
                 self.bokehServer['worker'].stopSignal.emit()
+                # the boke server is blocking so stop() never gets called...
+                # just shut down anyways. not the right way to do it but it works
+                #threads.update({'bokehServer': self.bokehServer['thread']})
+
+        if hasattr(self, 'GPIOmonitor'):
+            if not sip.isdeleted(self.GPIOmonitor['worker']):
+                logging.info(f"Stopping GPIOmonitor worker")
+                self.GPIOmonitor['worker'].stopSignal.emit()
+                threads.update({'GPIOmonitor': self.GPIOmonitor['thread']})
+
+        t_start = datetime.now()
+
+        # Wait for all the threads to close
+        while True:
+            if len(threads) == 0:
+                break
+
+            for thread in list(threads.keys()):
+                if threads[thread].isRunning():
+                    logging.info(f'shutdownDevices: Waiting for {thread} to stop')
+                else:
+                    logging.info(f'shutdownDevices: {thread} stopped')
+                    threads.pop(thread)
+                
+            # Just quit if it's hanging 
+            if (datetime.now() - t_start).total_seconds() > 1:
+                logging.info(f'shutdownDevices: Shutdown time exceeded 1 second, force stopping')
+                break
+
+            time.sleep(50e-3)
+                
+        
 
 
 

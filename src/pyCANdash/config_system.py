@@ -1,10 +1,7 @@
-#from beta.visa_instr_ctrl.rigol_mso5x import ScopeObj
-#from beta.hvir_control.workers import camWorker, CANWorker, faultInitWorker, scopeWorker, cDAQWorker
 from PyQt6.QtCore import QThread
-import sys
 import logging
 
-from pyCANdash.workers import CANWorker, CANplayerWorker, logUploaderWorker, bokehServerWorker
+from pyCANdash.workers import CANWorker, CANplayerWorker, logUploaderWorker, bokehServerWorker, gpioMonitorWorker
 import cantools
 
 
@@ -99,7 +96,25 @@ def startBokehServer(resDir, dbcDir, cfgDict):
         
         return serverDict
 
-     
+
+def startGPIOmonitor(GPIOcfg, statusFcn):
+    # Need to assign this to a variable in the main thread or else
+    # it gets deleted and the GUI crashes
+    gpioMonitor = {}
+
+    logging.info('GPIOmonitor: Creating thread')
+    gpioMonitor['thread'] = QThread()
+
+    logging.info('GPIOmonitor: Creating worker')
+    gpioMonitor['worker'] = gpioMonitorWorker(GPIOcfg['gpioPin'], GPIOcfg['lowTime'], GPIOcfg['Ts'])
+
+    # Start it upppp
+    logging.info('GPIOmonitor: Starting thread')
+    startThread(gpioMonitor['thread'], gpioMonitor['worker'], statusFcn)
+
+    return gpioMonitor
+ 
+
 def startThread(thread, worker, statusFcn):
     # Move them to the thread - do this before making connections!!
     worker.moveToThread(thread)
@@ -111,9 +126,11 @@ def startThread(thread, worker, statusFcn):
     thread.started.connect(worker.run)
 
     # When the worker finishes, quit the thread and delete thread and worker
+    # finishedSignal doesn't actually get called for some reason, threads are 
+    # killed in the stop() function
+    worker.finishedSignal.connect(thread.quit)    
     worker.finishedSignal.connect(worker.deleteLater)
     thread.finished.connect(thread.deleteLater)
-    worker.finishedSignal.connect(thread.quit)    
 
     # Start the thread
     thread.start()

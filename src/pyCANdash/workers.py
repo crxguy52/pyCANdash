@@ -8,20 +8,15 @@ from datetime import datetime
 
 import time
 import can
-from typing import Iterable, cast, Any
+from typing import Iterable, cast
 import os 
 import glob
 import ftplib
 from functools import partial
-import socket
 
-from bokeh.layouts import column, row, layout
-from bokeh.models import ColumnDataSource, MultiSelect, Dropdown, HoverTool, LegendItem, Button, CustomJS
-from bokeh.plotting import figure
-from bokeh.palettes import Category10
-from bokeh.models.widgets import Paragraph, Div
+from gpiozero import InputDevice
+
 from tornado.web import StaticFileHandler
-from bokeh.events import ButtonClick
 from bokeh.server.server import Server
 
 
@@ -52,7 +47,7 @@ class CANWorker(QObject):
         self.arbID2decode = []
 
     def initConnections(self, statusFcn):
-        # TODO: Connect the status signal to update the appropriate statusCell
+        # Connect the status signal to update the appropriate statusCell
         self.statusSignal.connect(statusFcn)
 
         # Stop the worker when the stop signal is recieved
@@ -175,7 +170,12 @@ class CANWorker(QObject):
             logging.info(f'{self.canCfg["name"]}: Bus shut down')
 
         # Clean up
+        logging.info(f'{self.canCfg["name"]}: Worker stopped')
         self.finishedSignal.emit()
+
+        # This shouldn't be necessary since I thread.quit gets linked to finishedSignal when the thread
+        # is created, but it looks like finishedSignal never gets received in the main thread for some reason          
+        self.thread().quit()        
 
 
 class CANplayerWorker(QObject):
@@ -339,7 +339,13 @@ class logUploaderWorker(QObject):
         self.ftp.close()
 
         # Clean up
+        logging.info(f'LogUploader: Worker stopped')
         self.finishedSignal.emit()   
+
+        # This shouldn't be necessary since I thread.quit gets linked to finishedSignal when the thread
+        # is created, but it looks like finishedSignal never gets received in the main thread for some reason          
+        self.thread().quit()
+
 
     def getSecondsDelta(self, fn:str):
         # Determine how long ago the file was created based on the name
@@ -369,11 +375,9 @@ class bokehServerWorker(QObject):
         self.dbcPath = dbcPath
 
 
-
     def initConnections(self, statusFcn):
         # Stop the worker when the stop signal is recieved
-        #self.stopSignal.connect(self.stop)
-        pass
+        self.stopSignal.connect(self.stop)
 
 
     def run(self):
@@ -394,7 +398,7 @@ class bokehServerWorker(QObject):
         self.server.io_loop.start()
 
         # TODO:
-        # Move deleting of temp files to main app before sync and server starts     
+        # io_loop.start() is blocking so stop() never gets called, it just gets killed. Fix this.    
 
 
     @pyqtSlot()
@@ -404,7 +408,117 @@ class bokehServerWorker(QObject):
         self.server.io_loop.stop()
 
         # Clean up
+        logging.info(f'bokehServer: Worker stopped')
         self.finishedSignal.emit()   
+
+        # This shouldn't be necessary since I thread.quit gets linked to finishedSignal when the thread
+        # is created, but it looks like finishedSignal never gets received in the main thread for some reason          
+        self.thread().quit()  
+
+
+class gpioMonitorWorker(QObject):
+    statusSignal = pyqtSignal(float)
+    stopSignal = pyqtSignal()
+    initFinishedSignal = pyqtSignal()
+    finishedSignal = pyqtSignal()
+
+    def __init__(self, gpioPin, lowTime=5, Ts=40e-3):
+        QObject.__init__(self)
+
+        self.gpioPin = gpioPin  # GPIO pin number to monitor
+        self.lowTime = lowTime  # How long the pin must be low before we shut down
+        self.Ts = Ts            # How often to sample the pin (seconds)
+
+        self.lowCountMax = int(self.lowTime / self.Ts)
+        self.lowCount_minus1 = self.lowCountMax - int(1/self.Ts)
+        self.lowCount_minus2 = self.lowCountMax - int(2/self.Ts)
+        self.lowCount_minus3 = self.lowCountMax - int(3/self.Ts)
+
+        try:
+            self.pinDevice = InputDevice(self.gpioPin, pull_up=True, active_state=True)
+        except:
+            logging.info(f'gpioMonitorWorker: Failed to open pin device on GPIO{self.gpioPin}, using dummy device')
+            self.pinDevice = self.dummyInputDevice()
+        self.lowCount = 0
+        self.pinStatus = None
+        self.pinStatusLast = None
+
+
+    def initConnections(self, statusFcn):
+        if statusFcn is not None:
+            # Connect the status signal to update the appropriate statusCell
+            self.statusSignal.connect(statusFcn)
+
+        # Stop the worker when the stop signal is recieved
+        self.stopSignal.connect(self.stop)
+
+
+    def run(self):
+        # Create a timer that polls the GPIO status
+        logging.info(f'gpioMonitorWorker: Starting status timer')
+        self.timer = QTimer(self)
+
+        logging.info(f'gpioMonitorWorker: Setting gpioMonitorWorker interval to {1e3*self.Ts} ms')
+        self.timer.setInterval(int(1e3 * self.Ts))  
+        self.timer.timeout.connect(self.queryGpio)
+        self.timer.start()        
+
+        logging.info(f'gpioMonitorWorker: Init finisehd')
+        #self.initFinishedSignal.emit()
+
+
+    def queryGpio(self):        
+        # If the GPIO has been low for the prescribed time emit a shutdown signal (1)
+        # Otherwise emit a keep going signal (0)
+
+        self.pinStatusLast = self.pinStatus
+        self.pinStatus = self.pinDevice.value()
+
+        if self.pinStatus == False:
+            self.lowCount += 1
+
+        else:   # pinStauts is True (high)
+            # Reset lowCount
+            self.lowCount = 0
+
+        # Send some info messages a few seconds before we shut down
+        match self.lowCount:
+            case self.lowCount_minus3:
+                logging.info('gpioMonitorWorker: Shutting down in 3...')
+            case self.lowCount_minus2:
+                logging.info('gpioMonitorWorker: Shutting down in 2...') 
+            case self.lowCount_minus1:
+                logging.info('gpioMonitorWorker: Shutting down in 1...')   
+            case self.lowCountMax:
+                logging.info('gpioMonitorWorker: Shutting down now byeeee')
+        
+        self.statusSignal.emit(self.lowCount / self.lowCountMax)
+
+    @pyqtSlot()
+    def stop(self):
+
+        logging.info(f'gpioMonitorWorker: Stopping')
+
+        if hasattr(self, 'timer'):
+            logging.info(f'gpioMonitorWorker: Stopping status timer')
+            self.timer.stop()
+            self.timer.deleteLater()
+
+        logging.info(f'gpioMonitorWorker: Worker stopped')
+        # Clean up
+        self.finishedSignal.emit()  
+
+        # This shouldn't be necessary since I thread.quit gets linked to finishedSignal when the thread
+        # is created, but it looks like finishedSignal never gets received in the main thread for some reason          
+        self.thread().quit()            
+
+
+    class dummyInputDevice():
+        def __init__(self):
+            pass    
+
+        def value(self):
+            return False
 
 
 
