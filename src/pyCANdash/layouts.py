@@ -251,8 +251,6 @@ class MainWindow(QMainWindow):
                 with open(self.odoPath, "r") as f:
                     self.odometer = float(f.read())
 
-            self.statBar.setOdometer(self.odometer)
-
             # Initialize last time to zero
             self.odometer_t_last = datetime.now()
             self.odometer_speed_last = 0
@@ -563,6 +561,7 @@ class MainWindow(QMainWindow):
             time.sleep(50e-3)
                 
         
+
 
 
 
