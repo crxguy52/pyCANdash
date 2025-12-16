@@ -566,6 +566,14 @@ class MainWindow(QMainWindow):
                 self.GPIOmonitor['worker'].stopSignal.emit()
                 threads.update({'GPIOmonitor': self.GPIOmonitor['thread']})
 
+        if hasattr(self, 'httpServer'):
+            if not sip.isdeleted(self.httpServer['worker']):
+                logging.info(f"Stopping httpServer worker")
+                self.httpServer['worker'].stopSignal.emit()
+                # Tell it to stop but don't wait for it to end, this likes to hang
+                # Not the right way to do it but it works
+                #threads.update({'httpServer': self.httpServer['thread']})
+
         t_start = datetime.now()
 
         # Wait for all the threads to close

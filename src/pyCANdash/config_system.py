@@ -1,4 +1,4 @@
-from PyQt6.QtCore import QThread
+from PyQt6.QtCore import QThread, Qt
 import logging
 
 from pyCANdash.workers import CANWorker, CANplayerWorker, logUploaderWorker, bokehServerWorker, gpioMonitorWorker, httpServerWorker
@@ -92,7 +92,7 @@ def startBokehServer(resDir, dbcDir, cfgDict):
 
         # Start it upppp
         logging.info('bokehServer: Starting thread')
-        startThread(serverDict['thread'], serverDict['worker'], None)
+        startThread(serverDict['thread'], serverDict['worker'], None, stopDirectConnection=True)
         
         return serverDict
 
@@ -127,12 +127,12 @@ def startHttpServer(dataDir, httpServerConfig):
 
     # Start it upppp
     logging.info('httpServer: Starting thread')
-    startThread(httpServer['thread'], httpServer['worker'], httpServer)
+    startThread(httpServer['thread'], httpServer['worker'], httpServer, stopDirectConnection=True)
 
     return httpServer    
  
 
-def startThread(thread, worker, statusFcn):
+def startThread(thread, worker, statusFcn, stopDirectConnection=False):
     # Move them to the thread - do this before making connections!!
     worker.moveToThread(thread)
 
@@ -144,6 +144,10 @@ def startThread(thread, worker, statusFcn):
 
     # Set the "_stop_event" flag when the stop signal is connected
     worker.stopSignal.connect(worker._stop_event.set)
+
+    # Do a direct connection for blocking processes
+    if stopDirectConnection:
+        worker.stopSignal.connect(worker.stop, type=Qt.ConnectionType.DirectConnection)
 
     # When the worker finishes, quit the thread and delete thread and worker
     # finishedSignal doesn't actually get called for some reason, threads are 

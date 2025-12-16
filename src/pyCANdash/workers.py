@@ -597,7 +597,7 @@ class httpServerWorker(QObject):
                 
                 # 3. Start the blocking server loop
                 # This will block until shutdown() is called in the stop() method
-                self.httpd.serve_forever()
+                self.httpd.serve_forever(poll_interval=0.1)
                 
         except OSError as e:
             logging.error(f"httpServerWorker: Error starting server: {e}")
@@ -615,10 +615,17 @@ class httpServerWorker(QObject):
         logging.info(f'httpServerWorker: Stopping')
 
         # Trigger the server to stop accepting requests
-        # This is thread-safe and will cause serve_forever() in run() to return
+        # This waits for all requests to stop and blocks! This is not called for now as it causes the GUi to hang
         if self.httpd:
-            self.httpd.shutdown()
+            if self.httpd.socket:
+                logging.info(f'httpServerWorker: Closing socket')
+                self.httpd.socket.close()
+            
+            logging.info(f'httpServerWorker: Shutting down server')
+            self.httpd.server_close()
+
         logging.info(f'httpServerWorker: Worker stopped')
+        self.finishedSignal.emit()        
 
         # This shouldn't be necessary since I thread.quit gets linked to finishedSignal when the thread
         # is created, but it looks like finishedSignal never gets received in the main thread for some reason          
