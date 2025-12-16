@@ -27,6 +27,5 @@ def mainApp():
             os.system("shutdown -h now")
     
 
-
 if __name__ == "__main__":
     mainApp()

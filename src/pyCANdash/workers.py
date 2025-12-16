@@ -13,6 +13,7 @@ import os
 import glob
 import ftplib
 from functools import partial
+import threading
 
 from gpiozero import InputDevice
 
@@ -34,10 +35,12 @@ class CANWorker(QObject):
     stopSignal = pyqtSignal()
     initFinishedSignal = pyqtSignal()
     finishedSignal = pyqtSignal()
+    _stop_event = threading.Event()     
 
-    def __init__(self, canCfg, logEn=True):
+    def __init__(self, canCfg, dataDir, logEn=True):
         QObject.__init__(self)
         self.canCfg = canCfg
+        self.dataDir = dataDir
         self.logEn = logEn
 
         # Create a dictionary to store current status of recieved data in
@@ -70,7 +73,7 @@ class CANWorker(QObject):
             if self.logEn:
                 # Start the log file
                 logFileName = f"{self.canCfg['name']}_{datetime.now():%Y-%m-%d_%H-%M-%S}.{self.canCfg['logFormat']}"
-                self.logFilePath = path.abspath(path.join(path.dirname(__file__), "..", "..", "data", logFileName)) 
+                self.logFilePath = path.abspath(path.join(self.dataDir, logFileName)) 
                 logging.info(f'{self.canCfg["name"]}: Logging CAN data to ' + self.logFilePath)
                 self.logger = can.Logger(self.logFilePath)
 
@@ -183,6 +186,7 @@ class CANplayerWorker(QObject):
     stopSignal = pyqtSignal()
     initFinishedSignal = pyqtSignal()
     finishedSignal = pyqtSignal()
+    _stop_event = threading.Event()     
 
     def __init__(self, logFile, printDebug=False):
         QObject.__init__(self)
@@ -227,6 +231,7 @@ class logUploaderWorker(QObject):
     stopSignal = pyqtSignal()
     initFinishedSignal = pyqtSignal()
     finishedSignal = pyqtSignal()
+    _stop_event = threading.Event()    
 
     def __init__(self, ip, remoteLogDir, localDir):
         QObject.__init__(self)
@@ -235,16 +240,19 @@ class logUploaderWorker(QObject):
         self.remoteLogDir = remoteLogDir
         self.localDir = localDir
 
-
     def initConnections(self, statusFcn):
         # Stop the worker when the stop signal is recieved
-        #self.stopSignal.connect(self.stop)
-        pass
+        self.stopSignal.connect(self.stop)
 
 
     def run(self):
         # Wait 10 seconds to give the PC a chance to connecto to wifi
-        time.sleep(10)
+        logging.info("logUploader: Waiting 10 seconds for wifi to connect")
+        t0 = datetime.now()
+        while (datetime.now() - t0).total_seconds() < 10:
+            if self._stop_event.is_set():
+                break
+            time.sleep(0.1)
 
         # Connect to the FTP server
         self.ftp = self.connect2ftp(self.ip)
@@ -269,22 +277,33 @@ class logUploaderWorker(QObject):
                 except:
                     pass
 
+        self.stop()        
+
 
     def connect2ftp(self, ip, username=None, password=None):
         # Try to connect to the server for 30 seconds
         t_end = time.time() + 30
-        while time.time() < t_end:
+        while time.time() < t_end and self._stop_event.is_set() == False:
             try:
                 logging.info(f"logUploader: Connecting to {ip}")
-                ftp = ftplib.FTP(ip, username, password, timeout=5)
+                ftp = ftplib.FTP(ip, username, password, timeout=0.75)
                 ftp.login()
                 logging.info(f'logUploader: Connected to {ip}')
                 return ftp
             except:
-                time.sleep(5)   
+                # Wait for 5 seconds
+                t0 = datetime.now()
+                while (datetime.now() - t0).total_seconds() < 5:
+                    if self._stop_event.is_set():
+                        break
+                    time.sleep(0.1)
 
         if 'ftp' not in locals():
-            logging.info('logUploader: Unable to connect to FTP server, aborting') 
+            if self._stop_event.is_set():
+                logging.info('logUploader: FTP connection aborted due to stopFlag')
+            else:
+                logging.info('logUploader: Unable to connect to FTP server, aborting') 
+
             return None
 
 
@@ -305,6 +324,10 @@ class logUploaderWorker(QObject):
         logging.info(f'logUploader: Comparing {localDir} to {relRemoteDir}')
 
         for file in [os.path.basename(x) for x in glob.glob(localDir + '*.*')]:
+            if self._stop_event.is_set():
+                logging.info('logUploader: Stopping upload due to stopFlag')
+                break
+            
             dT = self.getSecondsDelta(file)
             dT_thresh = 5*60    # 5 minutes
             
@@ -337,7 +360,9 @@ class logUploaderWorker(QObject):
     def stop(self):
         logging.info(f'LogUploader: Stopping')
 
-        self.ftp.close()
+        if hasattr(self, 'ftp'):
+            if self.ftp is not None:
+                self.ftp.close()
 
         # Clean up
         logging.info(f'LogUploader: Worker stopped')
@@ -368,12 +393,14 @@ class bokehServerWorker(QObject):
     stopSignal = pyqtSignal()
     initFinishedSignal = pyqtSignal()
     finishedSignal = pyqtSignal()
+    _stop_event = threading.Event() 
 
-    def __init__(self, dataDir, dbcPath):
+    def __init__(self, dataDir, dbcPath, IPs):
         QObject.__init__(self)
 
         self.dataDir = dataDir
         self.dbcPath = dbcPath
+        self.IPs     = IPs
 
 
     def initConnections(self, statusFcn):
@@ -386,28 +413,35 @@ class bokehServerWorker(QObject):
         # https://github.com/bokeh/bokeh/blob/3.6.2/examples/server/api/tornado_embed.py
 
         # Wait 10 seconds to give the PC a chance to connecto to wifi
-        time.sleep(10)        
+        t0 = datetime.now()
+        while (datetime.now() - t0).total_seconds() < 10:
+            if self._stop_event.is_set():
+                logging.info(f'bokehServer: stopping due to _stop_event')
+                break        
+            time.sleep(0.1)
 
-        logging.info('bokehServer: Starting on ' + get_ip() + ' and localhost')           
+        if self._stop_event.is_set() == False:
+            ipList = [get_ip()+":5006", "localhost:5006"] + self.IPs
+            logging.info(f'bokehServer: Starting on {ipList}')           
 
-        #TODO: Add port and IP addresses to host on in the config file, not hardcoded here
-        self.server = Server({'/': partial(bkapp, dataDir=self.dataDir, dbcPath=self.dbcPath)},
-                        allow_websocket_origin=[get_ip()+":5006", "localhost:5006", "192.168.10.1:5006"],
-                        extra_patterns=[(r'/data/(.*)', StaticFileHandler, {'path': self.dataDir}),],
-                        )
+            self.server = Server({'/': partial(bkapp, dataDir=self.dataDir, dbcPath=self.dbcPath)},
+                            allow_websocket_origin=ipList,
+                            extra_patterns=[(r'/data/(.*)', StaticFileHandler, {'path': self.dataDir}),],
+                            )
 
-        self.server.start()
-        self.server.io_loop.start()
+            self.server.start()
+            self.server.io_loop.start()
 
-        # TODO:
-        # io_loop.start() is blocking so stop() never gets called, it just gets killed. Fix this.    
+            # TODO:
+            # io_loop.start() is blocking so stop() never gets called, it just gets killed. Fix this.    
 
 
     @pyqtSlot()
     def stop(self):
 
         logging.info(f'bokehServer: Stopping server')
-        self.server.io_loop.stop()
+        if hasattr(self, 'server'):
+            self.server.io_loop.stop()
 
         # Clean up
         logging.info(f'bokehServer: Worker stopped')

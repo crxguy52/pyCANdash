@@ -114,18 +114,18 @@ class tab3Widget(QWidget):
         self.gaugeLayout.update(vals)
            
 
-# class tab4Widget(QWidget):
-#     def __init__(self, colCfg):
-#         super(tab4Widget, self).__init__()
+class tab4Widget(QWidget):
+    def __init__(self, colCfg):
+        super(tab4Widget, self).__init__()
 
-#         self.tbl = DTCStatusLayout(colCfg)
+        self.tbl = DTCStatusLayout(colCfg)
 
-#         self.layout = QGridLayout()
-#         self.layout.addWidget(self.tbl, 0, 0)    
-#         self.setLayout(self.layout)       
+        self.layout = QGridLayout()
+        self.layout.addWidget(self.tbl, 0, 0)    
+        self.setLayout(self.layout)       
 
-#     def update(self, vals):
-#         self.tbl.updateVals(vals)
+    def update(self, vals):
+        self.tbl.updateVals(vals)
 
 
 class StatusBar(QFrame):
@@ -215,21 +215,38 @@ class MainWindow(QMainWindow):
         # Set the background as black and text as white
         self.setStyleSheet("color: white; background-color: black;")
 
-        # Configure the logger
-        self.configLogger()
-
         # Load the GUI config file
         self.guiCfg = self.loadGUIconfig()
 
         # Load the logger config file
         self.logCfg = self.loadConfig(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "config_files", self.guiCfg["LOGGER_CFG"])) + '.py')
 
+        # Set the data directory
+        if self.logCfg['dataDir'] is not None:
+            if os.path.isdir(self.logCfg['dataDir']):
+                # If the directory exists, use it
+                self.dataDir = self.logCfg['dataDir']
+                logStr = f'Using data directory: {self.dataDir}'
+            else:
+                # Use the internal data directory
+                self.dataDir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data"))
+                logStr = f'Specified data directory not valid, using internal data directory: {self.dataDir}'
+        else:
+            # Use the internal data directory
+            self.dataDir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data"))
+            logStr = f'Using internal data directory: {self.dataDir}'
+
+
+        # Configure the logger after we set the data directory so we can log to the correct directory
+        self.configLogger(self.dataDir)
+        logging.info(logStr)
+
         # Play back a file to vcan if a playback file is specified. 
         # Disable logging if playing back a file, otherwise leave it enabled
         logEn = True
         if 'playbackFn' in self.logCfg.keys():
             if self.logCfg['playbackFn'] is not None:
-                playbackFilePath = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", self.logCfg['playbackFn']))
+                playbackFilePath = os.path.abspath(os.path.join(self.dataDir, self.logCfg['playbackFn']))
                 logging.info(f'Playing back {playbackFilePath}')
                 self.playbackDict = startPlayer(playbackFilePath)
 
@@ -240,7 +257,7 @@ class MainWindow(QMainWindow):
         if self.logCfg['odometer']['enable'] and logEn is True:        
 
             # Load the odometer file and initialize it to the correct value
-            self.odoPath = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "odometer.txt"))
+            self.odoPath = os.path.abspath(os.path.join(self.dataDir, "odometer.txt"))
 
             # If the file doesn't exist, create it and initalize to zero
             if not os.path.isfile(self.odoPath):
@@ -260,12 +277,12 @@ class MainWindow(QMainWindow):
         self.canChans = {}
         for chan in self.logCfg['canChans']:
             canCfg = self.logCfg['canChans'][chan]
-            self.canChans[chan] = configCAN(canCfg, self.logCfg['dbcDir'], self.rxCAN, logEn=logEn)
+            self.canChans[chan] = configCAN(canCfg, self.logCfg['dbcDir'], self.rxCAN, self.dataDir, logEn=logEn)
 
         # Delete the temporary files we created last time for downloading
-        for filename in os.listdir(self.logCfg['resDir']):
+        for filename in os.listdir(self.dataDir):
 
-            fpath = os.path.join(self.logCfg['resDir'], filename)
+            fpath = os.path.join(self.dataDir, filename)
             lastModTime = os.path.getmtime(fpath)
             oldFlag = lastModTime < (time.time() - 24*60*60)
             zeroSizeFlag = os.path.getsize(fpath) < 145 # empty BLF files are 145 bytes
@@ -275,7 +292,7 @@ class MainWindow(QMainWindow):
             # If it's more than a day old AND it's zero size
             if '_wide.csv' in filename or (oldFlag and zeroSizeFlag and fileExtFlag):
                 logging.warning(f'Deleting {filename}')
-                os.remove(self.logCfg['resDir'] + filename)   
+                os.remove(self.dataDir + filename)   
 
         # Start the GPIO monitor 
         if self.logCfg['GPIOmonitor']['Enable']:
@@ -288,11 +305,11 @@ class MainWindow(QMainWindow):
 
         # Start the auto-uploader if it's enabled
         if self.logCfg['logUploader']['ip'] is not None:
-            self.logUploader = startLogUploader(self.logCfg['logUploader'], self.logCfg['resDir'])
+            self.logUploader = startLogUploader(self.logCfg['logUploader'], self.dataDir)
 
         # Start the bokeh server if it's enabled
         if self.logCfg['bokehServer']['enable'] is True:
-            self.bokehServer = startBokehServer(self.logCfg['resDir'], self.logCfg['dbcDir'], self.logCfg['bokehServer'])
+            self.bokehServer = startBokehServer(self.dataDir, self.logCfg['dbcDir'], self.logCfg['bokehServer'])
 
         # Set the window title and size
         self.setWindowTitle("pyCANdash")
@@ -352,7 +369,7 @@ class MainWindow(QMainWindow):
     def showEvent(self, event):
         self.showMaximized()        
 
-    def configLogger(self):
+    def configLogger(self, dataDir):
         # Configure the logger
         self.logFormatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s", datefmt="%d-%b-%Y %H:%M:%S")
 
@@ -362,8 +379,13 @@ class MainWindow(QMainWindow):
 
         # Start a log file
         logFileName = f"{datetime.now():%Y-%m-%d_%H-%M-%S}" + ".log"
-        logFilePath = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "logfiles", logFileName))
-        #logging.info(f"Logging to {logFilePath}")
+
+        # If the logfile directory doesn't exist, create it
+        logDir = os.path.abspath(os.path.join(self.dataDir, "logfiles"))
+        if not os.path.isdir(logDir):
+            os.mkdir(logDir)
+        
+        logFilePath = os.path.abspath(os.path.join(logDir, logFileName))
         self.logFileHandler = logging.FileHandler(logFilePath)      
         self.logFileHandler.setFormatter(self.logFormatter)       
 
@@ -378,14 +400,14 @@ class MainWindow(QMainWindow):
         GUICFGPATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "config_files", "gui_config.py"))
         if os.path.isfile(GUICFGPATH) is True:
             # load it
-            logging.info(f"Loading GUI config file {GUICFGPATH}")
+            #logging.info(f"Loading GUI config file {GUICFGPATH}")
             file = open(GUICFGPATH)
             guiCfg = ast.literal_eval(file.read())
             file.close()
 
             return guiCfg
         else:
-            logging.error("Couldn't load GUI Config!")   
+            #logging.error("Couldn't load GUI Config!")   
             return None     
 
 
@@ -401,9 +423,6 @@ class MainWindow(QMainWindow):
             else:
                 logging.error("Config file does not exist!")
                 configDict = None
-
-            # Define results file paths
-            configDict["resDir"] = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", *self.guiCfg["DATA_DIR"])) + "/"
 
             # Define where the CAN databases live
             configDict["dbcDir"] = (
@@ -521,6 +540,7 @@ class MainWindow(QMainWindow):
         if hasattr(self, 'logUploader'):
             if not sip.isdeleted(self.logUploader['worker']):
                 logging.info(f"Stopping logUploader worker")
+                #self.logUploader['worker'].stopFlag = True
                 self.logUploader['worker'].stopSignal.emit()
                 threads.update({'logUploader': self.logUploader['thread']})
 
@@ -529,6 +549,7 @@ class MainWindow(QMainWindow):
             if not sip.isdeleted(self.bokehServer['worker']):
                 logging.info(f"Stopping bokehServer worker")
                 self.bokehServer['worker'].stopSignal.emit()
+                #self.bokehServer['worker'].stopFlag = True
                 # the boke server is blocking so stop() never gets called...
                 # just shut down anyways. not the right way to do it but it works
                 #threads.update({'bokehServer': self.bokehServer['thread']})

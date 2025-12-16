@@ -5,7 +5,7 @@ from pyCANdash.workers import CANWorker, CANplayerWorker, logUploaderWorker, bok
 import cantools
 
 
-def configCAN(canCfg, dbcDir, statusFcn, logEn=True):
+def configCAN(canCfg, dbcDir, statusFcn, dataDir, logEn=True):
 
     # Initialize the CAN port if the interface isn't None
     if canCfg['interface'] is not None:
@@ -30,7 +30,7 @@ def configCAN(canCfg, dbcDir, statusFcn, logEn=True):
              canCfg['interface'] = 'usevitual'
 
         logging.info(f'{canCfg["name"]}: Starting CANWorker')
-        canCfg['worker'] = CANWorker(canCfg, logEn=logEn)
+        canCfg['worker'] = CANWorker(canCfg, dataDir, logEn=logEn)
 
         # Start it upppp
         startThread(canCfg['thread'], canCfg['worker'], statusFcn)
@@ -88,7 +88,7 @@ def startBokehServer(resDir, dbcDir, cfgDict):
         serverDict['thread'] = QThread()
 
         logging.info(f'bokehServer: Creating worker {resDir} {dbcDir + cfgDict["dbcName"]}')
-        serverDict['worker'] = bokehServerWorker(resDir, dbcDir + cfgDict['dbcName'])
+        serverDict['worker'] = bokehServerWorker(resDir, dbcDir + cfgDict['dbcName'], cfgDict['IPs'])
 
         # Start it upppp
         logging.info('bokehServer: Starting thread')
@@ -124,6 +124,9 @@ def startThread(thread, worker, statusFcn):
 
     # Run the worker when the thread starts
     thread.started.connect(worker.run)
+
+    # Set the "_stop_event" flag when the stop signal is connected
+    worker.stopSignal.connect(worker._stop_event.set)
 
     # When the worker finishes, quit the thread and delete thread and worker
     # finishedSignal doesn't actually get called for some reason, threads are 
