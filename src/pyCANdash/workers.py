@@ -389,8 +389,9 @@ class bokehServerWorker(QObject):
 
         logging.info('bokehServer: Starting on ' + get_ip() + ' and localhost')           
 
+        #TODO: Add port and IP addresses to host on in the config file, not hardcoded here
         self.server = Server({'/': partial(bkapp, dataDir=self.dataDir, dbcPath=self.dbcPath)},
-                        allow_websocket_origin=[get_ip()+":5006", "localhost:5006"],
+                        allow_websocket_origin=[get_ip()+":5006", "localhost:5006", "192.168.10.1:5006"],
                         extra_patterns=[(r'/data/(.*)', StaticFileHandler, {'path': self.dataDir}),],
                         )
 
@@ -519,6 +520,7 @@ class gpioMonitorWorker(QObject):
 
         def value(self):
             return False
+
 
 
 
