@@ -310,6 +310,7 @@ class logUploaderWorker(QObject):
             
             # If the current file isn't in the remote directory AND it was created
             # more than 5 minute ago (IE, not the file we're writing to now), send it over
+            # TODO: Add file size check here. If local file is larger than remote file, overwrite the remote file
             if file not in remoteList and dT > dT_thresh:
 
                 fullPath = localDir + file
@@ -520,6 +521,7 @@ class gpioMonitorWorker(QObject):
 
         def value(self):
             return False
+
 
 
 
