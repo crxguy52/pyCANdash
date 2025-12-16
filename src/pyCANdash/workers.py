@@ -13,12 +13,16 @@ import os
 import glob
 import ftplib
 from functools import partial
+import functools
 import threading
 
 from gpiozero import InputDevice
 
 from tornado.web import StaticFileHandler
 from bokeh.server.server import Server
+
+import http.server
+import socketserver
 
 
 
@@ -457,6 +461,7 @@ class gpioMonitorWorker(QObject):
     stopSignal = pyqtSignal()
     initFinishedSignal = pyqtSignal()
     finishedSignal = pyqtSignal()
+    _stop_event = threading.Event() 
 
     def __init__(self, gpioPin, lowTime=5, Ts=40e-3):
         QObject.__init__(self)
@@ -555,6 +560,70 @@ class gpioMonitorWorker(QObject):
 
         def value(self):
             return False
+
+
+class httpServerWorker(QObject):
+    statusSignal = pyqtSignal(float)
+    stopSignal = pyqtSignal()
+    initFinishedSignal = pyqtSignal()
+    finishedSignal = pyqtSignal()
+    _stop_event = threading.Event() 
+
+    def __init__(self, dataDir, port=8000):
+        QObject.__init__(self)
+
+        self.dataDir = dataDir  # Directory to serve 
+        self.port = port        # port to serve on
+        self.httpd = None       # Reference to the server instance        
+
+
+    def initConnections(self, statusFcn):
+        # Stop the worker when the stop signal is recieved
+        self.stopSignal.connect(self.stop)
+
+
+    def run(self):
+        # 1. Configure the handler to serve the specific directory
+        # We use partial to pass the 'directory' arg to the SimpleHTTPRequestHandler
+        Handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=self.dataDir)
+
+        # 2. Setup the server
+        # allow_reuse_address prevents "Address already in use" errors if you restart quickly
+        socketserver.TCPServer.allow_reuse_address = True
+        
+        try:
+            with socketserver.TCPServer(("", self.port), Handler) as self.httpd:
+                logging.info(f"httpServerWorker: Serving {self.dataDir} at port {self.port}")
+                
+                # 3. Start the blocking server loop
+                # This will block until shutdown() is called in the stop() method
+                self.httpd.serve_forever()
+                
+        except OSError as e:
+            logging.error(f"httpServerWorker: Error starting server: {e}")
+        except Exception as e:
+            logging.error(f"httpServerWorker: Unexpected error: {e}")
+        finally:
+            # This block runs when serve_forever() is broken by shutdown()
+            logging.info('httpServerWorker: Server loop ended')
+            self.finishedSignal.emit()
+
+
+    @pyqtSlot()
+    def stop(self):
+
+        logging.info(f'httpServerWorker: Stopping')
+
+        # Trigger the server to stop accepting requests
+        # This is thread-safe and will cause serve_forever() in run() to return
+        if self.httpd:
+            self.httpd.shutdown()
+        logging.info(f'httpServerWorker: Worker stopped')
+
+        # This shouldn't be necessary since I thread.quit gets linked to finishedSignal when the thread
+        # is created, but it looks like finishedSignal never gets received in the main thread for some reason          
+        self.thread().quit()       
+        
 
 
 

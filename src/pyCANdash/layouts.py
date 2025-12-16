@@ -18,7 +18,7 @@ from datetime import datetime
 import time
 
 
-from pyCANdash.config_system import configCAN, startPlayer, startLogUploader, startBokehServer, startGPIOmonitor 
+from pyCANdash.config_system import configCAN, startPlayer, startLogUploader, startBokehServer, startGPIOmonitor, startHttpServer 
 from pyCANdash.TallStatusLayout import TallStatusLayout
 from pyCANdash.GridStatusLayout import GridStatusLayout
 from pyCANdash.DTCStatusLayout import DTCStatusLayout
@@ -275,7 +275,7 @@ class MainWindow(QMainWindow):
                 self.odometer_distance_last_written = self.odometer    
             except:
                 logging.error('Error loading or creating odometer file, disabling')
-                self.logCfg['odometer']['enable'] = False   
+                self.logCfg['odometer']['enable'] = False
 
         # Configure the CAN buses - store them in a dictionary
         self.canChans = {}
@@ -306,7 +306,6 @@ class MainWindow(QMainWindow):
         
         self.exitCode = 0       # Default to not shutting down when we exit
         
-
         # Start the auto-uploader if it's enabled
         if self.logCfg['logUploader']['ip'] is not None:
             self.logUploader = startLogUploader(self.logCfg['logUploader'], self.dataDir)
@@ -314,6 +313,9 @@ class MainWindow(QMainWindow):
         # Start the bokeh server if it's enabled
         if self.logCfg['bokehServer']['enable'] is True:
             self.bokehServer = startBokehServer(self.dataDir, self.logCfg['dbcDir'], self.logCfg['bokehServer'])
+
+        if self.logCfg['httpServer']['enable'] is True:
+            self.httpServer = startHttpServer(self.dataDir, self.logCfg['httpServer'])
 
         # Set the window title and size
         self.setWindowTitle("pyCANdash")
@@ -586,7 +588,6 @@ class MainWindow(QMainWindow):
             time.sleep(50e-3)
                 
         
-
 
 
 

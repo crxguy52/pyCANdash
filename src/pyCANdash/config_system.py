@@ -1,7 +1,7 @@
 from PyQt6.QtCore import QThread
 import logging
 
-from pyCANdash.workers import CANWorker, CANplayerWorker, logUploaderWorker, bokehServerWorker, gpioMonitorWorker
+from pyCANdash.workers import CANWorker, CANplayerWorker, logUploaderWorker, bokehServerWorker, gpioMonitorWorker, httpServerWorker
 import cantools
 
 
@@ -113,6 +113,23 @@ def startGPIOmonitor(GPIOcfg, statusFcn):
     startThread(gpioMonitor['thread'], gpioMonitor['worker'], statusFcn)
 
     return gpioMonitor
+
+def startHttpServer(dataDir, httpServerConfig):
+    # Need to assign this to a variable in the main thread or else
+    # it gets deleted and the GUI crashes
+    httpServer = {}
+
+    logging.info('httpServer: Creating thread')
+    httpServer['thread'] = QThread()
+
+    logging.info('httpServer: Creating worker')
+    httpServer['worker'] = httpServerWorker(dataDir, port=httpServerConfig['port'])
+
+    # Start it upppp
+    logging.info('httpServer: Starting thread')
+    startThread(httpServer['thread'], httpServer['worker'], httpServer)
+
+    return httpServer    
  
 
 def startThread(thread, worker, statusFcn):
