@@ -12,6 +12,11 @@
         'IPs':          ["192.168.10.1:5006"],  # IP addresses to host the server on in addition to the local IP and localhost 
     },
 
+    'httpServer':{                              # http server to allow for easy data download
+        'enable':       True,                   # Enable it?
+        'port':         8000,                   # port to serve on
+    },    
+
     # Option to upload log files via FTP to a remote server
     'logUploader':{
         'ip':           '192.168.0.1',          # FTP copy disabled if IP is None
@@ -224,6 +229,7 @@
         # },                
     },
 }
+
 
 
 
