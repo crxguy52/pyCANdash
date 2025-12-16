@@ -259,19 +259,23 @@ class MainWindow(QMainWindow):
             # Load the odometer file and initialize it to the correct value
             self.odoPath = os.path.abspath(os.path.join(self.dataDir, "odometer.txt"))
 
-            # If the file doesn't exist, create it and initalize to zero
-            if not os.path.isfile(self.odoPath):
-                with open(self.odoPath, "w") as f:
-                    f.write("0")
-                    self.odometer = 0
-            else:
-                with open(self.odoPath, "r") as f:
-                    self.odometer = float(f.read())
+            try:
+                # If the file doesn't exist, create it and initalize to zero
+                if not os.path.isfile(self.odoPath):
+                    with open(self.odoPath, "w") as f:
+                        f.write("0")
+                        self.odometer = 0
+                else:
+                    with open(self.odoPath, "r") as f:
+                        self.odometer = float(f.read())
 
-            # Initialize last time to zero
-            self.odometer_t_last = datetime.now()
-            self.odometer_speed_last = 0
-            self.odometer_distance_last_written = self.odometer       
+                # Initialize last time to zero
+                self.odometer_t_last = datetime.now()
+                self.odometer_speed_last = 0
+                self.odometer_distance_last_written = self.odometer    
+            except:
+                logging.error('Error loading or creating odometer file, disabling')
+                self.logCfg['odometer']['enable'] = False   
 
         # Configure the CAN buses - store them in a dictionary
         self.canChans = {}
@@ -582,6 +586,7 @@ class MainWindow(QMainWindow):
             time.sleep(50e-3)
                 
         
+
 
 
 
