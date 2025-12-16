@@ -1,7 +1,6 @@
 # This is formatted as a dictionary
 # fmt: off
 {
-    "DATA_DIR"  : ["..", "data"],             # Where to save the data, path relative to app _internal folder. ["Data"] saves it to _internal\Data
     "DBC_DIR"   : ["..", "dbc"],              # Where CAN database files live, path relative to app _internal folder. ["config_files"] looks in _internal\config_files
     "LOGGER_CFG"  : "config_default",    # Logger config to use
     "WINDOW_SIZE_MIN_WIDTH": 800,      # Main window min width
@@ -11,5 +10,6 @@
 }
 
 # fmt: on
+
 
 
