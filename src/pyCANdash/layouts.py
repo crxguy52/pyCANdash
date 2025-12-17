@@ -9,6 +9,7 @@ from PyQt6.QtWidgets import (
     QFrame,
 )
 from PyQt6.QtCore import QTimer, QThread
+from PyQt6.QtGui import QKeySequence, QShortcut
 import PyQt6.sip as sip
 
 import os
@@ -212,6 +213,10 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
+        # Add ctrl + c shortcut to close the application 
+        self.shortcut_close = QShortcut(QKeySequence("Ctrl+C"), self)
+        self.shortcut_close.activated.connect(self.close)
+        
         # Set the background as black and text as white
         self.setStyleSheet("color: white; background-color: black;")
 
@@ -222,6 +227,7 @@ class MainWindow(QMainWindow):
         self.logCfg = self.loadConfig(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "config_files", self.guiCfg["LOGGER_CFG"])) + '.py')
 
         # Set the data directory
+        internalDir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data"))
         if self.logCfg['dataDir'] is not None:
             if os.path.isdir(self.logCfg['dataDir']):
                 # If the directory exists, use it
@@ -229,13 +235,12 @@ class MainWindow(QMainWindow):
                 logStr = f'Using data directory: {self.dataDir}'
             else:
                 # Use the internal data directory
-                self.dataDir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data"))
+                self.dataDir = internalDir
                 logStr = f'Specified data directory not valid, using internal data directory: {self.dataDir}'
         else:
             # Use the internal data directory
-            self.dataDir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data"))
+            self.dataDir = internalDir
             logStr = f'Using internal data directory: {self.dataDir}'
-
 
         # Configure the logger after we set the data directory so we can log to the correct directory
         self.configLogger(self.dataDir)
@@ -596,6 +601,7 @@ class MainWindow(QMainWindow):
             time.sleep(50e-3)
                 
         
+
 
 
 
