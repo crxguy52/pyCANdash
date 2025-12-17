@@ -2,9 +2,9 @@
 {
     # Plays back log file for debug (must include file extension). May be deleted or set to None to disable. Skips time gaps >5s 
     #"playbackFn":       "20241124_141123.log",  
-    "startTab":         3,      # Tab to display at startup
-    "dataDir":          None,   # Path to where data gets saved. if None (or path is invalid) internal data directory is used.
-                                # Used by everything - bokeh server, CAN logging, loguploader, etc.
+    "startTab":         3,                  # Tab to display at startup
+    "dataDir":          "/mnt/usb_drive/",  # Path to where data gets saved. if None (or path is invalid) internal data directory is used.
+                                            # Used by everything - bokeh server, CAN logging, loguploader, etc.
 
     'bokehServer':{                             # Bokeh web server to view recorded data
         'enable':       True,                   # Enable it?
@@ -229,6 +229,7 @@
         # },                
     },
 }
+
 
 
 
