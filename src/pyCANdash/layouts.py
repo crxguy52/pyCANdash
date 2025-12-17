@@ -269,6 +269,8 @@ class MainWindow(QMainWindow):
                 if not os.path.isfile(self.odoPath):
                     with open(self.odoPath, "w") as f:
                         f.write("0")
+                        f.flush()
+                        os.fsync(f.fileno()) # Force write to physical media
                         self.odometer = 0
                 else:
                     with open(self.odoPath, "r") as f:
@@ -601,6 +603,7 @@ class MainWindow(QMainWindow):
             time.sleep(50e-3)
                 
         
+
 
 
 
