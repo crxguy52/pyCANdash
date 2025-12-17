@@ -479,7 +479,7 @@ class MainWindow(QMainWindow):
 
             distance_delta = self.odometer - self.odometer_distance_last_written
 
-            if distance_delta > 0.1:
+            if distance_delta > 1:
                 
                 # Write the new value to the odometer file
                 # Save it to a temp file first, then copy over to the real file to avoid corruption
@@ -537,6 +537,14 @@ class MainWindow(QMainWindow):
         
         
     def shutdownDevices(self):
+
+        if self.logCfg['odometer']['enable'] and logEn is True: 
+            logging.info('Recording odometer value')
+            with open(self.odoPath, "w") as f:
+                f.write(self.odometer)
+                f.flush()
+                os.fsync(f.fileno()) # Force write to physical media
+        
         # Stop all the timers
         logging.info("Stopping all workers")
         threads = {}
@@ -603,6 +611,7 @@ class MainWindow(QMainWindow):
             time.sleep(50e-3)
                 
         
+
 
 
 
