@@ -1,7 +1,7 @@
 # This is formatted as a dictionary
 {
     # Plays back log file for debug (must include file extension). May be deleted or set to None to disable. Skips time gaps >5s 
-    #"playbackFn":       "20241124_141123.log",  
+    #"playbackFn":       "GMLAN_2024-11-24_14-11-23.log",  
     "startTab":         3,                  # Tab to display at startup
     "dataDir":          "/mnt/usb_drive/",  # Path to where data gets saved. if None (or path is invalid) internal data directory is used.
                                             # Used by everything - bokeh server, CAN logging, loguploader, etc.
@@ -229,6 +229,7 @@
         # },                
     },
 }
+
 
 
 
