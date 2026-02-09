@@ -248,7 +248,7 @@ class MainWindow(QMainWindow):
 
         # Play back a file to vcan if a playback file is specified. 
         # Disable logging if playing back a file, otherwise leave it enabled
-        logEn = True
+        self.logEn = True
         if 'playbackFn' in self.logCfg.keys():
             if self.logCfg['playbackFn'] is not None:
                 playbackFilePath = os.path.abspath(os.path.join(self.dataDir, self.logCfg['playbackFn']))
@@ -256,10 +256,10 @@ class MainWindow(QMainWindow):
                 self.playbackDict = startPlayer(playbackFilePath)
 
                 # Disable logging if we're playing back a file
-                logEn = False
+                self.logEn = False
         
         # Load the odometer value if enabled and we're not doing a playback
-        if self.logCfg['odometer']['enable'] and logEn is True:        
+        if self.logCfg['odometer']['enable'] and self.logEn is True:        
 
             # Load the odometer file and initialize it to the correct value
             self.odoPath = os.path.abspath(os.path.join(self.dataDir, "odometer.txt"))
@@ -288,7 +288,7 @@ class MainWindow(QMainWindow):
         self.canChans = {}
         for chan in self.logCfg['canChans']:
             canCfg = self.logCfg['canChans'][chan]
-            self.canChans[chan] = configCAN(canCfg, self.logCfg['dbcDir'], self.rxCAN, self.dataDir, logEn=logEn)
+            self.canChans[chan] = configCAN(canCfg, self.logCfg['dbcDir'], self.rxCAN, self.dataDir, logEn=self.logEn)
 
         # Delete the temporary files we created last time for downloading
         for filename in os.listdir(self.dataDir):
@@ -538,7 +538,7 @@ class MainWindow(QMainWindow):
         
     def shutdownDevices(self):
 
-        if self.logCfg['odometer']['enable'] and logEn is True: 
+        if self.logCfg['odometer']['enable'] and self.logEn is True: 
             logging.info('Recording odometer value')
             with open(self.odoPath, "w") as f:
                 f.write(self.odometer)
