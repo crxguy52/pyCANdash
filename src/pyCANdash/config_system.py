@@ -27,7 +27,7 @@ def configCAN(canCfg, dbcDir, statusFcn, dataDir, logEn=True):
 
         if logEn is False:
              logging.info(f'Playing back file, forcing {canCfg["name"]} to use virtual bus')
-             canCfg['interface'] = 'virtual'
+             canCfg['interface'] = 'usevitual'
 
         logging.info(f'{canCfg["name"]}: Starting CANWorker')
         canCfg['worker'] = CANWorker(canCfg, dataDir, logEn=logEn)
