@@ -741,8 +741,10 @@ if __name__ == "__main__":
     dataDir = os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data")), "")
     dbcPath = os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "dbc")), "gmlan_v1.6")
 
+    ipList = [get_ip()+":5006", "localhost:5006"]
+
     server = Server({'/': partial(bkapp, dataDir=dataDir, dbcPath=dbcPath)},
-                    allow_websocket_origin=[get_ip()+":5006", "localhost:5006"],
+                    allow_websocket_origin=ipList,
                     extra_patterns=[(r'/data/(.*)', StaticFileHandler, {'path': dataDir}),],
                     )
     server.start()
@@ -753,7 +755,7 @@ if __name__ == "__main__":
                     format = "%(levelname)s: %(asctime)s - %(message)s",
                     force=True)
 
-    logging.info('Starting on ' + get_ip() + ' and localhost')    
+    logging.info(f'bokehServer: Starting on {ipList} in {dataDir}')    
 
     # server.io_loop.add_callback(server.show, "/")
     server.io_loop.start()

@@ -1,6 +1,8 @@
+import copy
+import re
 
-import pyCANdash.config_system as configSys
 from pyCANdash.bokeh_classes import bkapp, get_ip
+from pyCANdash.utils import handleException, EMPTY_BLF_SIZE_BYTES
 import logging
 from PyQt6.QtCore import pyqtSignal, QTimer, QObject, pyqtSlot
 import os.path as path
@@ -9,7 +11,7 @@ from datetime import datetime
 import time
 import can
 from typing import Iterable, cast
-import os 
+import os
 import glob
 import ftplib
 from functools import partial
@@ -39,7 +41,7 @@ class CANWorker(QObject):
     stopSignal = pyqtSignal()
     initFinishedSignal = pyqtSignal()
     finishedSignal = pyqtSignal()
-    _stop_event = threading.Event()     
+    _stop_event = threading.Event()
 
     def __init__(self, canCfg, dataDir, logEn=True):
         QObject.__init__(self)
@@ -65,19 +67,23 @@ class CANWorker(QObject):
         # self.initFinishedSignal.connect(self.mainWindow.configRunLayout.checkEnableRun)
 
     def run(self):
-        try:                
+        try:
             # Start the bus
             try:
-                self.bus = can.Bus(interface=self.canCfg['interface'], channel=self.canCfg['channel'], bitrate=self.canCfg['baud'])
-                logging.info(f'{self.canCfg["name"]}: {self.canCfg["interface"]} opened')
-            except:
+                if self.canCfg['interface'] == 'virtual':
+                    self.bus = can.Bus(interface='virtual')
+                    logging.info(f'{self.canCfg["name"]}: Using virtual CAN')    
+                else:
+                    self.bus = can.Bus(interface=self.canCfg['interface'], channel=self.canCfg['channel'], bitrate=self.canCfg['baud'])
+                    logging.info(f'{self.canCfg["name"]}: {self.canCfg["interface"]} opened')
+            except Exception:
                 self.bus = can.Bus(interface='virtual')
                 logging.info(f'{self.canCfg["name"]}: Hardware not available, using virtual CAN')
 
             if self.logEn:
                 # Start the log file
                 logFileName = f"{self.canCfg['name']}_{datetime.now():%Y-%m-%d_%H-%M-%S}.{self.canCfg['logFormat']}"
-                self.logFilePath = path.abspath(path.join(self.dataDir, logFileName)) 
+                self.logFilePath = path.abspath(path.join(self.dataDir, logFileName))
                 logging.info(f'{self.canCfg["name"]}: Logging CAN data to ' + self.logFilePath)
                 self.logger = can.Logger(self.logFilePath)
 
@@ -91,9 +97,9 @@ class CANWorker(QObject):
 
             self.statusInterval = 1 / self.canCfg['RxHz']
             logging.info(f'{self.canCfg["name"]}: Setting CAN RX interval to {1e3*self.statusInterval} ms')
-            self.timer.setInterval(int(1e3 * self.statusInterval))  
+            self.timer.setInterval(int(1e3 * self.statusInterval))
             self.timer.timeout.connect(self.queryStatus)
-            self.timer.start()        
+            self.timer.start()
 
             logging.info(f'{self.canCfg["name"]}: Init finisehd')
             self.initFinishedSignal.emit()
@@ -103,7 +109,7 @@ class CANWorker(QObject):
 
             self.logger = None
 
-            configSys.handleException()
+            handleException()
             self.stop()
 
     def queryStatus(self):
@@ -111,10 +117,10 @@ class CANWorker(QObject):
         message_count = 0
         t_end = time.time() + self.statusInterval
 
-        # Recieve the message from the CAN bus and log it. 
+        # Recieve the message from the CAN bus and log it.
         # Do it until we time out or there are no more messages to recieve
         while time.time() < t_end:
-            msg = self.bus.recv(timeout=0)       
+            msg = self.bus.recv(timeout=0)
 
             if msg is not None:
 
@@ -131,7 +137,7 @@ class CANWorker(QObject):
 
                     # If it's not a DTC, put it in the decodedDict
                     if msg.arbitration_id != self.canCfg['arbIDdtc']:
-                        
+
                         # Iterate over all of the signals
                         for key in decodedDict:
                             if key not in self.statusDict:
@@ -139,7 +145,7 @@ class CANWorker(QObject):
                                 self.statusDict.update({key:decodedDict[key]})
                             else:
                                 # Otherwise it's in the dictionary, so update the value
-                                self.statusDict[key] = decodedDict[key]       
+                                self.statusDict[key] = decodedDict[key]
                     else:
                         # It's a DTC so store it seperately
                         if decodedDict['diag_trouble_code_number'] not in self.statusDict['DTCs']:
@@ -154,7 +160,7 @@ class CANWorker(QObject):
 
         if message_count > 0:
             # Send it to the main thread
-            self.statusSignal.emit(self.canCfg["name"], self.statusDict, message_count)
+            self.statusSignal.emit(self.canCfg["name"], copy.deepcopy(self.statusDict), message_count)
         else:
             self.statusSignal.emit(self.canCfg["name"], {}, message_count)
 
@@ -181,8 +187,8 @@ class CANWorker(QObject):
         self.finishedSignal.emit()
 
         # This shouldn't be necessary since I thread.quit gets linked to finishedSignal when the thread
-        # is created, but it looks like finishedSignal never gets received in the main thread for some reason          
-        self.thread().quit()        
+        # is created, but it looks like finishedSignal never gets received in the main thread for some reason
+        self.thread().quit()
 
 
 class CANplayerWorker(QObject):
@@ -190,7 +196,7 @@ class CANplayerWorker(QObject):
     stopSignal = pyqtSignal()
     initFinishedSignal = pyqtSignal()
     finishedSignal = pyqtSignal()
-    _stop_event = threading.Event()     
+    _stop_event = threading.Event()
 
     def __init__(self, logFile, printDebug=False):
         QObject.__init__(self)
@@ -226,8 +232,8 @@ class CANplayerWorker(QObject):
 
             logging.info('Playback finished')
             self.finishedSignal.emit()
-        except:
-            configSys.handleException()
+        except Exception:
+            handleException()
 
 
 class logUploaderWorker(QObject):
@@ -235,7 +241,7 @@ class logUploaderWorker(QObject):
     stopSignal = pyqtSignal()
     initFinishedSignal = pyqtSignal()
     finishedSignal = pyqtSignal()
-    _stop_event = threading.Event()    
+    _stop_event = threading.Event()
 
     def __init__(self, ip, remoteLogDir, localDir):
         QObject.__init__(self)
@@ -261,8 +267,8 @@ class logUploaderWorker(QObject):
         # Connect to the FTP server
         self.ftp = self.connect2ftp(self.ip)
 
-        if self.ftp is not None:      
-            try:  
+        if self.ftp is not None:
+            try:
                 # Change the the logging directory
                 self.ftp.cwd(self.remoteLogDir)
 
@@ -271,17 +277,17 @@ class logUploaderWorker(QObject):
 
                 # Send the GUI log files
                 self.copyFiles('/logfiles/', 'logfiles')
-                    
+
                 logging.info("logUploader: Finished syncing files, closing")
                 self.ftp.close()
             except Exception as e:
                 logging.error(f'logUploader: Unable to sync files: {e}')
                 try:
                     self.ftp.close()
-                except:
+                except Exception:
                     pass
 
-        self.stop()        
+        self.stop()
 
 
     def connect2ftp(self, ip, username=None, password=None):
@@ -294,7 +300,7 @@ class logUploaderWorker(QObject):
                 ftp.login()
                 logging.info(f'logUploader: Connected to {ip}')
                 return ftp
-            except:
+            except Exception:
                 # Wait for 5 seconds
                 t0 = datetime.now()
                 while (datetime.now() - t0).total_seconds() < 5:
@@ -306,7 +312,7 @@ class logUploaderWorker(QObject):
             if self._stop_event.is_set():
                 logging.info('logUploader: FTP connection aborted due to stopFlag')
             else:
-                logging.info('logUploader: Unable to connect to FTP server, aborting') 
+                logging.info('logUploader: Unable to connect to FTP server, aborting')
 
             return None
 
@@ -317,7 +323,7 @@ class logUploaderWorker(QObject):
 
         # Change the remote directory to the one we're looking for
         if len(relRemoteDir) > 0:
-            self.ftp.cwd(self.remoteLogDir + '/' + relRemoteDir)        
+            self.ftp.cwd(self.remoteLogDir + '/' + relRemoteDir)
 
         # Get a list of what exists in the remote directory
         remoteList = self.ftp.nlst()
@@ -331,10 +337,10 @@ class logUploaderWorker(QObject):
             if self._stop_event.is_set():
                 logging.info('logUploader: Stopping upload due to stopFlag')
                 break
-            
+
             dT = self.getSecondsDelta(file)
             dT_thresh = 5*60    # 5 minutes
-            
+
             # If the current file isn't in the remote directory AND it was created
             # more than 5 minute ago (IE, not the file we're writing to now), send it over
             # TODO: Add file size check here. If local file is larger than remote file, overwrite the remote file
@@ -342,18 +348,18 @@ class logUploaderWorker(QObject):
 
                 fullPath = localDir + file
 
-                # Only upload it if it's not empty - an empty BLF file is 145 bytes
-                if os.path.getsize(fullPath) > 145: 
+                # Only upload it if it's not empty
+                if os.path.getsize(fullPath) > EMPTY_BLF_SIZE_BYTES:
 
                     with open(fullPath, 'rb') as f:
 
                         logging.info(f'logUploader: Sending {fullPath}')
                         status = self.ftp.storbinary(f"STOR {file}", f)
                         logging.info(f'logUploader: {file}: {status}')
-                        
+
                 else:
                     logging.info(f'logUploader: {file} was 0 bytes, skipping')
-                    
+
             elif dT < dT_thresh:
                 logging.info(f'logUploader: {file} was created {dT} seconds ago (less than {dT_thresh}), skipping')
 
@@ -370,25 +376,24 @@ class logUploaderWorker(QObject):
 
         # Clean up
         logging.info(f'LogUploader: Worker stopped')
-        self.finishedSignal.emit()   
+        self.finishedSignal.emit()
 
         # This shouldn't be necessary since I thread.quit gets linked to finishedSignal when the thread
-        # is created, but it looks like finishedSignal never gets received in the main thread for some reason          
+        # is created, but it looks like finishedSignal never gets received in the main thread for some reason
         self.thread().quit()
 
 
     def getSecondsDelta(self, fn:str):
         # Determine how long ago the file was created based on the name
-    
-        import re
+
         try:
-            parts = re.split('_|\.', fn)     
+            parts = re.split('_|\.', fn)
             datestr = parts[-3] + '_' + parts[-2]
-            seconds = (datetime.now() - datetime.strptime(datestr, '%Y-%m-%d_%H-%M-%S')).seconds   
+            seconds = (datetime.now() - datetime.strptime(datestr, '%Y-%m-%d_%H-%M-%S')).total_seconds()
         except Exception as e:
             logging.error(f'logUploader: Could not determine how long ago {fn} was created: {e}')
             seconds = -1
-    
+
         return seconds
 
 
@@ -397,7 +402,7 @@ class bokehServerWorker(QObject):
     stopSignal = pyqtSignal()
     initFinishedSignal = pyqtSignal()
     finishedSignal = pyqtSignal()
-    _stop_event = threading.Event() 
+    _stop_event = threading.Event()
 
     def __init__(self, dataDir, dbcPath, IPs):
         QObject.__init__(self)
@@ -421,12 +426,12 @@ class bokehServerWorker(QObject):
         while (datetime.now() - t0).total_seconds() < 10:
             if self._stop_event.is_set():
                 logging.info(f'bokehServer: stopping due to _stop_event')
-                break        
+                break
             time.sleep(0.1)
 
         if self._stop_event.is_set() == False:
             ipList = [get_ip()+":5006", "localhost:5006"] + self.IPs
-            logging.info(f'bokehServer: Starting on {ipList}')           
+            logging.info(f'bokehServer: Starting on {ipList} in {self.dataDir}')
 
             self.server = Server({'/': partial(bkapp, dataDir=self.dataDir, dbcPath=self.dbcPath)},
                             allow_websocket_origin=ipList,
@@ -437,7 +442,7 @@ class bokehServerWorker(QObject):
             self.server.io_loop.start()
 
             # TODO:
-            # io_loop.start() is blocking so stop() never gets called, it just gets killed. Fix this.    
+            # io_loop.start() is blocking so stop() never gets called, it just gets killed. Fix this.
 
 
     @pyqtSlot()
@@ -445,15 +450,15 @@ class bokehServerWorker(QObject):
 
         logging.info(f'bokehServer: Stopping server')
         if hasattr(self, 'server'):
-            self.server.io_loop.stop()
+            self.server.io_loop.add_callback(self.server.io_loop.stop)
 
         # Clean up
         logging.info(f'bokehServer: Worker stopped')
-        self.finishedSignal.emit()   
+        self.finishedSignal.emit()
 
         # This shouldn't be necessary since I thread.quit gets linked to finishedSignal when the thread
-        # is created, but it looks like finishedSignal never gets received in the main thread for some reason          
-        self.thread().quit()  
+        # is created, but it looks like finishedSignal never gets received in the main thread for some reason
+        self.thread().quit()
 
 
 class gpioMonitorWorker(QObject):
@@ -461,7 +466,7 @@ class gpioMonitorWorker(QObject):
     stopSignal = pyqtSignal()
     initFinishedSignal = pyqtSignal()
     finishedSignal = pyqtSignal()
-    _stop_event = threading.Event() 
+    _stop_event = threading.Event()
 
     def __init__(self, gpioPin, lowTime=5, Ts=40e-3):
         QObject.__init__(self)
@@ -477,7 +482,7 @@ class gpioMonitorWorker(QObject):
 
         try:
             self.pinDevice = InputDevice(self.gpioPin, pull_up=True, active_state=True)
-        except:
+        except Exception:
             logging.info(f'gpioMonitorWorker: Failed to open pin device on GPIO{self.gpioPin}, using dummy device')
             self.pinDevice = self.dummyInputDevice()
         self.lowCount = 0
@@ -500,15 +505,15 @@ class gpioMonitorWorker(QObject):
         self.timer = QTimer(self)
 
         logging.info(f'gpioMonitorWorker: Setting gpioMonitorWorker interval to {1e3*self.Ts} ms')
-        self.timer.setInterval(int(1e3 * self.Ts))  
+        self.timer.setInterval(int(1e3 * self.Ts))
         self.timer.timeout.connect(self.queryGpio)
-        self.timer.start()        
+        self.timer.start()
 
         logging.info(f'gpioMonitorWorker: Init finisehd')
         #self.initFinishedSignal.emit()
 
 
-    def queryGpio(self):        
+    def queryGpio(self):
         # If the GPIO has been low for the prescribed time emit a shutdown signal (1)
         # Otherwise emit a keep going signal (0)
 
@@ -527,12 +532,12 @@ class gpioMonitorWorker(QObject):
             case self.lowCount_minus3:
                 logging.info('gpioMonitorWorker: Shutting down in 3...')
             case self.lowCount_minus2:
-                logging.info('gpioMonitorWorker: Shutting down in 2...') 
+                logging.info('gpioMonitorWorker: Shutting down in 2...')
             case self.lowCount_minus1:
-                logging.info('gpioMonitorWorker: Shutting down in 1...')   
+                logging.info('gpioMonitorWorker: Shutting down in 1...')
             case self.lowCountMax:
                 logging.info('gpioMonitorWorker: Shutting down now byeeee')
-        
+
         self.statusSignal.emit(self.lowCount / self.lowCountMax)
 
     @pyqtSlot()
@@ -547,16 +552,16 @@ class gpioMonitorWorker(QObject):
 
         logging.info(f'gpioMonitorWorker: Worker stopped')
         # Clean up
-        self.finishedSignal.emit()  
+        self.finishedSignal.emit()
 
         # This shouldn't be necessary since I thread.quit gets linked to finishedSignal when the thread
-        # is created, but it looks like finishedSignal never gets received in the main thread for some reason          
-        self.thread().quit()            
+        # is created, but it looks like finishedSignal never gets received in the main thread for some reason
+        self.thread().quit()
 
 
     class dummyInputDevice():
         def __init__(self):
-            pass    
+            pass
 
         def value(self):
             return False
@@ -567,14 +572,14 @@ class httpServerWorker(QObject):
     stopSignal = pyqtSignal()
     initFinishedSignal = pyqtSignal()
     finishedSignal = pyqtSignal()
-    _stop_event = threading.Event() 
+    _stop_event = threading.Event()
 
     def __init__(self, dataDir, port=8000):
         QObject.__init__(self)
 
-        self.dataDir = dataDir  # Directory to serve 
+        self.dataDir = dataDir  # Directory to serve
         self.port = port        # port to serve on
-        self.httpd = None       # Reference to the server instance        
+        self.httpd = None       # Reference to the server instance
 
 
     def initConnections(self, statusFcn):
@@ -590,15 +595,15 @@ class httpServerWorker(QObject):
         # 2. Setup the server
         # allow_reuse_address prevents "Address already in use" errors if you restart quickly
         socketserver.TCPServer.allow_reuse_address = True
-        
+
         try:
             with socketserver.TCPServer(("", self.port), Handler) as self.httpd:
                 logging.info(f"httpServerWorker: Serving {self.dataDir} at port {self.port}")
-                
+
                 # 3. Start the blocking server loop
                 # This will block until shutdown() is called in the stop() method
                 self.httpd.serve_forever(poll_interval=0.1)
-                
+
         except OSError as e:
             logging.error(f"httpServerWorker: Error starting server: {e}")
         except Exception as e:
@@ -620,17 +625,16 @@ class httpServerWorker(QObject):
             if self.httpd.socket:
                 logging.info(f'httpServerWorker: Closing socket')
                 self.httpd.socket.close()
-            
+
             logging.info(f'httpServerWorker: Shutting down server')
             self.httpd.server_close()
 
         logging.info(f'httpServerWorker: Worker stopped')
-        self.finishedSignal.emit()        
+        self.finishedSignal.emit()
 
         # This shouldn't be necessary since I thread.quit gets linked to finishedSignal when the thread
-        # is created, but it looks like finishedSignal never gets received in the main thread for some reason          
-        self.thread().quit()       
-        
+        # is created, but it looks like finishedSignal never gets received in the main thread for some reason
+        self.thread().quit()
 
 
 

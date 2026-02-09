@@ -13,6 +13,9 @@ from bokeh.models import ColumnDataSource
 from bokeh.plotting import figure, show
 from bokeh.palettes import Category10
 
+# Minimum size in bytes of a valid BLF file (an empty BLF with just headers)
+EMPTY_BLF_SIZE_BYTES = 145
+
 
 def handleException():
     # Handle errors raised by the script and log them
@@ -30,27 +33,27 @@ def colorName2hex(colorName):
         'darkgray': '#808080',
         'gray': '#a0a0a4',
         'lightgray': '#c0c0c0',
-        'red': '#ff0000', 
-        'green': '#00ff00', 
+        'red': '#ff0000',
+        'green': '#00ff00',
         'blue': '#0000ff',
         'cyan': '#00ffff',
-        'magenta': '#ff00ff', 
-        'yellow': '#ffff00', 
-        'darkred': '#800000', 
-        'darkgreen': '#008000', 
-        'darkblue': '#000080', 
-        'darkcyan': '#008080', 
-        'darkmagenta': '#800080', 
-        'darkyellow': '#808000', 
+        'magenta': '#ff00ff',
+        'yellow': '#ffff00',
+        'darkred': '#800000',
+        'darkgreen': '#008000',
+        'darkblue': '#000080',
+        'darkcyan': '#008080',
+        'darkmagenta': '#800080',
+        'darkyellow': '#808000',
         'transparent': '#00000000',
-        'black': "#000000FF",        
+        'black': "#000000FF",
     }
     if colorName.lower() in color2hex.keys():
         color = color2hex[colorName.lower()]
     else:
         color = colorName
         logging.info(f'Color {colorName} not found')
-    
+
     return color
 
 
@@ -61,7 +64,7 @@ def findUnit(sigName, canChans, useIps=None):
     for chan in canChans:
         if sigName in canChans[chan]['sig2unit']:
             if canChans[chan]['sig2unit'][sigName] is not None:
-                unit = canChans[chan]['sig2unit'][sigName] 
+                unit = canChans[chan]['sig2unit'][sigName]
                 unit = unit.replace('deg', '°')
 
     if useIps is not None:
@@ -71,7 +74,7 @@ def findUnit(sigName, canChans, useIps=None):
             return unit, 1, 0
     else:
         return unit
-        
+
 
 def convert2ips(unit:str):
     conversions = {
@@ -93,7 +96,7 @@ def convert2ips(unit:str):
         newUnit = unit
         logging.warning(f'Unable to convert {unit} to ips')
 
-    return newUnit, gain, offset 
+    return newUnit, gain, offset
 
 
 def decode_tall(fPath, dbPath):
@@ -120,7 +123,7 @@ def decode_tall(fPath, dbPath):
                         # Write it to the tall file
                         f.write(f"{msg.timestamp},{signal},{signals[signal]}\n")
 
-                except:
+                except Exception:
                     # Skip it next time if there was an error decoding
                     exc_type, exc_value, exc_traceback = sys.exc_info()
                     print(f'Error decoding {msg.arbitration_id}: {exc_type}, skipping')
@@ -217,7 +220,7 @@ def tryConvert2float(val :str):
     try:
         floatVal = float(val)
         val = floatVal
-    except:
+    except (ValueError, TypeError):
         pass
 
     return val
@@ -261,7 +264,7 @@ if __name__ == "__main__":
     #plotVars = ['accelerator_actual_pos', 'throttle_pos']
     ##plotVars = ['ambient_air_temp', 'engine_coolant_temp', 'engine_intake_air_temp', 'engine_oil_temperature', 'trans_oil_temp']
     #colors = Category10[max([3, len(plotVars)])]
-    #for idx in range(0, len(plotVars)): 
+    #for idx in range(0, len(plotVars)):
     #    p.line(source=source, x='timestamp', y=plotVars[idx], legend_label=plotVars[idx], color=colors[idx])
 
     ## show both plots next to each other in a gridplot layout
