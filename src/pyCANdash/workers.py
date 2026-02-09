@@ -15,6 +15,8 @@ import ftplib
 from functools import partial
 import functools
 import threading
+import copy
+import re
 
 from gpiozero import InputDevice
 
@@ -68,9 +70,13 @@ class CANWorker(QObject):
         try:                
             # Start the bus
             try:
-                self.bus = can.Bus(interface=self.canCfg['interface'], channel=self.canCfg['channel'], bitrate=self.canCfg['baud'])
-                logging.info(f'{self.canCfg["name"]}: {self.canCfg["interface"]} opened')
-            except:
+                if self.canCfg['interface'] == 'virtual':
+                    self.bus = can.Bus(interface='virtual')
+                    logging.info(f'{self.canCfg["name"]}: Using virtual CAN')    
+                else:
+                    self.bus = can.Bus(interface=self.canCfg['interface'], channel=self.canCfg['channel'], bitrate=self.canCfg['baud'])
+                    logging.info(f'{self.canCfg["name"]}: {self.canCfg["interface"]} opened')
+            except Exception:
                 self.bus = can.Bus(interface='virtual')
                 logging.info(f'{self.canCfg["name"]}: Hardware not available, using virtual CAN')
 
@@ -154,7 +160,7 @@ class CANWorker(QObject):
 
         if message_count > 0:
             # Send it to the main thread
-            self.statusSignal.emit(self.canCfg["name"], self.statusDict, message_count)
+            self.statusSignal.emit(self.canCfg["name"], copy.deepcopy(self.statusDict), message_count)
         else:
             self.statusSignal.emit(self.canCfg["name"], {}, message_count)
 
@@ -226,7 +232,7 @@ class CANplayerWorker(QObject):
 
             logging.info('Playback finished')
             self.finishedSignal.emit()
-        except:
+        except Exception:
             configSys.handleException()
 
 
@@ -294,7 +300,7 @@ class logUploaderWorker(QObject):
                 ftp.login()
                 logging.info(f'logUploader: Connected to {ip}')
                 return ftp
-            except:
+            except Exception:
                 # Wait for 5 seconds
                 t0 = datetime.now()
                 while (datetime.now() - t0).total_seconds() < 5:
@@ -380,11 +386,11 @@ class logUploaderWorker(QObject):
     def getSecondsDelta(self, fn:str):
         # Determine how long ago the file was created based on the name
     
-        import re
+
         try:
             parts = re.split('_|\.', fn)     
             datestr = parts[-3] + '_' + parts[-2]
-            seconds = (datetime.now() - datetime.strptime(datestr, '%Y-%m-%d_%H-%M-%S')).seconds   
+            seconds = (datetime.now() - datetime.strptime(datestr, '%Y-%m-%d_%H-%M-%S')).total_seconds()   
         except Exception as e:
             logging.error(f'logUploader: Could not determine how long ago {fn} was created: {e}')
             seconds = -1
@@ -426,7 +432,7 @@ class bokehServerWorker(QObject):
 
         if self._stop_event.is_set() == False:
             ipList = [get_ip()+":5006", "localhost:5006"] + self.IPs
-            logging.info(f'bokehServer: Starting on {ipList}')           
+            logging.info(f'bokehServer: Starting on {ipList} in {self.dataDir}')           
 
             self.server = Server({'/': partial(bkapp, dataDir=self.dataDir, dbcPath=self.dbcPath)},
                             allow_websocket_origin=ipList,
@@ -434,7 +440,8 @@ class bokehServerWorker(QObject):
                             )
 
             self.server.start()
-            self.server.io_loop.start()
+            self.io_loop = self.server.io_loop
+            self.io_loop.start()
 
             # TODO:
             # io_loop.start() is blocking so stop() never gets called, it just gets killed. Fix this.    
@@ -444,8 +451,8 @@ class bokehServerWorker(QObject):
     def stop(self):
 
         logging.info(f'bokehServer: Stopping server')
-        if hasattr(self, 'server'):
-            self.server.io_loop.stop()
+        if hasattr(self, 'io_loop'):
+            self.io_loop.add_callback(self.io_loop.stop)
 
         # Clean up
         logging.info(f'bokehServer: Worker stopped')
@@ -477,7 +484,7 @@ class gpioMonitorWorker(QObject):
 
         try:
             self.pinDevice = InputDevice(self.gpioPin, pull_up=True, active_state=True)
-        except:
+        except Exception:
             logging.info(f'gpioMonitorWorker: Failed to open pin device on GPIO{self.gpioPin}, using dummy device')
             self.pinDevice = self.dummyInputDevice()
         self.lowCount = 0

@@ -120,7 +120,7 @@ def decode_tall(fPath, dbPath):
                         # Write it to the tall file
                         f.write(f"{msg.timestamp},{signal},{signals[signal]}\n")
 
-                except:
+                except Exception:
                     # Skip it next time if there was an error decoding
                     exc_type, exc_value, exc_traceback = sys.exc_info()
                     print(f'Error decoding {msg.arbitration_id}: {exc_type}, skipping')
@@ -217,7 +217,7 @@ def tryConvert2float(val :str):
     try:
         floatVal = float(val)
         val = floatVal
-    except:
+    except Exception:
         pass
 
     return val

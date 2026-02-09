@@ -227,7 +227,7 @@ class MainWindow(QMainWindow):
         self.logCfg = self.loadConfig(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "config_files", self.guiCfg["LOGGER_CFG"])) + '.py')
 
         # Set the data directory
-        internalDir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data"))
+        internalDir = os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data")), "")
         if self.logCfg['dataDir'] is not None:
             if os.path.isdir(self.logCfg['dataDir']):
                 # If the directory exists, use it
@@ -303,7 +303,7 @@ class MainWindow(QMainWindow):
             # If it's more than a day old AND it's zero size
             if '_wide.csv' in filename or (oldFlag and zeroSizeFlag and fileExtFlag):
                 logging.warning(f'Deleting {filename}')
-                os.remove(self.dataDir + filename)   
+                os.remove(fpath)   
 
         # Start the GPIO monitor 
         if self.logCfg['GPIOmonitor']['Enable']:
