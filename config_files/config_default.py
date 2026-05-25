@@ -44,7 +44,7 @@
             'interface':    'socketcan',
             'channel':      'can0',
             'baud':         500000,
-            'dbcName':      'gmlan_v1.6',
+            'dbcName':      'gmlan_v1.6_custom',
             'arbIDdtc':     1906,           # Arbitration ID for diagnostic troubleshooting codes (DTCs). Set to -1 if unused
             'RxHz':         60,             # How frequently for the worker to grab CAN data from the hardware. Do it at least as fast as the fastest update interval
             'logFormat':    'blf'           # File type to log to. Should be one of those defined here: https://python-can.readthedocs.io/en/stable/file_io.html#can.Logger
@@ -145,9 +145,9 @@
                     9:{'sigName':None,                               'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
                     10:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
                     11:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},   
-                    12:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
-                    13:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
-                    14:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    12:{'sigName':'lambda',                          'dispName':'WB02 Lambda',   'lims':(-1e3, -999, 	-998,	1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    13:{'sigName':'lsu_temp',                        'dispName':'WBO2 Temp',     'lims':(-1e3, -999, 	-998,	1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    14:{'sigName':'spartan_stat',                    'dispName':'WBO2 Status',   'lims':(-1e3, -999, 	-998,	1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
                 },
             },
         },
