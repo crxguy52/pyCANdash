@@ -145,7 +145,7 @@
                     9:{'sigName':None,                               'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
                     10:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
                     11:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},   
-                    12:{'sigName':'lambda',                          'dispName':'WB02 Lambda',   'lims':(-1e3, -999, 	-998,	1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    12:{'sigName':'lambda',                          'dispName':'WB02 Lambda',   'lims':(-1e3, -999, 	-998,	1500,	2e3, 2001), 'dispFmt':'%1.2f' , 'convert2ips':False,},
                     13:{'sigName':'lsu_temp',                        'dispName':'WBO2 Temp',     'lims':(-1e3, -999, 	-998,	1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
                     14:{'sigName':'spartan_stat',                    'dispName':'WBO2 Status',   'lims':(-1e3, -999, 	-998,	1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
                 },
