@@ -267,14 +267,17 @@ class MainWindow(QMainWindow):
             try:
                 # If the file doesn't exist, create it and initalize to zero
                 if not os.path.isfile(self.odoPath):
+                    logging.info('odometer.txt did not exist, creating it')
                     with open(self.odoPath, "w") as f:
                         f.write("0")
                         f.flush()
                         os.fsync(f.fileno()) # Force write to physical media
                         self.odometer = 0
                 else:
+                    logging.info('odometer.txt existed, loading')
                     with open(self.odoPath, "r") as f:
                         self.odometer = float(f.read())
+                    logging.info('odometer = %1.1f' % self.odometer)
 
                 # Initialize last time to zero
                 self.odometer_t_last = datetime.now()
