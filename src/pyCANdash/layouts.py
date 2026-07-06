@@ -283,8 +283,9 @@ class MainWindow(QMainWindow):
                 self.odometer_t_last = datetime.now()
                 self.odometer_speed_last = 0
                 self.odometer_distance_last_written = self.odometer    
-            except:
+            except Exception as e:
                 logging.error('Error loading or creating odometer file, disabling')
+                logging.error(e)
                 self.logCfg['odometer']['enable'] = False
 
         # Configure the CAN buses - store them in a dictionary
@@ -542,9 +543,9 @@ class MainWindow(QMainWindow):
     def shutdownDevices(self):
 
         if self.logCfg['odometer']['enable'] and self.logEn is True: 
-            logging.info('Recording odometer value')
+            logging.info('Recording odometer value: %1.1f' % self.odometer)
             with open(self.odoPath, "w") as f:
-                f.write(self.odometer)
+                f.write(str(self.odometer))
                 f.flush()
                 os.fsync(f.fileno()) # Force write to physical media
         
