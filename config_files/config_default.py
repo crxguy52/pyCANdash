@@ -118,7 +118,7 @@
                     2:{ 'sigName':'throttle_pos',                'dispName':'Throttle Pos',      'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.0f', 'convert2ips':False,},
                     3:{ 'sigName':'mass_air_flow',               'dispName':'Mass Airflow',      'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f', 'convert2ips':False,},   
                     4:{ 'sigName':'barometric_pressure_abs',     'dispName':'Baro Press abs',    'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f', 'convert2ips':False,},
-                    5:{ 'sigName':'eng_intake_air_boost_press',  'dispName':'Manifold Boost',    'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f', 'convert2ips':False,},
+                    5:{ 'sigName':None,                          'dispName':'',                  'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
                     6:{ 'sigName':'eng_manifold_abs_pres',    'dispName':'Manifold Press abs','lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f', 'convert2ips':False,},
                     7:{ 'sigName':'eng_intake_air_temp',      'dispName':'Intake Air Temp',   'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f', 'convert2ips':False,},     
                     8:{ 'sigName':'ambient_air_temp',            'dispName':'Ambient Air Temp',  'lims':(-1e3, -999, 	-1,		1500,	2e3, 2001), 'dispFmt':'%1.1f' , 'convert2ips':False,},
@@ -202,7 +202,7 @@
             'colStretch':[1, 3, 1],     # Column stretch values, how wide to make each column
             'gaugeCfg':{
                 # Origin is in the top left, so 00 is the top left gauge. Center gague is col 1, right gauges are col 2
-                'sideGauge00':{'signal':'eng_oil_temperature',   'lims':(60, 60, 75, 125, 135, 140),   'label':'Oil\n', 'convert2ips':False, 'nMainDivs':8,},
+                'sideGauge00':{'signal':'eng_oil_temperature',   'lims':(60, 60, 75, 135, 145, 160),   'label':'Oil\n', 'convert2ips':False, 'nMainDivs':8,},
                 'sideGauge10':{'signal':'eng_oil_pressure',      'lims':(0, 10, 15, 120, 130, 140),      'label':'Oil\n', 'convert2ips':True, 'nMainDivs':14,},                         
                 'sideGauge02':{'signal':'eng_coolant_temp',      'lims':(60, 60, 75, 115, 120, 140),   'label':'Water\n', 'convert2ips':False, 'nMainDivs':8,},
                 'sideGauge12':{'signal':'trans_oil_temp',        'lims':(20, 20, 15, 100, 110, 120),   'label':'Trans\n', 'convert2ips':False, 'nMainDivs':10,},
