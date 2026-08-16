@@ -8,7 +8,7 @@
 
     'bokehServer':{                             # Bokeh web server to view recorded data
         'enable':       True,                   # Enable it?
-        'dbcName':      'gmlan_v1.6',           # Which can DBC file to use
+        'dbcName':      'gmlan_v1.7_custom',    # Which can DBC file to use
         'IPs':          ["192.168.10.1:5006"],  # IP addresses to host the server on in addition to the local IP and localhost 
     },
 
@@ -44,7 +44,7 @@
             'interface':    'socketcan',
             'channel':      'can0',
             'baud':         500000,
-            'dbcName':      'gmlan_v1.6_custom',
+            'dbcName':      'gmlan_v1.7_custom',
             'arbIDdtc':     1906,           # Arbitration ID for diagnostic troubleshooting codes (DTCs). Set to -1 if unused
             'RxHz':         60,             # How frequently for the worker to grab CAN data from the hardware. Do it at least as fast as the fastest update interval
             'logFormat':    'blf'           # File type to log to. Should be one of those defined here: https://python-can.readthedocs.io/en/stable/file_io.html#can.Logger
@@ -202,10 +202,16 @@
             'colStretch':[1, 3, 1],     # Column stretch values, how wide to make each column
             'gaugeCfg':{
                 # Origin is in the top left, so 00 is the top left gauge. Center gague is col 1, right gauges are col 2
+                # llim      = lower display limit (for gagues)
+                # lowlow    = start of dark red area
+                # low       = start of dark yellow area
+                # high      = start of yellow area
+                # highhigh  = start of red area
+                # ulim  = upper display limit (for gagues)
                 'sideGauge00':{'signal':'eng_oil_temperature',   'lims':(60, 60, 75, 135, 145, 160),   'label':'Oil\n', 'convert2ips':False, 'nMainDivs':8,},
                 'sideGauge10':{'signal':'eng_oil_pressure',      'lims':(0, 10, 15, 120, 130, 140),      'label':'Oil\n', 'convert2ips':True, 'nMainDivs':14,},                         
                 'sideGauge02':{'signal':'eng_coolant_temp',      'lims':(60, 60, 75, 115, 120, 140),   'label':'Water\n', 'convert2ips':False, 'nMainDivs':8,},
-                'sideGauge12':{'signal':'trans_oil_temp',        'lims':(20, 20, 15, 100, 110, 120),   'label':'Trans\n', 'convert2ips':False, 'nMainDivs':10,},
+                'sideGauge12':{'signal':'trans_oil_temp',        'lims':(50, 50, 50, 130, 140, 150),   'label':'Trans\n', 'convert2ips':False, 'nMainDivs':11,},
                 'centerGauge':{'signal':'eng_speed',             'lims':(0, 0, 0, 6.8, 7.2, 8), 'label':'', 'convert2ips':True,        # if convert2ips is true, converts to kRPM
                                 'speedSignal':'vehicle_speed_avg_driven', 'dynamicRedline':True, 'speedUnit':'MPH', 'speedGain':0.621371},  # MPH per kph     
                                 # speed stuff is a hack but also I don't feel like doing it a better way
