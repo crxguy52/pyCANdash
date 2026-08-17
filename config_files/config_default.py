@@ -8,7 +8,7 @@
 
     'bokehServer':{                             # Bokeh web server to view recorded data
         'enable':       True,                   # Enable it?
-        'dbcName':      'gmlan_v1.7_custom',    # Which can DBC file to use
+        'dbcName':      'gmlan_v1.8_custom',    # Which can DBC file to use
         'IPs':          ["192.168.10.1:5006"],  # IP addresses to host the server on in addition to the local IP and localhost 
     },
 
@@ -44,7 +44,7 @@
             'interface':    'socketcan',
             'channel':      'can0',
             'baud':         500000,
-            'dbcName':      'gmlan_v1.7_custom',
+            'dbcName':      'gmlan_v1.8_custom',
             'arbIDdtc':     1906,           # Arbitration ID for diagnostic troubleshooting codes (DTCs). Set to -1 if unused
             'RxHz':         60,             # How frequently for the worker to grab CAN data from the hardware. Do it at least as fast as the fastest update interval
             'logFormat':    'blf'           # File type to log to. Should be one of those defined here: https://python-can.readthedocs.io/en/stable/file_io.html#can.Logger
