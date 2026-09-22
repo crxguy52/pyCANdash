@@ -62,15 +62,6 @@ BO_ 201 engine_general_status_1: 8 ECM
 	SG_ eng_intke_air_boost_press_valid : 51|1@0+ (1,0) [0|1] "" Vector__XXX
 	SG_ eng_intake_air_boost_press : 63|8@0+ (1,-127) [-127|128] "kPa gage" Vector__XXX
 
-BO_ 241 brake_apply_status: 2 BSM
-	SG_ brake_pedal_mod_travel_achvd_vld : 7|1@0+ (1,0) [0|1] "" Vector__XXX
-	SG_ brake_pedal_mod_travel_achieved : 6|1@0+ (1,0) [0|1] "" Vector__XXX
-	SG_ brake_pedal_pos_alive_roll_cnt : 5|2@0+ (1,0) [0|3] "" Vector__XXX
-	SG_ brake_pedal_init_trvl_achvd_prot : 3|2@0+ (1,0) [0|3] "" Vector__XXX
-	SG_ brake_pedal_init_travel_achieved : 1|1@0+ (1,0) [0|1] "" Vector__XXX
-	SG_ brake_pedal_init_trvl_achvd_vld : 0|1@0+ (1,0) [0|1] "" Vector__XXX
-	SG_ brake_pedal_position : 15|8@0+ (0.392156862745098,0) [0|100] "%" Vector__XXX
-
 BO_ 249 transmission_general_status_1: 8 ECM
 	SG_ trans_overall_est_tq_ratio_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
 	SG_ trans_overall_est_tq_ratio : 6|15@0+ (0.0039,0) [0|64] "ratio" Vector__XXX
@@ -108,20 +99,6 @@ BO_ 452 torque_request_status: 8 ECM
 BO_ 453 driver_intended_alxe_torque_status: 8 ECM
     SG_ driver_intnded_ax_torq_vld: 7|1@0+ (1,0) [0|1] "" Vector__XXX
     SG_ driver_intnded_ax_torq: 6|15@0+ (2,-22534) [-22534|43000] "Nm" Vector__XXX
-
-BO_ 481 cruise_control_switch_status: 5 GW
-	SG_ cc_cancel_switch_active : 7|1@0+ (1,0) [0|1] "" Vector__XXX
-	SG_ cc_on_switch_active : 6|1@0+ (1,0) [0|1] "" Vector__XXX
-	SG_ cc_resume_switch_active : 5|1@0+ (1,0) [0|1] "" Vector__XXX
-	SG_ cc_set_switch_active : 4|1@0+ (1,0) [0|1] "" Vector__XXX
-	SG_ cc_speed_increase_switch_active : 3|1@0+ (1,0) [0|1] "" Vector__XXX
-	SG_ cc_speed_decrease_switch_active : 2|1@0+ (1,0) [0|1] "" Vector__XXX
-	SG_ cc_switch_data_integrity : 1|2@0+ (1,0) [0|3] "" Vector__XXX
-	SG_ cc_switch_status_protection_value : 15|8@0+ (1,0) [0|255] "" Vector__XXX
-	SG_ cc_cancel_request : 18|1@0+ (1,0) [0|1] "" Vector__XXX
-	SG_ cc_switch_status_alive_rolling_count : 17|2@0+ (1,0) [0|3] "" Vector__XXX
-	SG_ eng_driver_pref_mode_sw1_active : 39|1@0+ (1,0) [0|1] "" Vector__XXX
-	SG_ eng_driver_pref_mode_sw1_arc : 33|2@0+ (1,0) [0|3] "" Vector__XXX
 
 BO_ 491 fuel_system_status: 4 ECM
 	SG_ fuel_est_pres_delivered : 1|10@0+ (1,0) [0|1] "kPa" Vector__XXX
@@ -162,7 +139,17 @@ BO_ 497 platform_general_status: 8 GW
     SG_ ac_comp_failed_on : 63|1@0+ (1,0) [0|1] "" Vector__XXX
 
 BO_ 501 trans_general_status_2: 8 ECM
-	SG_ trans_estimated_gear : 3|4@0+ (1,0) [0|16] "gear_number" Vector__XXX
+	SG_ trans_torque_conv_clutch_cmd_mode : 7|3@0+ (1,0) [0|7] "" Vector__XXX
+	SG_ trans_estimated_gear_validity : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_estimated_gear : 3|4@0+ (1,0) [0|15] "gear_number" Vector__XXX
+	SG_ top_of_travel_clutch_sw_actv_vld : 15|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ top_of_travel_clutch_sw_active : 14|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ clutch_start_switch_active_vld : 38|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ clutch_start_switch_active : 37|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ clutch_pedal_actual_pos_validity : 55|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_engaged_state_validity : 50|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_engaged_state : 49|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ clutch_pedal_actual_pos : 63|8@0+ (0.392156862745098,0) [0|100] "percent" Vector__XXX
 
 BO_ 707 engine_torque_status_3: 8 ECM
 	SG_ eng_manifold_abs_pres_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
@@ -174,10 +161,8 @@ BO_ 977 engine_general_status_2: 8 ECM
 	SG_ throttle_pos_valid: 7|1@0+ (1,0) [0|1] "" Vector__XXX
 	SG_ throttle_progression_status : 6|2@0+ (1,0) [0|3] "" Vector__XXX
 	SG_ throttle_pos : 15|8@0+ (0.392156862745098,0) [0|100] "percent" Vector__XXX
-	SG_ cruise_ctrl_driver_sel_spd_actv : 20|1@0+ (1,0) [0|1] "" Vector__XXX
 	SG_ eng_coast_fuel_cutoff_active : 22|1@0+ (1,0) [0|1] "" Vector__XXX
 	SG_ eng_oil_starvation_indication_on : 21|1@0+ (1,0) [0|1] "" Vector__XXX
-	SG_ cruise_ctrl_driver_selected_spd : 19|12@0+ (0.0625,0) [0|255.9375] "km/h" Vector__XXX
 	SG_ instant_fuel_consumption_rate : 35|12@0+ (0.025,0) [0|102.375] "liter/hr" Vector__XXX
 	SG_ ac_comp_command : 37|1@0+ (1,0) [0|1] "" Vector__XXX
 	SG_ ac_comp_norm_load_grad_allowed : 63|8@0+ (0.1,0) [0|25.5] "(dm^3/minute)/s" Vector__XXX
@@ -309,14 +294,20 @@ BO_ 1024 spartan3_v2: 4 spartan3_v2
 VAL_ 201 eng_speed_status 3 "Invalid" 1 "Degraded _Operation" 0 "Normal_Operation" ;
 VAL_ 201 platform_eng_spd_cmd_superceeded 1 "Inhibit Platform Engine Speed Control" 0 "Allow Platform Engine Speed Control" ;
 VAL_ 201 eng_cylinder_deactivation_mode 3 "Reactivation In Progress" 2 "Half Of Total Cylinders Active" 1 "Deactivation In Progress" 0 "All Cylinders Active" ;
-VAL_ 241 brake_pedal_mod_travel_achvd_vld 0 "Valid" 1 "Invalid" ;
-VAL_ 241 brake_pedal_init_trvl_achvd_vld 0 "Valid" 1 "Invalid" ;
-VAL_ 481 cc_switch_data_integrity 0 "Data Valid" 1 "Data Invalid" 2 "Failure Detected" 3 "Illegal Range" ;
-VAL_ 481 cc_cancel_request 0 "Do Not Cancel" 1 "Cancel" ;
 VAL_ 497 system_power_mode 0 "Off" 1 "Accessory" 2 "Run" 3 "Crank Request" ;
 VAL_ 497 ac_comp_mode_request 0 "Disengage Immediately" 1 "Disengage" 2 "Engage" ;
 VAL_ 497 ac_comp_norm_load_validity 0 "Valid" 1 "Invalid" ;
 VAL_ 497 ac_comp_sys_vda 0 "Virtual Device Unavailable" 1 "Virtual Device Available" ;
+VAL_ 501 trans_torque_conv_clutch_cmd_mode 0 "Unlocked" 1 "Transitioning" 2 "Controlled Slip" 3 "Locked" 7 "Not Supported" ;
+VAL_ 501 trans_estimated_gear_validity 0 "Valid" 1 "Invalid" ;
+VAL_ 501 trans_estimated_gear 0 "Not Supported" 1 "First Gear" 2 "Second Gear" 3 "Third Gear" 4 "Fourth Gear" 5 "Fifth Gear" 6 "Sixth Gear" 7 "Seventh Gear" 8 "Eighth Gear" 12 "CVT Forward Gear" 13 "Neutral Gear" 14 "Reverse Gear" 15 "Park Gear" ;
+VAL_ 501 top_of_travel_clutch_sw_actv_vld 0 "Valid" 1 "Invalid" ;
+VAL_ 501 top_of_travel_clutch_sw_active 0 "False - Pedal Released" 1 "True - Pedal Depressed" ;
+VAL_ 501 clutch_start_switch_active_vld 0 "Valid" 1 "Invalid" ;
+VAL_ 501 clutch_start_switch_active 0 "False" 1 "True" ;
+VAL_ 501 clutch_pedal_actual_pos_validity 0 "Valid" 1 "Invalid" ;
+VAL_ 501 trans_engaged_state_validity 0 "Valid" 1 "Invalid" ;
+VAL_ 501 trans_engaged_state 0 "Transmission Not Engaged" 1 "Engaged in Forward" 2 "Engaged in Reverse" 3 "Operating State Not Reached" ;
 VAL_ 977 throttle_progression_status 0 "Map A" 1 "Map B" 2 "Map C" 3 "ECM Selected Progression";
 VAL_ 1001 vehicle_speed_average_driven_src 1 "Wheel Speed" 0 "Transmission Output Speed" ;
 VAL_ 1001 dist_roll_cnt_avg_driven_src 1 "Wheel Speed" 0 "Transmission Output Speed" ;
@@ -325,4 +316,3 @@ VAL_ 1024 spartan_stat 0 "reserved" 1 "waiting for trigger before heating" 2 "se
 VAL_ 1225 trans_thermal_mgmt_status 2 "Driver Intervention Required" 1 "Counter-measures Active" 0 "Normal" ;
 VAL_ 1233 trans_thermal_mgmt_status 3 "Type C" 2 "Type B" 1 "Type A" 0 "Not Supported" ;
 VAL_ 1257 ac_compressor_type 0 "None" 1 "Fixed Displacement Clutched" 2 "Variable Displacement Mechanical" 3 "Variable Displacement Electronic" 4 "Electric Motor Driven" ;
-VAL_ 1257 veh_speed_ctrl_system_type 0 "No Vehicle Speed Control" 1 "Conventional Cruise Control" 2 "Adaptive Cruise Control" ;
