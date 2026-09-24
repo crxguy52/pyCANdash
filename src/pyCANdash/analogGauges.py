@@ -49,7 +49,7 @@ def Tach(lims, rpmUnits, speedUnits):
 
     return tach   
 
-def SideGauge(lims, units, nMainDivs=10):
+def SideGauge(lims=(0, 10, 20, 80, 90, 100), unitLabel='unitless', nMainDivs=10, scale_dispFmt='%1.0f', **kwargs):
     gauge = AnalogGaugeWidget()
     gauge.setGaugeTheme(25)     
 
@@ -67,6 +67,7 @@ def SideGauge(lims, units, nMainDivs=10):
     gauge.scale_text_radius_factor = 0.72  
     gauge.unit_text_radius_factor = 0.35 # Default is 0.5
     gauge.enable_value_text = False
+    gauge.scale_dispfmt = scale_dispFmt        
 
     gauge.initial_scale_fontsize = 25 # default is 14
 
