@@ -143,7 +143,7 @@
                     7:{'sigName':None,                               'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},     
                     8:{'sigName':None,                               'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
                     9:{'sigName':None,                               'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
-                    10:{'sigName':None,                              'dispName':'',              'lims':(-1e3, -999, 	1, 		1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
+                    10:{'sigName':'clutch_pedal_actual_pos_validity','dispName':'Clutch Pos Vld','lims':(-1e3, -999, 	-999,	999,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
                     11:{'sigName':'clutch_pedal_actual_pos',         'dispName':'Clutch Pos',    'lims':(-1e3, -999, 	-999, 	999,	999, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},   
                     12:{'sigName':'lambda',                          'dispName':'WB02 Lambda',   'lims':(-1e3, -999, 	-998,	1500,	2e3, 2001), 'dispFmt':'%1.2f' , 'convert2ips':False,},
                     13:{'sigName':'lsu_temp',                        'dispName':'WBO2 Temp',     'lims':(-1e3, -999, 	-998,	1500,	2e3, 2001), 'dispFmt':'%1.0f' , 'convert2ips':False,},
