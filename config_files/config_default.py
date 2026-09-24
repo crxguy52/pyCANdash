@@ -208,7 +208,7 @@
                 # high      = start of yellow area
                 # highhigh  = start of red area
                 # ulim  = upper display limit (for gagues)
-                'sideGauge00':{'signal':'eng_oil_temperature',   'lims':(60, 60, 75, 135, 145, 160),   'label':'Oil\n', 'convert2ips':False, 'nMainDivs':9,},
+                'sideGauge00':{'signal':'eng_oil_temperature',   'lims':(60, 60, 75, 135, 145, 160),   'label':'Oil\n', 'convert2ips':False, 'nMainDivs':10,},
                 'sideGauge10':{'signal':'eng_oil_pressure',      'lims':(0, 10, 15, 120, 130, 140),      'label':'Oil\n', 'convert2ips':True, 'nMainDivs':14,},                         
                 'sideGauge02':{'signal':'eng_coolant_temp',      'lims':(60, 60, 75, 115, 120, 140),   'label':'Water\n', 'convert2ips':False, 'nMainDivs':8,},
                 'sideGauge12':{'signal':'lambda',                'lims':(0.8, 0.8, 0.8, 1.15, 1.5, 1.2),   'label':'λ\n', 'convert2ips':False, 'nMainDivs':10,},
