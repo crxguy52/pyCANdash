@@ -93,6 +93,7 @@ class AnalogGaugeWidget(QWidget):
         self.setEnableScaleText(True)
         self.scale_fontname = "Orbitron"
         self.initial_scale_fontsize = 14
+        self.scale_dispfmt = '%1.0f'           
         self.scale_fontsize = self.initial_scale_fontsize
         self.enable_fine_scaled_marker = True               # ENABLE FINE SCALE BY DEFAULT  
         self.enable_big_scaled_marker = True                # ENABLE BIG SCALE BY DEFAULT         
@@ -1095,12 +1096,11 @@ class AnalogGaugeWidget(QWidget):
 
         text_radius = self.widget_diameter/2 * self.scale_text_radius_factor
 
-        scale_per_div = int((self.maxValue - self.minValue) / self.scalaCount)
+        scale_per_div = (self.maxValue - self.minValue) / self.scalaCount
 
         angle_distance = (float(self.scale_angle_size) / float(self.scalaCount))
         for i in range(self.scalaCount + 1):
-            # text = str(int((self.maxValue - self.minValue) / self.scalaCount * i))
-            text = str(int(self.minValue + scale_per_div * i))
+            text = str(self.scale_dispfmt % (self.minValue + scale_per_div * i))
             w = fm.horizontalAdvance(text) + 1
             h = fm.height()
             painter.setFont(QFont(self.scale_fontname, pointSize=int(self.scale_fontsize)))
