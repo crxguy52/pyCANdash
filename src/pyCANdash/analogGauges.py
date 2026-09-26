@@ -53,7 +53,7 @@ def SideGauge(lims=(0, 10, 20, 80, 90, 100), unitLabel='unitless', nMainDivs=10,
     gauge = AnalogGaugeWidget()
     gauge.setGaugeTheme(25)     
 
-    gauge.units = units
+    gauge.units = unitLabel
 
     angles = {}
     angles["start"] = 90 + int(45/2)   # Zero is due east
