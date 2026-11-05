@@ -1,5 +1,6 @@
-from PyQt6.QtCore import QThread, Qt
+from PyQt6.QtCore import QThread
 import logging
+import threading
 
 from pyCANdash.workers import CANWorker, CANplayerWorker, logUploaderWorker, bokehServerWorker, gpioMonitorWorker, httpServerWorker
 import cantools
@@ -66,15 +67,12 @@ def startLogUploader(FTPcfg, resDir):
     # it gets deleted and the GUI crashes
     logUploader = {}
 
-    logging.info('FTP: Creating thread')
-    logUploader['thread'] = QThread()
-
     logging.info('FTP: Creating worker')
     logUploader['worker'] = logUploaderWorker(FTPcfg['ip'], FTPcfg['remoteLogDir'], resDir)
 
     # Start it upppp
-    logging.info('Playback: Starting thread')
-    startThread(logUploader['thread'], logUploader['worker'], None)
+    logging.info('FTP: Starting thread')
+    logUploader['thread'] = startPyThread(logUploader['worker'], 'logUploader')
 
     return logUploader
 
@@ -84,16 +82,12 @@ def startBokehServer(resDir, dbcDir, cfgDict):
         # it gets deleted and the GUI crashes
         serverDict = {}
 
-        # Create thread and worker
-        logging.info(f'bokehServer: Creating thread')
-        serverDict['thread'] = QThread()
-
         logging.info(f'bokehServer: Creating worker {resDir} {dbcDir + cfgDict["dbcName"]}')
         serverDict['worker'] = bokehServerWorker(resDir, dbcDir + cfgDict['dbcName'], cfgDict['IPs'])
 
         # Start it upppp
         logging.info('bokehServer: Starting thread')
-        startThread(serverDict['thread'], serverDict['worker'], None, stopDirectConnection=True)
+        serverDict['thread'] = startPyThread(serverDict['worker'], 'bokehServer')
         
         return serverDict
 
@@ -132,9 +126,6 @@ def startHttpServer(dataDir, httpServerConfig, dpidLoggerConfig=None):
         logging.info('httpServer: DPID logger control is disabled')
     autoStart = httpServer['dpidController'] is not None and dpidLoggerConfig.get('autoStart') is True
 
-    logging.info('httpServer: Creating thread')
-    httpServer['thread'] = QThread()
-
     logging.info('httpServer: Creating worker')
     httpServer['worker'] = httpServerWorker(dataDir, port=httpServerConfig['port'],
                                             dpidController=httpServer['dpidController'], dpidAutoStart=autoStart,
@@ -142,12 +133,20 @@ def startHttpServer(dataDir, httpServerConfig, dpidLoggerConfig=None):
 
     # Start it upppp
     logging.info('httpServer: Starting thread')
-    startThread(httpServer['thread'], httpServer['worker'], httpServer, stopDirectConnection=True)
+    httpServer['thread'] = startPyThread(httpServer['worker'], 'httpServer')
 
     return httpServer    
  
 
-def startThread(thread, worker, statusFcn, stopDirectConnection=False):
+def startPyThread(worker, name):
+    # Plain thread for workers that block (servers, FTP) and don't use Qt.
+    # Daemon: never keeps the app alive at exit
+    thread = threading.Thread(target=worker.run, name=name, daemon=True)
+    thread.start()
+    return thread
+
+
+def startThread(thread, worker, statusFcn):
     # Move them to the thread - do this before making connections!!
     worker.moveToThread(thread)
 
@@ -159,10 +158,6 @@ def startThread(thread, worker, statusFcn, stopDirectConnection=False):
 
     # Set the "_stop_event" flag when the stop signal is connected
     worker.stopSignal.connect(worker._stop_event.set)
-
-    # Do a direct connection for blocking processes
-    if stopDirectConnection:
-        worker.stopSignal.connect(worker.stop, type=Qt.ConnectionType.DirectConnection)
 
     # When the worker finishes, quit the thread and delete thread and worker
     # finishedSignal doesn't actually get called for some reason, threads are 

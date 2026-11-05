@@ -30,6 +30,9 @@ from pyCANdash.utils import handleException
 # last periodic write is what survives: this is the most distance a drive can lose
 ODO_WRITE_INTERVAL_MI = 0.1
 
+# How long shutdown waits for the log uploader to finish its current step
+LOG_UPLOADER_JOIN_TIMEOUT_S = 1.0
+
 # File created and deleted at startup to check that the data directory is writable
 DATA_DIR_PROBE_FN = '.pyCANdash_write_test'
 
@@ -592,22 +595,16 @@ class MainWindow(QMainWindow):
                 threads.update({self.canChans[chan]['name']: self.canChans[chan]['thread']})
 
         # Shut down the loguploader
+        # logUploader, bokehServer and httpServer are plain (daemon) threads: call stop() directly
         if hasattr(self, 'logUploader'):
-            if not sip.isdeleted(self.logUploader['worker']):
-                logging.info(f"Stopping logUploader worker")
-                #self.logUploader['worker'].stopFlag = True
-                self.logUploader['worker'].stopSignal.emit()
-                threads.update({'logUploader': self.logUploader['thread']})
+            logging.info(f"Stopping logUploader worker")
+            self.logUploader['worker'].stop()
+            self.logUploader['thread'].join(timeout=LOG_UPLOADER_JOIN_TIMEOUT_S)
 
-        # Shut down the bokeh server
+        # Shut down the bokeh server (not waited for, the daemon thread dies with the app)
         if hasattr(self, 'bokehServer'):
-            if not sip.isdeleted(self.bokehServer['worker']):
-                logging.info(f"Stopping bokehServer worker")
-                self.bokehServer['worker'].stopSignal.emit()
-                #self.bokehServer['worker'].stopFlag = True
-                # the boke server is blocking so stop() never gets called...
-                # just shut down anyways. not the right way to do it but it works
-                #threads.update({'bokehServer': self.bokehServer['thread']})
+            logging.info(f"Stopping bokehServer worker")
+            self.bokehServer['worker'].stop()
 
         if hasattr(self, 'GPIOmonitor'):
             if not sip.isdeleted(self.GPIOmonitor['worker']):
@@ -616,12 +613,9 @@ class MainWindow(QMainWindow):
                 threads.update({'GPIOmonitor': self.GPIOmonitor['thread']})
 
         if hasattr(self, 'httpServer'):
-            if not sip.isdeleted(self.httpServer['worker']):
-                logging.info(f"Stopping httpServer worker")
-                self.httpServer['worker'].stopSignal.emit()
-                # Tell it to stop but don't wait for it to end, this likes to hang
-                # Not the right way to do it but it works
-                #threads.update({'httpServer': self.httpServer['thread']})
+            # Not waited for: stop() doesn't block, the daemon thread dies with the app
+            logging.info(f"Stopping httpServer worker")
+            self.httpServer['worker'].stop()
 
             # Stop a running DPID logger cleanly, also if the worker is already gone (no-op if stopped)
             if self.httpServer.get('dpidController') is not None:

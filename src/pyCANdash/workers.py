@@ -44,10 +44,10 @@ class CANWorker(QObject):
     stopSignal = pyqtSignal()
     initFinishedSignal = pyqtSignal()
     finishedSignal = pyqtSignal()
-    _stop_event = threading.Event()     
 
     def __init__(self, canCfg, dataDir, logEn=True):
         QObject.__init__(self)
+        self._stop_event = threading.Event()
         self.canCfg = canCfg
         self.dataDir = dataDir
         self.logEn = logEn
@@ -199,10 +199,10 @@ class CANplayerWorker(QObject):
     stopSignal = pyqtSignal()
     initFinishedSignal = pyqtSignal()
     finishedSignal = pyqtSignal()
-    _stop_event = threading.Event()     
 
     def __init__(self, logFile, printDebug=False):
         QObject.__init__(self)
+        self._stop_event = threading.Event()
 
         self.logFile = logFile
         self.printDebug = printDebug
@@ -239,24 +239,16 @@ class CANplayerWorker(QObject):
             handleException()
 
 
-class logUploaderWorker(QObject):
-    statusSignal = pyqtSignal(str, dict, int)
-    stopSignal = pyqtSignal()
-    initFinishedSignal = pyqtSignal()
-    finishedSignal = pyqtSignal()
-    _stop_event = threading.Event()    
+# logUploader, bokehServer and httpServer block their thread (sleep/FTP, io_loop, serve_forever),
+# so they run in plain threading.Threads, not QThreads (a blocked QThread never delivers queued
+# signals). They don't use Qt; stop() is called directly from the GUI thread.
+class logUploaderWorker:
 
     def __init__(self, ip, remoteLogDir, localDir):
-        QObject.__init__(self)
-
         self.ip = ip
         self.remoteLogDir = remoteLogDir
         self.localDir = localDir
-
-    def initConnections(self, statusFcn):
-        # Stop the worker when the stop signal is recieved
-        self.stopSignal.connect(self.stop)
-
+        self._stop_event = threading.Event()
 
     def run(self):
         # Wait 10 seconds to give the PC a chance to connecto to wifi
@@ -290,7 +282,7 @@ class logUploaderWorker(QObject):
                 except:
                     pass
 
-        self.stop()        
+        logging.info('LogUploader: Worker finished')
 
 
     def connect2ftp(self, ip, username=None, password=None):
@@ -369,21 +361,11 @@ class logUploaderWorker(QObject):
         # Change remote directory back to the default
         self.ftp.cwd(self.remoteLogDir)
 
-    @pyqtSlot()
     def stop(self):
+        # Called from the GUI thread (and at the end of run). run() polls the event and closes
+        # its own FTP connection
         logging.info(f'LogUploader: Stopping')
-
-        if hasattr(self, 'ftp'):
-            if self.ftp is not None:
-                self.ftp.close()
-
-        # Clean up
-        logging.info(f'LogUploader: Worker stopped')
-        self.finishedSignal.emit()   
-
-        # This shouldn't be necessary since I thread.quit gets linked to finishedSignal when the thread
-        # is created, but it looks like finishedSignal never gets received in the main thread for some reason          
-        self.thread().quit()
+        self._stop_event.set()
 
 
     def getSecondsDelta(self, fn:str):
@@ -401,25 +383,13 @@ class logUploaderWorker(QObject):
         return seconds
 
 
-class bokehServerWorker(QObject):
-    statusSignal = pyqtSignal(str, dict, int)
-    stopSignal = pyqtSignal()
-    initFinishedSignal = pyqtSignal()
-    finishedSignal = pyqtSignal()
-    _stop_event = threading.Event() 
+class bokehServerWorker:
 
     def __init__(self, dataDir, dbcPath, IPs):
-        QObject.__init__(self)
-
         self.dataDir = dataDir
         self.dbcPath = dbcPath
         self.IPs     = IPs
-
-
-    def initConnections(self, statusFcn):
-        # Stop the worker when the stop signal is recieved
-        self.stopSignal.connect(self.stop)
-
+        self._stop_event = threading.Event()
 
     def run(self):
         # Add the data directory to the web server's static path so we can use it to download files from
@@ -442,28 +412,20 @@ class bokehServerWorker(QObject):
                             extra_patterns=[(r'/data/(.*)', StaticFileHandler, {'path': self.dataDir}),],
                             )
 
-            self.server.start()
+            # Publish io_loop before the last stop check, so a stop() during startup is never lost
             self.io_loop = self.server.io_loop
-            self.io_loop.start()
+            if not self._stop_event.is_set():
+                self.server.start()
+                self.io_loop.start()     # Blocks until stop() stops the loop
+            logging.info('bokehServer: Server loop ended')
 
-            # TODO:
-            # io_loop.start() is blocking so stop() never gets called, it just gets killed. Fix this.    
 
-
-    @pyqtSlot()
     def stop(self):
-
+        # Called from the GUI thread. add_callback is tornado's thread-safe way to stop the loop
         logging.info(f'bokehServer: Stopping server')
+        self._stop_event.set()
         if hasattr(self, 'io_loop'):
             self.io_loop.add_callback(self.io_loop.stop)
-
-        # Clean up
-        logging.info(f'bokehServer: Worker stopped')
-        self.finishedSignal.emit()   
-
-        # This shouldn't be necessary since I thread.quit gets linked to finishedSignal when the thread
-        # is created, but it looks like finishedSignal never gets received in the main thread for some reason          
-        self.thread().quit()  
 
 
 class gpioMonitorWorker(QObject):
@@ -471,10 +433,10 @@ class gpioMonitorWorker(QObject):
     stopSignal = pyqtSignal()
     initFinishedSignal = pyqtSignal()
     finishedSignal = pyqtSignal()
-    _stop_event = threading.Event() 
 
     def __init__(self, gpioPin, lowTime=5, Ts=40e-3):
         QObject.__init__(self)
+        self._stop_event = threading.Event()
 
         self.gpioPin = gpioPin  # GPIO pin number to monitor
         self.lowTime = lowTime  # How long the pin must be low before we shut down
@@ -572,27 +534,16 @@ class gpioMonitorWorker(QObject):
             return False
 
 
-class httpServerWorker(QObject):
-    statusSignal = pyqtSignal(float)
-    stopSignal = pyqtSignal()
-    initFinishedSignal = pyqtSignal()
-    finishedSignal = pyqtSignal()
-    _stop_event = threading.Event() 
+class httpServerWorker:
 
     def __init__(self, dataDir, port=8000, dpidController=None, dpidAutoStart=False, dpidConfig=None):
-        QObject.__init__(self)
-
+        self._stop_event = threading.Event()
         self.dataDir = dataDir  # Directory to serve 
         self.port = port        # port to serve on
         self.httpd = None       # Reference to the server instance        
         self.dpidController = dpidController    # DpidLoggerController for the /logger routes, None if disabled
         self.dpidAutoStart = dpidAutoStart      # Start the DPID logger once when the server is up
         self.dpidConfig = dpidConfig            # Config name for the auto start
-
-
-    def initConnections(self, statusFcn):
-        # Stop the worker when the stop signal is recieved
-        self.stopSignal.connect(self.stop)
 
 
     def run(self):
@@ -616,7 +567,9 @@ class httpServerWorker(QObject):
                 
                 # 3. Start the blocking server loop
                 # This will block until shutdown() is called in the stop() method
-                self.httpd.serve_forever(poll_interval=0.1)
+                # Don't start serving if stop() already ran during startup
+                if not self._stop_event.is_set():
+                    self.httpd.serve_forever(poll_interval=0.1)
                 
         except OSError as e:
             logging.error(f"httpServerWorker: Error starting server: {e}")
@@ -625,34 +578,22 @@ class httpServerWorker(QObject):
         finally:
             # This block runs when serve_forever() is broken by shutdown()
             logging.info('httpServerWorker: Server loop ended')
-            self.finishedSignal.emit()
 
 
-    @pyqtSlot()
     def stop(self):
-
+        # Called from the GUI thread
         logging.info(f'httpServerWorker: Stopping')
+        self._stop_event.set()
 
         # Stop a running DPID logger cleanly (stopSending) before the server goes away
         if self.dpidController is not None:
             self.dpidController.shutdown()
 
-        # Trigger the server to stop accepting requests
-        # This waits for all requests to stop and blocks! This is not called for now as it causes the GUi to hang
+        # shutdown() makes serve_forever() return (the with block then closes the socket), but it
+        # blocks until the loop ends, e.g. until a file download finishes, so never wait for it here
         if self.httpd:
-            if self.httpd.socket:
-                logging.info(f'httpServerWorker: Closing socket')
-                self.httpd.socket.close()
-            
             logging.info(f'httpServerWorker: Shutting down server')
-            self.httpd.server_close()
-
-        logging.info(f'httpServerWorker: Worker stopped')
-        self.finishedSignal.emit()        
-
-        # This shouldn't be necessary since I thread.quit gets linked to finishedSignal when the thread
-        # is created, but it looks like finishedSignal never gets received in the main thread for some reason          
-        self.thread().quit()       
+            threading.Thread(target=self.httpd.shutdown, name='httpServer-shutdown', daemon=True).start()
         
 
 
