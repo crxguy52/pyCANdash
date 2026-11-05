@@ -1,0 +1,191 @@
+VERSION ""
+
+
+NS_ :
+    NS_DESC_
+    CM_
+    BA_DEF_
+    BA_
+    VAL_
+    CAT_DEF_
+    CAT_
+    FILTER
+    BA_DEF_DEF_
+    EV_DATA_
+    ENVVAR_DATA_
+    SGTYPE_
+    SGTYPE_VAL_
+    BA_DEF_SGTYPE_
+    BA_SGTYPE_
+    SIG_TYPE_REF_
+    VAL_TABLE_
+    SIG_GROUP_
+    SIG_VALTYPE_
+    SIGTYPE_VALTYPE_
+    BO_TX_BU_
+    BA_DEF_REL_
+    BA_REL_
+    BA_DEF_DEF_REL_
+    BU_SG_REL_
+    BU_EV_REL_
+    BU_BO_REL_
+    SG_MUL_VAL_
+
+BS_:
+
+BU_:
+
+BO_ 201 e39_bcast_0c9: 6 Vector__XXX
+	SG_ e39_engine_rpm : 15|16@0+ (0.25,0.0) [0|16383.75] "rpm" Vector__XXX
+	SG_ e39_accelerator_pedal_position : 39|8@0+ (0.3921568627450981,0.0) [0|100] "%" Vector__XXX
+	SG_ e39_brake_pedal : 40|1@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 241 e39_bcast_0f1: 2 Vector__XXX
+	SG_ e39_brake_pedal_position : 15|8@0+ (0.3921568627450981,0.0) [0|100] "%" Vector__XXX
+
+BO_ 485 e39_bcast_1e5: 3 Vector__XXX
+	SG_ e39_steering_wheel_position : 15|16@0- (0.0625,0.0) [-2048|2047.9375] "deg" Vector__XXX
+
+BO_ 489 e39_bcast_1e9: 8 Vector__XXX
+	SG_ e39_lateral_acceleration : 3|12@0- (0.015625,0.0) [-32|31.984375] "m/s^2" Vector__XXX
+	SG_ e39_anti_lock_active : 30|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ e39_tcs_request : 28|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ e39_traction_control_system : 26|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ e39_stability_control_active : 24|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ e39_yaw_rate : 35|12@0- (0.0625,0.0) [-128|127.9375] "deg/s" Vector__XXX
+	SG_ e39_over_under_steer : 49|10@0- (0.5,0.0) [-256|255.5] "%" Vector__XXX
+
+BO_ 491 e39_bcast_1eb: 2 Vector__XXX
+	SG_ e39_fuel_pressure_estimated : 1|10@0+ (1.0,0.0) [0|1023] "kPa" Vector__XXX
+
+BO_ 493 e39_bcast_1ed: 8 Vector__XXX
+	SG_ e39_fuel_pressure_requested : 1|10@0+ (1.0,0.0) [0|1023] "kPa" Vector__XXX
+	SG_ e39_instantaneous_fuel_flow_estimate : 23|16@0+ (0.0009765625,0.0) [0|63.9990234375] "g/s" Vector__XXX
+	SG_ e39_advance_fuel_flow_estimate : 39|16@0+ (0.0009765625,0.0) [0|63.9990234375] "g/s" Vector__XXX
+	SG_ e39_air_fuel_ratio_commanded : 55|16@0+ (0.00048828125,0.0) [0|31.9995117188] "" Vector__XXX
+
+BO_ 501 e39_bcast_1f5: 8 Vector__XXX
+	SG_ e39_trans_current_gear : 3|4@0+ (1,0) [0|15] "" Vector__XXX
+	SG_ e39_clutch_pedal_depressed : 14|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ e39_clutch_pedal_pos : 63|8@0+ (0.3921568627450981,0.0) [0|100] "%" Vector__XXX
+
+BO_ 761 e39_bcast_2f9: 6 Vector__XXX
+	SG_ e39_brake_pressure : 47|8@0+ (75.0000187500047,0.0) [0|19125.0047813] "kPa" Vector__XXX
+
+BO_ 810 e39_bcast_32a: 8 Vector__XXX
+	SG_ e39_gps_latitude : 5|30@0- (2.7777777777777776e-07,0.0) [-149.130808889|149.130808611] "deg" Vector__XXX
+	SG_ e39_gps_longitude : 38|31@0- (2.7777777777777776e-07,0.0) [-298.261617778|298.2616175] "deg" Vector__XXX
+
+BO_ 840 e39_bcast_348: 4 Vector__XXX
+	SG_ e39_left_driven_wheel_speed : 5|14@0+ (0.03125,0.0) [0|511.96875] "km/h" Vector__XXX
+	SG_ e39_right_driven_wheel_speed : 21|14@0+ (0.03125,0.0) [0|511.96875] "km/h" Vector__XXX
+
+BO_ 842 e39_bcast_34a: 4 Vector__XXX
+	SG_ e39_left_undriven_wheel_speed : 5|14@0+ (0.03125,0.0) [0|511.96875] "km/h" Vector__XXX
+	SG_ e39_right_undriven_wheel_speed : 21|14@0+ (0.03125,0.0) [0|511.96875] "km/h" Vector__XXX
+
+BO_ 977 e39_bcast_3d1: 2 Vector__XXX
+	SG_ e39_throttle_position : 15|8@0+ (0.3921568627450981,0.0) [0|100] "%" Vector__XXX
+
+BO_ 1001 e39_bcast_3e9: 6 Vector__XXX
+	SG_ e39_driven_wheel_speed : 6|15@0+ (0.015625,0.0) [0|511.984375] "km/h" Vector__XXX
+	SG_ e39_undriven_wheel_speed : 38|15@0+ (0.015625,0.0) [0|511.984375] "km/h" Vector__XXX
+
+BO_ 1017 e39_bcast_3f9: 7 Vector__XXX
+	SG_ e39_fan_desired : 47|8@0+ (0.3921568627450981,0.0) [0|100] "%" Vector__XXX
+	SG_ e39_engine_oil_life : 55|8@0+ (0.3921568627450981,0.0) [0|100] "%" Vector__XXX
+
+BO_ 1019 e39_bcast_3fb: 2 Vector__XXX
+	SG_ e39_fuel_system_status : 1|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ e39_alcohol_percent : 15|8@0+ (0.3921568627450981,0.0) [0|100] "%" Vector__XXX
+
+BO_ 1217 e39_bcast_4c1: 5 Vector__XXX
+	SG_ e39_barometric_pressure : 15|8@0+ (0.5,0.0) [0|127.5] "kPa" Vector__XXX
+	SG_ e39_engine_coolant_temp : 23|8@0+ (1.0,-40.0) [-40|215] "degC" Vector__XXX
+	SG_ e39_intake_air_temp : 31|8@0+ (1.0,-40.0) [-40|215] "degC" Vector__XXX
+	SG_ e39_ambient_air_temp : 39|8@0+ (0.5,-40.0) [-40|87.5] "degC" Vector__XXX
+
+BO_ 1225 e39_bcast_4c9: 2 Vector__XXX
+	SG_ e39_trans_fluid_temp : 15|8@0+ (1.0,-40.0) [-40|215] "degC" Vector__XXX
+
+BO_ 1233 e39_bcast_4d1: 6 Vector__XXX
+	SG_ e39_engine_oil_temp : 15|8@0+ (1.0,-40.0) [-40|215] "degC" Vector__XXX
+	SG_ e39_engine_oil_pressure : 23|8@0+ (4.0,0.0) [0|1020] "kPa" Vector__XXX
+	SG_ e39_fuel_tank_capacity : 27|12@0+ (0.125,0.0) [0|511.875] "L" Vector__XXX
+	SG_ e39_fuel_tank_level : 47|8@0+ (0.3921568627450981,0.0) [0|100] "%" Vector__XXX
+
+BO_ 1322 e39_bcast_52a: 6 Vector__XXX
+	SG_ e39_front_left_tire_pressure : 23|8@0+ (4.0,0.0) [0|1020] "kPa" Vector__XXX
+	SG_ e39_rear_left_tire_pressure : 31|8@0+ (4.0,0.0) [0|1020] "kPa" Vector__XXX
+	SG_ e39_front_right_tire_pressure : 39|8@0+ (4.0,0.0) [0|1020] "kPa" Vector__XXX
+	SG_ e39_rear_right_tire_pressure : 47|8@0+ (4.0,0.0) [0|1020] "kPa" Vector__XXX
+
+
+CM_ BO_ 201 "E39 broadcast frame from HP Tuners scanner definitions, HPT period 0.012 s";
+CM_ BO_ 241 "E39 broadcast frame from HP Tuners scanner definitions, HPT period 0.01 s";
+CM_ BO_ 485 "E39 broadcast frame from HP Tuners scanner definitions, HPT period 0.01 s";
+CM_ BO_ 489 "E39 broadcast frame from HP Tuners scanner definitions, HPT period 0.02 s";
+CM_ BO_ 491 "E39 broadcast frame from HP Tuners scanner definitions, HPT period 0.012 s";
+CM_ BO_ 493 "E39 broadcast frame from HP Tuners scanner definitions, HPT period 0.012 s";
+CM_ BO_ 501 "E39 broadcast frame from HP Tuners scanner definitions, HPT period 0.025 s";
+CM_ BO_ 761 "E39 broadcast frame from HP Tuners scanner definitions, HPT period 0.05 s";
+CM_ BO_ 810 "E39 broadcast frame from HP Tuners scanner definitions, HPT period 0.1 s";
+CM_ BO_ 840 "E39 broadcast frame from HP Tuners scanner definitions, HPT period 0.01 s";
+CM_ BO_ 842 "E39 broadcast frame from HP Tuners scanner definitions, HPT period 0.01 s";
+CM_ BO_ 977 "E39 broadcast frame from HP Tuners scanner definitions, HPT period 0.1 s";
+CM_ BO_ 1001 "E39 broadcast frame from HP Tuners scanner definitions, HPT period 0.1 s";
+CM_ BO_ 1017 "E39 broadcast frame from HP Tuners scanner definitions, HPT period 0.25 s";
+CM_ BO_ 1019 "E39 broadcast frame from HP Tuners scanner definitions, HPT period 0.25 s";
+CM_ BO_ 1217 "E39 broadcast frame from HP Tuners scanner definitions, HPT period 0.5 s";
+CM_ BO_ 1225 "E39 broadcast frame from HP Tuners scanner definitions, HPT period 0.5 s";
+CM_ BO_ 1233 "E39 broadcast frame from HP Tuners scanner definitions, HPT period 0.5 s";
+CM_ BO_ 1322 "E39 broadcast frame from HP Tuners scanner definitions, HPT period 1.0 s";
+CM_ SG_ 201 e39_engine_rpm "HPT: Engine RPM [Engine/General], channel 2135";
+CM_ SG_ 201 e39_accelerator_pedal_position "HPT: Accelerator Pedal Position [Engine/Accelerator & Throttle/Accelerator Pedal], channel 2114";
+CM_ SG_ 201 e39_brake_pedal "HPT: Brake Pedal [Systems/Brakes], channel 17500";
+CM_ SG_ 241 e39_brake_pedal_position "HPT: Brake Pedal Position [Systems/Brakes], channel 8099";
+CM_ SG_ 485 e39_steering_wheel_position "HPT: Steering Wheel Position [Systems/Steering], channel 17402";
+CM_ SG_ 489 e39_lateral_acceleration "HPT: Lateral Acceleration [Systems/General], channel 7830";
+CM_ SG_ 489 e39_anti_lock_active "HPT: Anti-Lock Active [Systems/Brakes], channel 17510";
+CM_ SG_ 489 e39_tcs_request "HPT: TCS Request [Systems/Traction Control], channel 17351";
+CM_ SG_ 489 e39_traction_control_system "HPT: Traction Control System [Systems/Traction Control], channel 17350";
+CM_ SG_ 489 e39_stability_control_active "HPT: Stability Control Active [Systems/Handling & Performance Mode], channel 17511";
+CM_ SG_ 489 e39_yaw_rate "HPT: Yaw Rate [Systems/General], channel 7832";
+CM_ SG_ 489 e39_over_under_steer "HPT: Over/Under Steer [Systems/General], channel 7833";
+CM_ SG_ 491 e39_fuel_pressure_estimated "HPT: Fuel Pressure Estimated [Fuel System/Pressure], channel 6698";
+CM_ SG_ 493 e39_fuel_pressure_requested "HPT: Fuel Pressure Requested [Fuel System/Pressure], channel 6511";
+CM_ SG_ 493 e39_instantaneous_fuel_flow_estimate "HPT: Instantaneous Fuel Flow Estimate [Fuel System/Volume & Flow], channel 2394";
+CM_ SG_ 493 e39_advance_fuel_flow_estimate "HPT: Advance Fuel Flow Estimate [Fuel System/Volume & Flow], channel 2395";
+CM_ SG_ 493 e39_air_fuel_ratio_commanded "HPT: Air-Fuel Ratio Commanded [Engine/Fuel/Commanded/Desired], channel 6001";
+CM_ SG_ 501 e39_trans_current_gear "HPT: Trans Current Gear [Transmission/Gear Selection & Detection], channel 14100";
+CM_ SG_ 501 e39_clutch_pedal_depressed "HPT: Clutch Pedal Depressed [Transmission/Clutch], channel 14527";
+CM_ SG_ 501 e39_clutch_pedal_pos "HPT: Clutch Pedal Pos [Transmission/Clutch], channel 2142";
+CM_ SG_ 761 e39_brake_pressure "HPT: Brake Pressure [Systems/Brakes], channel 2362";
+CM_ SG_ 810 e39_gps_latitude "HPT: GPS Latitude [GPS], channel 9002";
+CM_ SG_ 810 e39_gps_longitude "HPT: GPS Longitude [GPS], channel 9003";
+CM_ SG_ 840 e39_left_driven_wheel_speed "HPT: Left Driven Wheel Speed [Speedometer], channel 8030";
+CM_ SG_ 840 e39_right_driven_wheel_speed "HPT: Right Driven Wheel Speed [Speedometer], channel 8031";
+CM_ SG_ 842 e39_left_undriven_wheel_speed "HPT: Left Undriven Wheel Speed [Speedometer], channel 8032";
+CM_ SG_ 842 e39_right_undriven_wheel_speed "HPT: Right Undriven Wheel Speed [Speedometer], channel 8033";
+CM_ SG_ 977 e39_throttle_position "HPT: Throttle Position [Engine/Accelerator & Throttle/Throttle], channel 2111";
+CM_ SG_ 1001 e39_driven_wheel_speed "HPT: Driven Wheel Speed [Speedometer], channel 8009";
+CM_ SG_ 1001 e39_undriven_wheel_speed "HPT: Undriven Wheel Speed [Speedometer], channel 8001";
+CM_ SG_ 1017 e39_fan_desired "HPT: Fan Desired [Systems/Fans], channel 7201";
+CM_ SG_ 1017 e39_engine_oil_life "HPT: Engine Oil Life [Engine/General], channel 2122";
+CM_ SG_ 1019 e39_fuel_system_status "HPT: Fuel System Status [Engine/Fuel/Open & Closed Loop/Closed Loop Fuel Learning], channel 12951";
+CM_ SG_ 1019 e39_alcohol_percent "HPT: Alcohol Percent [Fuel System/Composition], channel 6020";
+CM_ SG_ 1217 e39_barometric_pressure "HPT: Barometric Pressure [Environment], channel 2340";
+CM_ SG_ 1217 e39_engine_coolant_temp "HPT: Engine Coolant Temp [Engine/General], channel 2124";
+CM_ SG_ 1217 e39_intake_air_temp "HPT: Intake Air Temp [Engine/Airflow/Intake], channel 2127";
+CM_ SG_ 1217 e39_ambient_air_temp "HPT: Ambient Air Temp [Environment], channel 2125";
+CM_ SG_ 1225 e39_trans_fluid_temp "HPT: Trans Fluid Temp [Transmission/General], channel 4100";
+CM_ SG_ 1233 e39_engine_oil_temp "HPT: Engine Oil Temp [Engine/General], channel 2136";
+CM_ SG_ 1233 e39_engine_oil_pressure "HPT: Engine Oil Pressure [Engine/General], channel 2120";
+CM_ SG_ 1233 e39_fuel_tank_capacity "HPT: Fuel Tank Capacity [Fuel System/Tank], channel 6404";
+CM_ SG_ 1233 e39_fuel_tank_level "HPT: Fuel Tank Level [Fuel System/Tank], channel 6403";
+CM_ SG_ 1322 e39_front_left_tire_pressure "HPT: Front Left Tire Pressure [Systems/Tire Pressure Monitoring], channel 8100";
+CM_ SG_ 1322 e39_rear_left_tire_pressure "HPT: Rear Left Tire Pressure [Systems/Tire Pressure Monitoring], channel 8102";
+CM_ SG_ 1322 e39_front_right_tire_pressure "HPT: Front Right Tire Pressure [Systems/Tire Pressure Monitoring], channel 8101";
+CM_ SG_ 1322 e39_rear_right_tire_pressure "HPT: Rear Right Tire Pressure [Systems/Tire Pressure Monitoring], channel 8103";
+VAL_ 501 e39_trans_current_gear 15 "Park" 14 "Reverse" 13 "Neutral" 12 "CVT Forward" 10 "10" 9 "9" 8 "8" 7 "7" 6 "6" 5 "5" 4 "4" 3 "3" 2 "2" 1 "1" 0 "Not Supported" ;
+VAL_ 1019 e39_fuel_system_status 2 "Stoichiometric Closed Loop" 1 "Non-Stoichiometric Closed Loop" 0 "Open Loop" ;

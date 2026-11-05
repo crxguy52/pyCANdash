@@ -1,0 +1,816 @@
+VERSION "GMW8762_v3"
+
+
+NS_ :
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_: ECM TCM EBCM GW BSM PTO ACC FSCM TCCM RDCM FDCM SGCM BPIM VITM OnStar BCM EPS
+
+
+BO_ 193 PPEI_driven_wheel_rotational_status: 8 EBCM
+	SG_ whl_dist_tmstmp_rollover_cnt_ld : 7|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ sequence_number_ld : 5|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ whl_rotational_stat_reset_occ_ld : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ whl_distance_validity_ld : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ whl_distance_pulse_counter_ld : 1|10@0+ (1,0) [0|1023] "counts" Vector__XXX
+	SG_ whl_distance_timestamp_ld : 23|16@0+ (1,0) [0|65535] "counts" Vector__XXX
+	SG_ whl_dist_tmstmp_rollover_cnt_rd : 39|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ sequence_number_rd : 37|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ whl_rotational_stat_reset_occ_rd : 35|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ whl_distance_validity_rd : 34|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ whl_distance_pulse_counter_rd : 33|10@0+ (1,0) [0|1023] "counts" Vector__XXX
+	SG_ whl_distance_timestamp_rd : 55|16@0+ (1,0) [0|65535] "counts" Vector__XXX
+
+BO_ 197 PPEI_non_driven_wheel_rotational_status: 8 EBCM
+	SG_ whl_dist_tmstmp_rollover_cnt_ln : 7|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ sequence_number_ln : 5|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ whl_rotational_stat_reset_occ_ln : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ whl_distance_validity_ln : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ whl_distance_pulse_counter_ln : 1|10@0+ (1,0) [0|1023] "counts" Vector__XXX
+	SG_ whl_distance_timestamp_ln : 23|16@0+ (1,0) [0|65535] "counts" Vector__XXX
+	SG_ whl_dist_tmstmp_rollover_cnt_rn : 39|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ sequence_number_rn : 37|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ whl_rotational_stat_reset_occ_rn : 35|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ whl_distance_validity_rn : 34|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ whl_distance_pulse_counter_rn : 33|10@0+ (1,0) [0|1023] "counts" Vector__XXX
+	SG_ whl_distance_timestamp_rn : 55|16@0+ (1,0) [0|65535] "counts" Vector__XXX
+
+BO_ 199 PPEI_trans_output_rotational_status: 4 TCM
+	SG_ trans_out_rot_stat_direction : 7|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ trans_out_rot_stat_last_transition : 5|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ trans_out_rot_stat_reset_occurred : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_out_rot_stat_validity : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_out_rot_stat_pulse_counter : 1|10@0+ (1,0) [0|1023] "counts" Vector__XXX
+	SG_ trans_out_rot_stat_timestamp : 23|16@0+ (1,0) [0|65535] "counts" Vector__XXX
+
+BO_ 201 PPEI_engine_general_status_1: 8 ECM
+	SG_ engine_run_active : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ powertrain_crank_active : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ powertrain_crank_aborted : 5|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ powertrain_run_aborted : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ pto_powertrain_run_aborted : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_idle_active : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_speed_status : 1|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ eng_speed : 15|16@0+ (0.25,0) [0|16383.75] "rpm" Vector__XXX
+	SG_ accelerator_actual_pos_valid : 31|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ cruise_control_active : 30|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ cruise_control_enabled : 29|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ driver_throttle_override_detect : 28|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ driver_throttle_override_det_arc : 27|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ driver_thrtl_ovride_dtct_protct : 25|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ accelerator_actual_pos : 39|8@0+ (0.392157,0) [0|100] "%" Vector__XXX
+	SG_ platform_eng_spd_cmd_superceded : 45|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ platform_eng_spd_cmd_inhbt_req : 44|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_cylinder_deactivation_mode : 43|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ pwt_brake_pdl_dscrt_in_stat_vld : 41|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ pwt_brake_pdl_dscrt_in_stat : 40|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ remote_vehicle_start_eng_running : 55|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_cyl_deact_event_pending : 54|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_intke_air_boost_press_valid : 51|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_intake_air_boost_press : 63|8@0- (1,0) [-128|127] "kPa_gage" Vector__XXX
+
+BO_ 241 PPEI_brake_apply_status: 4 BSM
+	SG_ brake_pdl_mod_travel_achvd_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ brake_pdl_mod_travel_achieved : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ brake_pdl_pos_alive_roll_cnt : 5|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ brake_pdl_init_trvl_achvd_prot : 3|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ brake_pdl_init_trvl_achvd_stat : 1|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ brake_pdl_init_trvl_achvd_valid : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ brake_pedal_position : 15|8@0+ (0.392157,0) [0|100] "%" Vector__XXX
+	SG_ brake_apply_sensor_home_pos_lrnd : 30|1@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 249 PPEI_transmission_general_status_1: 8 TCM
+	SG_ trans_overall_est_tq_ratio_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_overall_est_tq_ratio : 6|15@0- (0.00390625,0) [-64|63.996] "ratio" Vector__XXX
+	SG_ trans_out_shaft_ang_vel_valid : 23|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_out_shaft_ang_vel_sns_pres : 22|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_out_rot_roll_cnt_reset : 21|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_out_rot_roll_ct_valid : 20|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_out_shaft_ang_vel : 31|16@0+ (0.25,0) [0|16383.75] "rpm" Vector__XXX
+	SG_ trans_out_rotations_roll_ct : 47|16@0+ (1,0) [0|65535] "" Vector__XXX
+	SG_ trans_cruisectrl_spd_shft_evnt : 63|8@0+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 381 antilock_brake_and_TC_status_HS: 8 EBCM
+	SG_ traction_ctrl_sys_operating_mode : 4|3@0+ (1,0) [0|7] "" Vector__XXX
+	SG_ vehicle_stability_enh_mode : 50|3@0+ (1,0) [0|7] "" Vector__XXX
+
+BO_ 417 PTEI_engine_general_status: 8 ECM
+	SG_ eng_diag_tcc_unlock_requested : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_cyl_deact_torq_smooth_active : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_trans_gear_req_type : 5|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ eng_trans_gear_req_gear : 3|4@0+ (1,0) [0|15] "" Vector__XXX
+	SG_ eng_brake_status : 15|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ ac_comp_clutch_engaged_ptei : 13|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ tcs_powertrain_inhibit : 12|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_metal_protection_active : 11|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_cyl_deact_requested : 10|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_cyl_deact_mode_ptei : 9|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ eng_cold_idle_high_active : 23|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ park_neutral_switch_status : 22|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ park_neutral_switch_stat_valid : 21|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dpf_idle_regen_mode_request : 20|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dpf_cleaning_algorithm_active : 19|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dpf_cleaning_algo_active_mask : 18|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ accelerator_pos_perc_ful_rng_vld : 17|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_ctrl_run_crank_term_status : 16|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_post_o2_sensor_diag_assist : 31|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_cruise_control_mode : 29|3@0+ (1,0) [0|5] "" Vector__XXX
+	SG_ cruise_ctrl_constant_spd_active : 26|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ warmup_shift_pattern_request : 25|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_allowed_clutch_adaptation : 24|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_idle_speed_reduced_range : 39|8@0+ (8,0) [0|2040] "rpm" Vector__XXX
+	SG_ eng_base_target_idle_speed : 47|8@0+ (8,0) [0|2040] "rpm" Vector__XXX
+	SG_ accelerator_pos_perc_full_range : 55|8@0+ (0.392157,0) [0|100] "%" Vector__XXX
+
+BO_ 451 PPEI_engine_torque_status_2: 8 ECM
+	SG_ eng_torque_reduct_fail_stat : 7|3@0+ (1,0) [0|4] "" Vector__XXX
+	SG_ eng_torque_act_extnd_rng_vld : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_torque_act_extnd_rng : 3|12@0+ (0.5,-848) [-848|1199.5] "Nm" Vector__XXX
+	SG_ pwrtrain_reg_gen_ctrl_active : 22|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ accelerator_eff_pos_vld : 21|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_trq_drvr_req_ext_rng_vld : 20|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_trq_drvr_req_ext_rng : 19|12@0+ (0.5,-848) [-848|1199.5] "Nm" Vector__XXX
+	SG_ fuel_filter_remaining_life : 39|8@0+ (0.392157,0) [0|100] "%" Vector__XXX
+	SG_ generator_current_valid : 47|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ generator_current : 46|7@0+ (1,0) [0|127] "A" Vector__XXX
+	SG_ accelerator_eff_pos : 55|8@0+ (0.392157,0) [0|100] "%" Vector__XXX
+	SG_ eng_drv_pref_mode_sw1_enabled : 63|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_drv_pref_mode_sw1_status : 62|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ economy_mode_active_ind_on : 61|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ economy_mode_req_denied_ind_on : 60|1@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 452 PPEI_torque_request_status: 8 ECM
+	SG_ accel_pedal_override_active : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ accel_pedal_override_active_arc : 3|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ accel_pedal_override_active_prot : 1|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ acc_axle_tq_cmd_request_status : 15|3@0+ (1,0) [0|7] "" Vector__XXX
+	SG_ acc_axle_tq_cmd_limiting_status : 12|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ road_load_nominal_axle_torque : 10|19@0+ (0.125,-22534) [-22534|43000] "Nm" Vector__XXX
+
+BO_ 453 PPEI_driver_intended_axle_torque_status: 8 ECM
+	SG_ driver_intnded_ax_torq_vld : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ driver_intnded_ax_torq : 6|15@0+ (2,-22534) [-22534|43000] "Nm" Vector__XXX
+	SG_ driver_intnded_ax_torq_min_vld : 23|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ driver_intnded_ax_torq_min : 22|15@0+ (2,-22534) [-22534|43000] "Nm" Vector__XXX
+	SG_ driver_intnded_ax_torq_max_vld : 39|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ driver_intnded_ax_torq_max : 38|15@0+ (2,-22534) [-22534|43000] "Nm" Vector__XXX
+
+BO_ 455 PPEI_chassis_engine_torque_request_1: 8 EBCM
+	SG_ chassis_eng_tq_req_intervention : 5|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ chassis_eng_tq_req_value : 3|12@0+ (0.5,-848) [-848|1199.5] "Nm" Vector__XXX
+	SG_ traction_ctrl_alive_roll_cnt : 23|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ chassis_eng_tq_req_protection : 21|14@0+ (1,0) [0|16383] "" Vector__XXX
+	SG_ traction_ctrl_max_tq_incr_rate : 53|6@0+ (16,0) [0|1008] "Nm/s" Vector__XXX
+
+BO_ 460 PPEI_secondary_axle_status: 3 TCCM
+	SG_ secondary_axle_status : 7|3@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ secondary_axle_control_mode : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ secondary_axle_est_torque_valid : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ secondary_axle_est_torque : 1|10@0+ (10,0) [0|10230] "Nm" Vector__XXX
+	SG_ sec_axle_max_diff_vel_alwd_actv : 23|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ sec_axle_max_diff_vel_alwd_req : 22|7@0+ (2,0) [0|254] "rpm" Vector__XXX
+
+BO_ 462 PPEI_secondary_axle_control: 4 EBCM
+	SG_ sec_axle_tq_req_active : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ sec_axle_tq_req_value : 6|10@0+ (10,0) [0|10230] "Nm" Vector__XXX
+	SG_ sec_axle_tq_req_alive_roll_cnt : 20|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ sec_axle_tq_req_protection : 18|11@0+ (1,0) [0|2047] "" Vector__XXX
+
+BO_ 463 PPEI_secondary_axle_general_info: 4 TCCM
+	SG_ sec_axle_malfunction_ind_on : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ sec_axle_temp_inhibit_ind_on : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ sec_axle_operational_mode : 3|4@0+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 464 PPEI_front_axle_status: 4 TCCM
+	SG_ front_axle_status : 7|3@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ front_axle_control_mode : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ front_axle_est_torque : 3|11@0- (10,0) [-5120|5115] "Nm" Vector__XXX
+	SG_ front_axle_est_torque_valid : 8|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ front_axle_max_diff_vel_alwd_act : 23|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ front_axle_max_diff_vel_alwd_val : 22|7@0+ (2,0) [0|254] "rpm" Vector__XXX
+	SG_ front_axle_operational_mode : 31|3@0+ (1,0) [0|3] "" Vector__XXX
+
+BO_ 465 PPEI_rear_axle_status: 4 TCCM
+	SG_ rear_axle_status : 7|3@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ rear_axle_control_mode : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ rear_axle_est_torque : 3|11@0- (10,0) [-5120|5115] "Nm" Vector__XXX
+	SG_ rear_axle_est_torque_valid : 8|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ rear_axle_max_diff_vel_alwd_act : 23|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ rear_axle_max_diff_vel_alwd_val : 22|7@0+ (2,0) [0|254] "rpm" Vector__XXX
+	SG_ rear_axle_operational_mode : 31|3@0+ (1,0) [0|3] "" Vector__XXX
+
+BO_ 481 PPEI_cruise_control_switch_status: 8 GW
+	SG_ cruise_ctrl_cancel_sw_active : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ cruise_ctrl_on_sw_active : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ cruise_ctrl_resume_sw_active : 5|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ cruise_ctrl_set_sw_active : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ cruise_ctrl_spd_incr_sw_active : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ cruise_ctrl_spd_decr_sw_active : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ cruise_ctrl_sw_data_integrity : 1|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ cruise_ctrl_sw_stat_prot_value : 15|8@0+ (1,0) [0|255] "" Vector__XXX
+	SG_ cruise_ctrl_cancel_request : 18|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ cruise_ctrl_sw_stat_alive_rc : 17|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ fuel_mode_switch_active_validity : 29|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ fuel_mode_switch_active : 28|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_drv_pref_mode_sw1_active : 39|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_drv_pref_mode_sw1_arc : 38|2@0+ (1,0) [0|3] "" Vector__XXX
+
+BO_ 485 PPEI_steering_wheel_angle: 8 EBCM
+	SG_ steering_wheel_angle_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ steer_whl_angle_sensor_cal_stat : 6|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ steering_wheel_angle : 15|16@0- (0.0625,0) [-2048|2047.94] "degrees" Vector__XXX
+	SG_ steering_wheel_angle_gradient : 27|12@0- (1,0) [-2048|2047] "degrees/s" Vector__XXX
+
+BO_ 489 PPEI_chassis_general_status_1: 8 EBCM
+	SG_ brk_pdl_drv_apld_pres_det_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ brk_pdl_drv_apld_pres_detected : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_brk_sys_clutch_rel_req : 5|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ veh_stab_enh_lat_accel_valid : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ veh_stab_enh_lat_accel : 3|12@0- (0.015625,0) [-32|31.984] "m/s2" Vector__XXX
+	SG_ brk_sys_trans_gear_req_type : 21|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ brk_sys_trans_gear_req_gear : 19|4@0+ (1,0) [0|15] "" Vector__XXX
+	SG_ adaptive_cruise_ctrl_brk_active : 31|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ antilock_brake_sys_active : 30|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ antilock_brake_sys_failed : 29|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ traction_ctrl_sys_active : 28|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ traction_ctrl_sys_enabled : 27|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ traction_ctrl_sys_driver_intent : 26|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ veh_stab_enh_sys_active : 24|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ veh_dynamics_ctrl_sys_status : 39|3@0+ (1,0) [0|7] "" Vector__XXX
+	SG_ veh_dynamics_yaw_rate_valid : 36|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ veh_dynamics_yaw_rate : 35|12@0- (0.0625,0) [-128|127.938] "degrees/s" Vector__XXX
+	SG_ driver_indep_brake_apply_active : 55|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ veh_dynamics_over_under_str_vld : 50|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ veh_dynamics_over_under_steer : 49|10@0- (0.5,0) [-256|255.5] "%" Vector__XXX
+
+BO_ 490 PPEI_alternative_fuel_system_status: 4 ECM
+	SG_ fuel_mode_status : 7|3@0+ (1,0) [0|7] "" Vector__XXX
+	SG_ alt_fuel_mode_req_denied_ind_on : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ fuel_level_tank2_perc_validity : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ alternative_fuel_level_low : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ alt_fuel_preheating_active : 1|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ alt_fuel_accel_warning_active : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ fuel_level_tank2_percent : 15|8@0+ (0.392157,0) [0|100] "%" Vector__XXX
+	SG_ fuel_total_capacity_tank2 : 23|12@0+ (0.125,0) [0|511.875] "l" Vector__XXX
+
+BO_ 491 PPEI_fuel_system_status: 4 FSCM
+	SG_ fuel_est_pres_delivered_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ exh_pres_reg_valve_pos_valid : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ exh_pres_reg_valve_position : 5|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ fuel_est_pres_delivered : 1|10@0+ (1,0) [0|1023] "kPa" Vector__XXX
+
+BO_ 493 PPEI_fuel_system_request: 8 ECM
+	SG_ fuel_ctrl_system_fault_present : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ fuel_pmp_en_discrete_output : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ fuel_pressure_requested : 1|10@0+ (1,0) [0|1023] "kPa" Vector__XXX
+	SG_ instantaneous_fuel_flow_est : 23|16@0+ (0.0009765625,0) [0|63.999] "g/s" Vector__XXX
+	SG_ advanced_fuel_flow_estimated : 39|16@0+ (0.0009765625,0) [0|63.999] "g/s" Vector__XXX
+	SG_ commanded_air_fuel_ratio : 55|16@0+ (0.00048828125,0) [0|31.9995] "afr" Vector__XXX
+
+BO_ 495 PPEI_fuel_system_request_2: 4 ECM
+	SG_ mass_air_flow_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ mass_air_flow : 23|16@0+ (0.01,0) [0|655.35] "g/s" Vector__XXX
+
+BO_ 497 PPEI_platform_general_status: 8 GW
+	SG_ bkup_pwr_mode_mstr_virt_dev_avl : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ sys_backup_pwr_mode_enabled : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ sys_backup_pwr_mode : 5|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ pwr_mode_mstr_run_crank_status : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ pwr_mode_mstr_acc_term_status : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ system_power_mode : 1|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ remote_vehicle_start_request : 15|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ pto_remote_start_mstr_eng_start : 14|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ pto_remote_start_mstr_eng_shtdn : 13|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ ac_comp_mode_request : 12|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ ac_comp_norm_load_validity : 10|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ ac_comp_sys_virt_dev_avail : 9|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ immobilizer_pre_rel_pwd_status : 8|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ immobilizer_pre_release_password : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
+	SG_ throttle_progression_request : 39|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ engine_oil_life_reset_request : 37|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ park_brake_switch_active : 36|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ park_brake_virt_dev_avail : 35|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ ac_comp_normalized_load : 55|8@0+ (0.1,0) [0|25.5] "(dm3/min)/s" Vector__XXX
+	SG_ ac_comp_failed_on : 63|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ display_measurement_system : 59|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ airbag_deployed : 58|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ airbag_virt_dev_availability : 57|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ fuel_filter_life_reset_requested : 56|1@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 499 PPEI_platform_transmission_requests: 8 GW
+	SG_ trans_plat_shft_patt_sw_arc : 7|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ trans_plat_shft_patt_sw1_active : 5|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_plat_shft_patt_sw2_active : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_plat_shft_patt_sw3_active : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_plat_shft_patt_sw4_active : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_oil_life_reset_request : 1|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ overdrive_disable_requested : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ plat_trans_tap_ud_sw_stat_arc : 15|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ plat_trans_tap_ud_en_sw_state : 13|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ plat_trans_tap_ud_sw_state : 11|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ plat_trans_tap_ud_sec_sw_state : 9|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ pwrtrain_shft_patt_override_actv : 23|1@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 501 PPEI_transmission_general_status_2: 8 TCM
+	SG_ trans_tq_conv_clutch_cmd_mode : 7|3@0+ (1,0) [0|7] "" Vector__XXX
+	SG_ trans_estimated_gear_valid : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_estimated_gear : 3|4@0+ (1,0) [0|15] "" Vector__XXX
+	SG_ top_of_travel_clutch_sw_act_vld : 15|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ top_of_travel_clutch_sw_active : 14|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ auto_trans_gear_shift_direction : 13|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ auto_trans_commanded_gear : 11|4@0+ (1,0) [0|15] "" Vector__XXX
+	SG_ trans_skip_shift_ind_on : 23|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_recommended_upshift_ind_on : 22|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ drv_shft_ctrl_req_denied_ind_on : 21|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ drv_shft_ctrl_target_gear : 19|4@0+ (1,0) [0|15] "" Vector__XXX
+	SG_ trans_range_inhibit_status : 31|3@0+ (1,0) [0|7] "" Vector__XXX
+	SG_ trans_shift_lever_pos_validity : 28|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_shift_lever_position : 27|4@0+ (1,0) [0|15] "" Vector__XXX
+	SG_ overdrive_disable_req_granted : 39|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ clutch_start_switch_actv_valid : 38|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ clutch_start_switch_active : 37|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_shift_mode_status : 34|3@0+ (1,0) [0|7] "" Vector__XXX
+	SG_ trans_shift_lever_lock_requested : 47|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_creep_mode_active : 46|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_shifts_delayed : 45|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_shift_pattern_active_stat : 44|3@0+ (1,0) [0|7] "" Vector__XXX
+	SG_ trans_tap_up_down_mode_status : 41|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ clutch_pedal_actual_pos_valid : 55|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_engaged_state_validity : 50|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_engaged_state : 49|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ clutch_pedal_actual_position : 63|8@0+ (0.392157,0) [0|100] "%" Vector__XXX
+
+BO_ 505 PPEI_pto_command_data: 8 PTO
+	SG_ plat_eng_spd_cmd_on_sw_active : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ plat_eng_spd_cmd_spd_incr_sw : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ plat_eng_spd_cmd_spd_decr_sw : 5|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ accel_pdl_pto_override_active : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ plat_eng_spd_cmd_mode_active : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ plat_eng_spd_request : 2|11@0+ (4,0) [0|8188] "rpm" Vector__XXX
+	SG_ plat_eng_spd_cmd_alive_roll_cnt : 23|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ plat_eng_spd_cmd_sw_data_integ : 21|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ plat_eng_spd_cmd_protection : 19|12@0+ (1,0) [0|4095] "" Vector__XXX
+	SG_ pto_remote_eng_shutdown_req : 39|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_pto_clutch_release_req : 38|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ pto_trans_gear_req_type : 37|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ pto_trans_gear_req_gear : 35|4@0+ (1,0) [0|15] "" Vector__XXX
+	SG_ fast_idle_mode_active : 47|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ pto_mode_active : 46|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ pto_eng_torque_limit_requested : 45|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ pto_eng_tq_limit_val_ext_range : 55|8@0+ (8,0) [0|2040] "Nm" Vector__XXX
+
+BO_ 688 starter_generator_status_3: 5 SGCM
+	SG_ starter_generator_speed : 21|14@0+ (1,0) [0|16383] "rpm" Vector__XXX
+	SG_ starter_generator_speed_valid : 39|1@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 707 PPEI_engine_torque_status_3: 8 ECM
+	SG_ eng_manifold_abs_pres_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_tq_max_ext_range_valid : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_tq_max_ext_range : 3|12@0+ (0.5,-848) [-848|1199.5] "Nm" Vector__XXX
+	SG_ eng_tq_min_ext_range_valid : 20|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_tq_min_ext_range : 19|12@0+ (0.5,-848) [-848|1199.5] "Nm" Vector__XXX
+	SG_ eng_manifold_abs_pres : 55|8@0+ (0.5,0) [0|127.5] "kPa" Vector__XXX
+
+BO_ 715 PPEI_adaptive_cruise_axle_tq_req: 8 ACC
+	SG_ acc_cmd_alive_rolling_count : 7|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ acc_active : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ acc_type : 15|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ driver_assisted_go_state : 13|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ special_reengagement_input_req : 11|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ acc_axle_torque_request : 10|19@0+ (0.125,-22534) [-22534|43000] "Nm" Vector__XXX
+	SG_ acc_axle_tq_cmd_protection : 32|25@0+ (1,0) [0|33554431] "" Vector__XXX
+
+BO_ 761 PPEI_chassis_general_status_2: 6 EBCM
+	SG_ whl_spd_sens_leg_diag_dtc_idx : 7|5@0+ (1,0) [0|31] "" Vector__XXX
+	SG_ whl_spd_sens_leg_diag_dtc_stat : 2|3@0+ (1,0) [0|4] "" Vector__XXX
+	SG_ brk_pdl_drv_apld_pres_validity : 12|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ spare_tire_status : 10|3@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ brake_temperature : 23|8@0+ (4,-40) [-40|980] "degC" Vector__XXX
+	SG_ chassis_braking_load : 31|8@0+ (0.392157,0) [0|100] "%" Vector__XXX
+	SG_ brk_pdl_drv_apld_pressure : 47|8@0+ (75,0) [0|19125] "kPa" Vector__XXX
+
+BO_ 961 PPEI_powertrain_immobilizer_data: 8 ECM
+	SG_ pwrtrain_immobilizer_info : 7|64@0+ (1,0) [0|1.84467E+019] "" Vector__XXX
+
+BO_ 969 PPEI_platform_immobilizer_data: 8 GW
+	SG_ immobilizer_information : 7|64@0+ (1,0) [0|1.84467E+019] "" Vector__XXX
+
+BO_ 977 PPEI_engine_general_status_2: 8 ECM
+	SG_ throttle_pos_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ throttle_progression_status : 6|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ eng_emissions_rel_malf_active : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_non_emis_rel_malf_active : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_emis_rel_malf_ind_request : 2|3@0+ (1,0) [0|4] "" Vector__XXX
+	SG_ throttle_pos : 15|8@0+ (0.392157,0) [0|100] "%" Vector__XXX
+	SG_ eng_boost_press_ind_valid : 23|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_coast_fuel_cutoff_active : 22|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_oil_starvation_indication_on : 21|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ apply_brake_before_cruise_ind_on : 20|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ cruise_ctrl_drv_selected_speed : 19|12@0+ (0.0625,0) [0|255.938] "km/h" Vector__XXX
+	SG_ cruise_ctrl_drv_sel_spd_active : 39|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ fuel_filter_life_reset_performed : 38|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ ac_comp_command : 37|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ engine_oil_life_reset_performed : 36|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ instant_fuel_consumption_rate : 35|12@0+ (0.025,0) [0|102.375] "l/hr" Vector__XXX
+	SG_ eng_boost_pressure_indication : 55|8@0+ (0.392157,0) [0|100] "%" Vector__XXX
+	SG_ ac_comp_norm_load_grad_allowed : 63|8@0+ (0.1,0) [0|25.5] "(dm3/min)/s" Vector__XXX
+
+BO_ 473 PPEI_hybrid_balancing_request: 6 BPIM
+	SG_ hv_bat_cell_index : 7|4@0+ (1,0) [0|15] "" Vector__XXX
+	SG_ hv_bat_cell_ocv_request : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_1 : 15|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_2 : 14|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_3 : 13|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_4 : 12|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_5 : 11|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_6 : 10|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_7 : 9|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_8 : 8|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_9 : 23|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_10 : 22|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_11 : 21|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_12 : 20|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_13 : 19|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_14 : 18|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_15 : 17|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_16 : 16|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_17 : 31|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_18 : 30|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_19 : 29|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_20 : 28|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_21 : 27|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_22 : 26|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_23 : 25|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_24 : 24|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_25 : 39|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_26 : 38|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_27 : 37|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_28 : 36|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_29 : 35|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_30 : 34|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_31 : 33|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_32 : 32|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_33 : 47|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_34 : 46|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_35 : 45|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_36 : 44|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_37 : 43|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_38 : 42|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_39 : 41|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_cell_bal_subid_40 : 40|1@0+ (1,0) [0|1] "" Vector__XXX
+
+BO_ 478 PPEI_hybrid_battery_general_status: 6 VITM
+	SG_ hv_bat_side_voltage_validity : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_current_ext_rng_valid : 9|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_current_ext_range : 8|17@0- (0.01,0) [-655.36|655.35] "A" Vector__XXX
+	SG_ hv_bat_side_voltage : 39|16@0+ (0.01,0) [0|655.35] "V" Vector__XXX
+
+BO_ 993 PPEI_engine_BAS_status_1: 2 BPIM
+	SG_ service_hybrid_sys_ind_on : 5|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hybrid_veh_hv_sys_disabled : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ charge_assist_gauge_percent : 15|8@0- (0.787402,0) [-100.79|100] "%" Vector__XXX
+
+BO_ 1001 PPEI_vehicle_speed_and_distance: 8 ECM
+	SG_ vehicle_speed_avg_driven_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ vehicle_speed_avg_driven : 6|15@0+ (0.015625,0) [0|511.984] "km/h" Vector__XXX
+	SG_ vehicle_speed_average_driven_src : 23|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dist_roll_cnt_avg_driven_valid : 22|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dist_roll_cnt_avg_drvn_rst_occr : 21|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dist_roll_cnt_avg_driven : 20|13@0+ (0.125,0) [0|1023.875] "m" Vector__XXX
+	SG_ veh_speed_avg_non_driven_valid : 39|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ vehicle_speed_avg_non_driven : 38|15@0+ (0.015625,0) [0|511.984] "km/h" Vector__XXX
+	SG_ dist_roll_cnt_avg_driven_src : 55|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dist_roll_cnt_avg_nondrvn_valid : 54|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dist_roll_cnt_avg_nondrvn_rst : 53|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dist_roll_cnt_avg_non_driven : 52|13@0+ (0.125,0) [0|1023.875] "m" Vector__XXX
+
+BO_ 1005 vehicle_limit_speed_control_cmd: 6 OnStar
+	SG_ enh_svc_veh_top_spd_lmt_request : 7|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ enh_svc_veh_top_spd_lmt_val_arc : 5|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ enh_svc_veh_top_spd_lmt_pwd : 15|32@0+ (1,0) [0|4294967295] "" Vector__XXX
+	SG_ enh_svc_veh_top_spd_lmt_value : 47|8@0+ (2,0) [0|510] "km/h" Vector__XXX
+
+BO_ 1011 PPEI_power_pack_general_status: 2 BPIM
+	SG_ power_pack_fan_afterrun_time : 0|9@0+ (1,0) [0|511] "s" Vector__XXX
+
+BO_ 1015 PPEI_hybrid_temperature_status: 7 VITM
+	SG_ hv_bat_temp_sensor6_valid : 5|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_temp_sensor5_valid : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_temp_sensor4_valid : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_temp_sensor3_valid : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_temp_sensor2_valid : 1|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_temp_sensor1_valid : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ hv_bat_temp_sensor1 : 15|8@0+ (1,-40) [-40|215] "degC" Vector__XXX
+	SG_ hv_bat_temp_sensor2 : 23|8@0+ (1,-40) [-40|215] "degC" Vector__XXX
+	SG_ hv_bat_temp_sensor3 : 31|8@0+ (1,-40) [-40|215] "degC" Vector__XXX
+	SG_ hv_bat_temp_sensor4 : 39|8@0+ (1,-40) [-40|215] "degC" Vector__XXX
+	SG_ hv_bat_temp_sensor5 : 47|8@0+ (1,-40) [-40|215] "degC" Vector__XXX
+	SG_ hv_bat_temp_sensor6 : 55|8@0+ (1,-40) [-40|215] "degC" Vector__XXX
+
+BO_ 1009 PPEI_platform_engine_ctrl_requests: 8 GW
+	SG_ eng_cooling_fan_spd_adjustment : 7|8@0- (0.78125,0) [-100|99.22] "%" Vector__XXX
+	SG_ gen_reg_setpoint_dc_request : 15|8@0+ (0.392157,0) [0|100] "%" Vector__XXX
+	SG_ vehicle_top_speed_limit_request : 23|8@0+ (2,0) [0|510] "km/h" Vector__XXX
+	SG_ ac_comp_engine_run_request : 29|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_off_time_virt_dev_avail : 27|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_off_time_ext_range_valid : 26|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ plat_min_idle_boost_lvl_request : 25|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ eng_off_time_extended_range : 39|8@0+ (4,0) [0|1020] "min" Vector__XXX
+	SG_ interior_dimming_display_level : 47|8@0+ (0.392157,0) [0|100] "%" Vector__XXX
+	SG_ outside_air_temp_virt_dev_avail : 49|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ outside_air_temp_corr_val_valid : 48|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ outside_air_temp_corrected_value : 63|8@0+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+
+BO_ 1017 PPEI_engine_general_status_3: 8 ECM
+	SG_ fuel_injected_roll_cnt_rst_occ : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ gen_field_duty_cycle_valid : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ gen_failed : 5|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_speed_limitation_mode_active : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ veh_top_speed_limit_mode_active : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ pwrtrain_top_speed_limit_reduced : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ ac_refrig_high_side_pres_valid : 1|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ gen_sp_dc_ptr_ov_active : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ fuel_injected_rolling_count : 15|16@0+ (0.000030517578125,0) [0|2] "l" Vector__XXX
+	SG_ gen_field_duty_cycle : 31|8@0+ (0.392157,0) [0|100] "%" Vector__XXX
+	SG_ veh_top_speed_limit_arb_value : 39|8@0+ (2,0) [0|510] "km/h" Vector__XXX
+	SG_ eng_cooling_fan_speed : 47|8@0+ (0.392157,0) [0|100] "%" Vector__XXX
+	SG_ eng_oil_remaining_life : 55|8@0+ (0.392157,0) [0|100] "%" Vector__XXX
+	SG_ ac_refrigerant_high_side_press : 63|8@0+ (14,0) [0|3570] "kPa_gage" Vector__XXX
+
+BO_ 1019 PPEI_engine_fuel_status: 2 ECM
+	SG_ fuel_alcohol_composition_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ emissions_related_fuel_lvl_low : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ fuel_lvl_emissions_reltd_status : 5|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ fuel_alcohol_comp_adapt_in_prog : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_fuel_control_state : 1|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ fuel_alcohol_composition : 15|8@0+ (0.392157,0) [0|100] "%" Vector__XXX
+
+BO_ 1105 PPEI_gateway_LS_general_info: 8 GW
+	SG_ hybrid_veh_hv_inv_disable_req : 23|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ frontal_impact_pretens_sev_achvd : 30|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ frontal_impact_stg1_sev_achieved : 29|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ frontal_impact_stg2_sev_achieved : 28|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ left_side_severity_achieved : 27|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ rear_impact_severity_achieved : 26|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ right_side_severity_achieved : 25|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ rollover_severity_achieved : 24|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ climate_ctrl_front_blwr_fan_spd : 39|8@0+ (0.392157,0) [0|100] "%" Vector__XXX
+
+BO_ 1217 PPEI_engine_general_status_4: 8 ECM
+	SG_ barometric_pressure_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_coolant_temperature_valid : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_intake_air_temp_validity : 5|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ ambient_temp_pwrtrn_est_mask : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ ambient_temp_pwrtrn_est_valid : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ leg_diag_std_conditions_met : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ leg_diag_std_cond_fault_present : 1|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_warmup_cycle_achieved : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ barometric_pressure_abs : 15|8@0+ (0.5,0) [0|127.5] "kPa" Vector__XXX
+	SG_ eng_coolant_temp : 23|8@0+ (1,-40) [-40|215] "degC" Vector__XXX
+	SG_ eng_intake_air_temp : 31|8@0+ (1,-40) [-40|215] "degC" Vector__XXX
+	SG_ ambient_air_temp : 39|8@0+ (0.5,-40) [-40|87.5] "degC" Vector__XXX
+	SG_ cold_start_cond_met : 47|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ cold_start_cond_fault_present : 46|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_oil_hot_indicator_on : 45|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_economy_mode_commanded : 54|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ def_warning_ind_request : 53|3@0+ (1,0) [0|7] "" Vector__XXX
+	SG_ def_remaining_distance_validity : 50|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ def_remaining_distance : 49|10@0+ (100,0) [0|102300] "km" Vector__XXX
+
+BO_ 1225 PPEI_transmission_general_status_3: 4 TCM
+	SG_ trans_oil_temp_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_oil_temp_sensor_present : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_emis_rel_malf_active : 5|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_non_emis_rel_malf_active : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_change_oil_now_ind_on : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ trans_thermal_mgmt_status : 1|2@0+ (1,0) [0|3] "" Vector__XXX
+	SG_ trans_oil_temp : 15|8@0+ (1,-40) [-40|215] "degC" Vector__XXX
+
+BO_ 1233 PPEI_engine_general_status_5: 8 ECM
+	SG_ eng_oil_temperature_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_oil_pres_valid : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_oil_pres_low_indicator_on : 5|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_oil_lvl_low_indicator_on : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_oil_change_indicator_on : 3|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_hot_fuel_enrichm_ind_on : 2|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_hot_stop_engine_ind_on : 1|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ air_conditioning_off_ind_on : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_oil_temperature : 15|8@0+ (1,-40) [-40|215] "degC" Vector__XXX
+	SG_ eng_oil_pressure : 23|8@0+ (4,0) [0|1020] "kPa" Vector__XXX
+	SG_ reduced_power_indicator : 31|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ starting_disabled_indicator : 30|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ check_fuel_cap_indicator : 29|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ fuel_level_percent_valid : 28|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ fuel_total_capacity : 27|12@0+ (0.125,0) [0|511.875] "l" Vector__XXX
+	SG_ fuel_level_percent : 47|8@0+ (0.392157,0) [0|100] "%" Vector__XXX
+	SG_ diesel_glow_plug_ind_on : 55|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_water_in_fuel_ind_on : 54|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ exhaust_particulate_fltr_warn_on : 53|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ high_electrical_load_requested : 52|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ change_fuel_filter_ind_on : 51|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_diag_tbl_code_pres_ind_on : 50|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_shutdown_pending_ind_on : 49|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_shutdown_active : 48|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ eng_speed_max_limit : 63|8@0+ (32,0) [0|8160] "rpm" Vector__XXX
+
+BO_ 1241 PPEI_fuel_system_general_status: 3 FSCM
+	SG_ fuel_sys_emis_rel_malf_active : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ fuel_sys_emis_rel_dtc_designator : 15|12@0+ (1,0) [0|4095] "" Vector__XXX
+	SG_ fuel_sys_emis_rel_dtc_code_num : 19|4@0+ (1,0) [0|15] "" Vector__XXX
+
+BO_ 1249 PPEI_VIN_digits_10_to_17: 8 GW
+	SG_ vin_digits_10_to_17 : 7|64@0+ (1,0) [0|1.84467E+019] "" Vector__XXX
+
+BO_ 1257 PPEI_platform_configuration_data: 6 GW
+	SG_ antilock_brake_sys_present : 7|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ traction_ctrl_sys_present : 6|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ veh_stab_enh_sys_present : 5|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ elapsed_time_cnt_reset_occurred : 4|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ vehicle_speed_ctrl_system_type : 2|3@0+ (1,0) [0|7] "" Vector__XXX
+	SG_ ac_compressor_type : 15|3@0+ (1,0) [0|7] "" Vector__XXX
+	SG_ plat_eng_spd_cmd_system_type : 10|3@0+ (1,0) [0|7] "" Vector__XXX
+	SG_ elapsed_time_count : 23|24@0+ (1,0) [0|16777215] "min" Vector__XXX
+	SG_ engine_performance_identifier : 47|8@0+ (2,0) [0|510] "kW" Vector__XXX
+
+BO_ 1265 PPEI_powertrain_config_data: 8 ECM
+	SG_ wheel_dst_per_rev_driven : 1|10@0+ (3,800) [800|3869] "mm" Vector__XXX
+	SG_ wheel_dst_per_rev_non_driven : 17|10@0+ (3,800) [800|3869] "mm" Vector__XXX
+	SG_ driveline_final_axle_ratio : 32|9@0+ (0.01,2) [2|7.11] "ratio" Vector__XXX
+
+BO_ 1267 PPEI_powertrain_config_data_2: 1 ECM
+	SG_ vehicle_mass_nominal : 7|8@0+ (20,500) [500|5620] "kg" Vector__XXX
+
+BO_ 1906 diag_trouble_code_info_ext_ECM: 7 ECM
+	SG_ diag_trouble_code_triggered : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ diag_trouble_code_source : 15|8@0+ (1,0) [0|255] "" Vector__XXX
+	SG_ diag_trouble_code_number : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
+	SG_ diag_trouble_code_fail_type : 39|8@0+ (1,0) [0|255] "" Vector__XXX
+	SG_ diag_warn_ind_requested_stat : 47|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ diag_tst_fail_since_pwrup_stat : 46|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ diag_tst_nopass_since_pwrup_stat : 45|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ diag_history_status : 44|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ diag_tst_failed_since_code_clrd : 43|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ diag_tst_nt_pass_since_code_clrd : 42|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ diag_current_status : 41|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ diag_code_supported : 40|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ diag_trouble_code_fault_type : 55|8@0+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1914 diag_trouble_code_info_ext_TCCM: 7 TCCM
+	SG_ dtc_triggered_tccm : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dtc_source_tccm : 15|8@0+ (1,0) [0|255] "" Vector__XXX
+	SG_ dtc_number_tccm : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
+	SG_ dtc_fail_type_tccm : 39|8@0+ (1,0) [0|255] "" Vector__XXX
+	SG_ dtc_warn_ind_req_stat_tccm : 47|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dtc_tst_fail_pwrup_tccm : 46|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dtc_tst_nopass_pwrup_tccm : 45|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dtc_history_tccm : 44|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dtc_tst_fail_clrd_tccm : 43|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dtc_tst_nopass_clrd_tccm : 42|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dtc_current_tccm : 41|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dtc_supported_tccm : 40|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dtc_fault_type_tccm : 55|8@0+ (1,0) [0|255] "" Vector__XXX
+
+BO_ 1919 diag_trouble_code_info_ext_TCM: 7 TCM
+	SG_ dtc_triggered_tcm : 0|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dtc_source_tcm : 15|8@0+ (1,0) [0|255] "" Vector__XXX
+	SG_ dtc_number_tcm : 23|16@0+ (1,0) [0|65535] "" Vector__XXX
+	SG_ dtc_fail_type_tcm : 39|8@0+ (1,0) [0|255] "" Vector__XXX
+	SG_ dtc_warn_ind_req_stat_tcm : 47|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dtc_tst_fail_pwrup_tcm : 46|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dtc_tst_nopass_pwrup_tcm : 45|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dtc_history_tcm : 44|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dtc_tst_fail_clrd_tcm : 43|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dtc_tst_nopass_clrd_tcm : 42|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dtc_current_tcm : 41|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dtc_supported_tcm : 40|1@0+ (1,0) [0|1] "" Vector__XXX
+	SG_ dtc_fault_type_tcm : 55|8@0+ (1,0) [0|255] "" Vector__XXX
+
+
+VAL_ 201 eng_speed_status 0 "Normal_Operation" 1 "Degraded_Operation" 3 "Invalid" ;
+VAL_ 201 eng_cylinder_deactivation_mode 0 "All_Cylinders_Active" 1 "Deactivation_In_Progress" 2 "Half_Of_Total_Cylinders_Active" 3 "Reactivation_In_Progress" ;
+VAL_ 201 platform_eng_spd_cmd_inhbt_req 0 "Allow_Platform_Engine_Speed_Control" 1 "Inhibit_Platform_Engine_Speed_Control" ;
+VAL_ 201 pwt_brake_pdl_dscrt_in_stat 0 "Brake_Not_Applied" 1 "Brake_Applied" ;
+
+VAL_ 199 trans_out_rot_stat_direction 0 "Unknown" 1 "Forward" 2 "Reverse" 3 "Undefined" ;
+VAL_ 199 trans_out_rot_stat_last_transition 0 "Single_Edge_Sensor" 1 "Rising_Transition" 2 "Falling_Transition" 3 "Undefined" ;
+
+VAL_ 381 traction_ctrl_sys_operating_mode 0 "Off" 1 "Normal" 2 "Off_Road" ;
+VAL_ 381 vehicle_stability_enh_mode 0 "Off" 1 "Normal" 2 "Competitive" ;
+
+VAL_ 417 eng_brake_status 0 "Inactive" 1 "Active_Not_Absorbing_Torque" 2 "Active_Absorbing_Torque" ;
+VAL_ 417 eng_cyl_deact_mode_ptei 0 "All_Cylinders_Active" 1 "Deactivation_In_Progress" 2 "Half_Of_Total_Cylinders_Active" 3 "Reactivation_In_Progress" ;
+VAL_ 417 eng_cruise_control_mode 0 "Inactive" 1 "Engaged" 2 "Resume" 3 "Accel" 4 "Coast" 5 "Tap" ;
+
+VAL_ 451 eng_torque_reduct_fail_stat 0 "Torque_Reduction_OK" 1 "Torque_Reduction_Temporarily_Failed" 2 "Torque_Reduction_Permanently_Failed" 3 "Torque_Reduction_Limited" 4 "Torque_Reduction_Communication_Failed" ;
+
+VAL_ 452 acc_axle_tq_cmd_request_status 0 "No_Request" 1 "Request_Honored" 2 "Lost_Arbitration" 3 "Request_Denied" 4 "Request_Suspended_Until_Driver_Input" ;
+VAL_ 452 acc_axle_tq_cmd_limiting_status 0 "Request_Not_Limited" 1 "Request_Value_Limited_Minimum" 2 "Request_Value_Limited_Maximum" 3 "Request_Rate_Limited" ;
+
+VAL_ 455 chassis_eng_tq_req_intervention 0 "No_Intervention" 1 "Reduce_Torque" 2 "Increase_Torque" ;
+
+VAL_ 460 secondary_axle_status 0 "Normal_Operation" 1 "Temporary_Inhibit" 2 "Temporarily_Limited" 3 "Permanently_Failed" ;
+VAL_ 460 secondary_axle_control_mode 0 "Internal" 1 "External" ;
+
+VAL_ 463 sec_axle_operational_mode 0 "2WD_High" 1 "4WD_High_Locked" 2 "4WD_Low_Locked" 3 "Active_AWD_High" 4 "4WD_High_Open" 5 "4WD_Low_Open" 6 "Active_AWD_Low" 7 "2WD_Low" 15 "Neutral" ;
+
+VAL_ 464 front_axle_status 0 "Normal_Operation" 1 "Temporary_Inhibit" 2 "Temporarily_Limited" 3 "Permanently_Failed" ;
+VAL_ 464 front_axle_operational_mode 0 "Open" 1 "Active" 2 "Locked" 3 "Unknown" ;
+
+VAL_ 465 rear_axle_status 0 "Normal_Operation" 1 "Temporary_Inhibit" 2 "Temporarily_Limited" 3 "Permanently_Failed" ;
+VAL_ 465 rear_axle_operational_mode 0 "Open" 1 "Active" 2 "Locked" 3 "Unknown" ;
+
+VAL_ 481 cruise_ctrl_sw_data_integrity 0 "Data_Valid" 1 "Data_Invalid" 2 "Failure_Detected" 3 "Illegal_Range" ;
+
+VAL_ 485 steer_whl_angle_sensor_cal_stat 0 "Unknown" 1 "Estimated" 2 "Calibrated" ;
+
+VAL_ 489 brk_sys_trans_gear_req_type 0 "No_Action" 1 "Max_Gear_Request" 2 "Min_Gear_Request" 3 "Hold_Gear" ;
+VAL_ 489 veh_dynamics_ctrl_sys_status 0 "Normal_Operation" 1 "Reduced_Function" 2 "Temporarily_Inhibited" 3 "Permanently_Failed" 4 "Warming_Up" 5 "Calibrating" 7 "Driver_Disabled" ;
+VAL_ 489 traction_ctrl_sys_driver_intent 0 "Disabled" 1 "Enabled" ;
+
+VAL_ 490 fuel_mode_status 0 "Alt_Fuel_Cutoff_Active" 1 "Gasoline_Mode" 2 "Compressed_Natural_Gas" 3 "Liquefied_Petroleum_Gas" ;
+
+VAL_ 491 exh_pres_reg_valve_position 0 "Open" 1 "Closed" ;
+
+VAL_ 497 sys_backup_pwr_mode 0 "Off" 1 "Accessory" 2 "Run" 3 "Crank_Request" ;
+VAL_ 497 system_power_mode 0 "Off" 1 "Accessory" 2 "Run" 3 "Crank_Request" ;
+VAL_ 497 ac_comp_mode_request 0 "Disengage_Immediately" 1 "Disengage" 2 "Engage" ;
+VAL_ 497 display_measurement_system 0 "Metric" 1 "English" ;
+
+VAL_ 499 plat_trans_tap_ud_en_sw_state 0 "No_Activation" 1 "DSC_Enable_Switch_Active" 2 "ERS_Enable_Switch_Active" 3 "Illegal_Enable_Switch_State" ;
+VAL_ 499 plat_trans_tap_ud_sw_state 0 "No_Activation" 1 "Increment_Switch_Active" 2 "Decrement_Switch_Active" 3 "Illegal_UpDown_Switch_State" ;
+VAL_ 499 plat_trans_tap_ud_sec_sw_state 0 "No_Activation" 1 "Increment_Switch_Active" 2 "Decrement_Switch_Active" 3 "Illegal_UpDown_Switch_State" ;
+
+VAL_ 501 trans_tq_conv_clutch_cmd_mode 0 "Unlocked" 1 "Transitioning" 2 "Controlled_Slip" 3 "Locked" 7 "Not_Supported" ;
+VAL_ 501 trans_estimated_gear 0 "Not_Supported" 1 "First_Gear" 2 "Second_Gear" 3 "Third_Gear" 4 "Fourth_Gear" 5 "Fifth_Gear" 6 "Sixth_Gear" 7 "Seventh_Gear" 8 "Eighth_Gear" 12 "CVT_Forward_Gear" 13 "Neutral_Gear" 14 "Reverse_Gear" 15 "Park_Gear" ;
+VAL_ 501 auto_trans_gear_shift_direction 0 "No_Shift_In_Progress" 1 "Upshift_In_Progress" 2 "Downshift_In_Progress" ;
+VAL_ 501 auto_trans_commanded_gear 0 "Not_Supported" 1 "First_Gear" 2 "Second_Gear" 3 "Third_Gear" 4 "Fourth_Gear" 5 "Fifth_Gear" 6 "Sixth_Gear" 7 "Seventh_Gear" 8 "Eighth_Gear" 12 "CVT_Forward_Gear" 13 "Neutral_Gear" 14 "Reverse_Gear" 15 "Park_Gear" ;
+VAL_ 501 drv_shft_ctrl_target_gear 0 "Not_Supported" 1 "First_Gear" 2 "Second_Gear" 3 "Third_Gear" 4 "Fourth_Gear" 5 "Fifth_Gear" 6 "Sixth_Gear" 7 "Seventh_Gear" 8 "Eighth_Gear" ;
+VAL_ 501 trans_range_inhibit_status 0 "No_Range_Inhibit_Active" 1 "Transmission_Inhibit_Active" 2 "Trans_Range_Reselection_Req" 3 "Driveline_Not_Engaged" 4 "Diagnostic_Inhibit_Active" ;
+VAL_ 501 trans_shift_lever_position 0 "Between_Ranges" 1 "Park_Range" 2 "Reverse_Range" 3 "Neutral_Range" 4 "Forward_Range_A" 5 "Forward_Range_B" 6 "Forward_Range_C" 7 "Forward_Range_D" 8 "Forward_Range_E" 9 "Forward_Range_F" 15 "Lever_Position_Unknown" ;
+VAL_ 501 trans_shift_mode_status 0 "No_Override_Mode" 1 "Performance_Mode" 2 "Lift_Foot_Cornering_Mode" 3 "Auto_Grade_Braking_Mode" ;
+VAL_ 501 trans_shift_pattern_active_stat 0 "Default_Shift_Pattern_Active" 1 "Shift_Pattern_1_Active" 2 "Shift_Pattern_2_Active" 3 "Shift_Pattern_3_Active" 4 "Shift_Pattern_4_Active" ;
+VAL_ 501 trans_tap_up_down_mode_status 0 "No_Activation" 1 "Driver_Shift_Control_Active" 2 "Electronic_Range_Select_Active" ;
+VAL_ 501 trans_engaged_state 0 "Transmission_Not_Engaged" 1 "Engaged_In_Forward" 2 "Engaged_In_Reverse" 3 "Operating_State_Not_Reached" ;
+
+VAL_ 505 plat_eng_spd_cmd_sw_data_integ 0 "Data_Valid" 1 "Data_Invalid" 2 "Failure_Detected" ;
+VAL_ 505 pto_trans_gear_req_type 0 "No_Action" 1 "Max_Gear_Request" 2 "Min_Gear_Request" 3 "Hold_Gear" ;
+
+VAL_ 715 acc_type 0 "Adaptive_Cruise_Control" 1 "Full_Speed_Range_Adaptive_CC" ;
+VAL_ 715 driver_assisted_go_state 0 "Not_Stopped" 1 "Apply_Accel_Pedal_To_Go" 2 "Apply_Accel_Or_Resume_To_Go" ;
+
+VAL_ 761 whl_spd_sens_leg_diag_dtc_stat 0 "Not_Supported" 1 "Critically_Disabled" 2 "No_Status_To_Report" 3 "Diagnostic_Passed" 4 "Diagnostic_Failed" ;
+VAL_ 761 spare_tire_status 0 "Undetermined" 1 "No_Spare_Detected" 2 "Spare_Detected_Driven_Wheels" 3 "Spare_Detected_NonDriven_Wheels" ;
+
+VAL_ 977 throttle_progression_status 0 "Map_A" 1 "Map_B" 2 "Map_C" 3 "ECM_Selected_Progression" ;
+VAL_ 977 eng_emis_rel_malf_ind_request 0 "Continuous_Indication" 1 "No_Indication" 2 "Flashing_1Hz_Indication" 3 "Flashing_2Hz_Indication" 4 "Flashing_Half_Hz_Indication" ;
+
+VAL_ 1001 vehicle_speed_average_driven_src 0 "Transmission_Output_Speed" 1 "Wheel_Speed" ;
+VAL_ 1001 dist_roll_cnt_avg_driven_src 0 "Transmission_Output_Speed" 1 "Wheel_Speed" ;
+
+VAL_ 1005 enh_svc_veh_top_spd_lmt_request 0 "No_Action" 1 "Active" 2 "Inactive" ;
+
+VAL_ 1009 plat_min_idle_boost_lvl_request 0 "No_Boost_Requested" 1 "Boost_Level_1" 2 "Boost_Level_2" 3 "Boost_Level_3" ;
+
+VAL_ 1019 eng_fuel_control_state 0 "Open_Loop" 1 "Non_Stoichiometric_Closed_Loop" 2 "Stoichiometric_Closed_Loop" ;
+
+VAL_ 1217 def_warning_ind_request 0 "No_Indication" 1 "Warning_Level_1" 2 "Warning_Level_2" 3 "Warning_Level_3" 4 "Warning_Level_4" 5 "Warning_Level_5" ;
+
+VAL_ 1225 trans_thermal_mgmt_status 0 "Normal" 1 "Countermeasures_Active" 2 "Driver_Intervention_Required" ;
+
+VAL_ 1257 vehicle_speed_ctrl_system_type 0 "No_Vehicle_Speed_Control" 1 "Conventional_Cruise_Control" 2 "Adaptive_Cruise_Control" ;
+VAL_ 1257 ac_compressor_type 0 "None" 1 "Fixed_Displacement_Clutched" 2 "Variable_Displacement_Mechanical" 3 "Variable_Displacement_Electronic" 4 "Electric_Motor_Driven" ;
+VAL_ 1257 plat_eng_spd_cmd_system_type 0 "No_Platform_Engine_Speed_Cmd" 1 "Stationary_PTO" 2 "Stationary_Variable_PTO" 3 "Mobile_Variable_PTO" 4 "Fast_Idle" 5 "Enhanced_Fast_Idle" ;
+
+VAL_ 1906 diag_trouble_code_fault_type 0 "Not_Supported" 1 "Type_A" 2 "Type_B" 3 "Type_C" ;
+VAL_ 1914 dtc_fault_type_tccm 0 "Not_Supported" 1 "Type_A" 2 "Type_B" 3 "Type_C" ;
+VAL_ 1919 dtc_fault_type_tcm 0 "Not_Supported" 1 "Type_A" 2 "Type_B" 3 "Type_C" ;
+

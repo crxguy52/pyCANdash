@@ -154,8 +154,9 @@ BO_ 1017 engine_general_status_3: 8 ECM
     SG_ gen_failed : 5|1@0+ (1,0) [0|1] "" Vector__XXX    
     SG_ gen_fld_duty_cycle_valid : 6|1@0+ (1,0) [0|1] "" Vector__XXX
     SG_ gen_field_duty_cycle : 31|8@0+ (0.392,0) [0|100] "percent" Vector__XXX  
-    SG_ eng_cooling_fan_speed : 47|8@0+ (0.392,0) [0|100] "percent" Vector__XXX          
-    SG_ ac_refrigerant_high_side_press : 55|8@0+ (1,0) [0|256] "" Vector__XXX      
+    SG_ eng_cooling_fan_speed : 47|8@0+ (0.392,0) [0|100] "percent" Vector__XXX  
+    SG_ eng_oil_life_remaining : 55|8@0+ (0.003922,0) [0|256] "percent" Vector__XXX              
+    SG_ ac_refrigerant_high_side_press : 63|8@0+ (14,0) [0|256] "kPa_g" Vector__XXX      
 
 BO_ 1019 engine_fuel_status: 2 ECM
     SG_ fuel_alcohol_coposition_valid : 7|1@0+ (1,0) [0|1] "" Vector__XXX    
