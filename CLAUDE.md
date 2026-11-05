@@ -97,11 +97,17 @@ it in the car: "In the car" in `gmlan-dpid-logger/CLAUDE.md`.
   (both 303). Every other path is the old data dir file serving. The TCPServer is
   single-threaded: no route may block.
 - `debugArgs` (e.g. `['--debug-foreign-tester', '6']`) is passed only when `debug` is True.
-- Tests: `pdm run python -I -m pytest` (dummy logger in a throwaway venv, plus the real logger in
-  `--debug` if `C:/git-personal/gmlan-dpid-logger/.venv` exists, env `GMLAN_DPID_LOGGER_DIR`
-  overrides). Full app headless on a PC: `pdm run python -I tests/e2e/run_app_pc_debug.py
-  --data-dir C:/tmp/x/data --quit-after 120` (config_default + `tests/e2e/pc_debug_overrides.py`,
-  port 8765, virtual CAN).
+- No tests in this repo (removed 2026-11-05, never committed; a local copy may still be in
+  `C:\tmp\pyCANdash_tests_backup_2026-11-05\`, including the headless full-app runner).
+
+## Venv
+
+- Python 3.11-3.13 only (`requires-python <3.14`: the locked numpy/pandas have no 3.14 wheels and a
+  source build crashes on import). PC venv: cpython 3.13 (`.python-version`). Pi 5 (Trixie): 3.13.
+- `pdm install` installs pyCANdash itself as an **editable** install (pdm-backend, `src/`). It must
+  stay editable: `layouts.py` finds `config_files/`, `data/` and `dbc/` relative to its `__file__`.
+- Pi: msgpack 1.0.8 (pinned by python-can 4.4.2) has no cp313 wheel and is compiled. If
+  `pdm install` fails there: `sudo apt install python3-dev`, or `MSGPACK_PUREPYTHON=1 pdm install`.
 
 ## E39 PID Library and Broadcast DBC
 

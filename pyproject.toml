@@ -13,7 +13,19 @@ dependencies = [
     "pglive>=0.5.6",
     "gpiozero>=2.0.1",
 ]
-requires-python = ">=3.11"
+# <3.14: the locked numpy / pandas / contourpy have no 3.14 wheels (a source build crashes on import)
+requires-python = ">=3.11,<3.14"
 readme = "README.md"
 license = {text = "MIT"}
 
+# pdm install puts pyCANdash itself in the venv as an EDITABLE install. It must stay editable:
+# layouts.py finds config_files/, data/ and dbc/ relative to its own __file__ in src/.
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+distribution = true
+
+[tool.pdm.build]
+package-dir = "src"
