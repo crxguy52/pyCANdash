@@ -326,7 +326,7 @@ class MainWindow(QMainWindow):
             self.bokehServer = startBokehServer(self.dataDir, self.logCfg['dbcDir'], self.logCfg['bokehServer'])
 
         if self.logCfg['httpServer']['enable'] is True:
-            self.httpServer = startHttpServer(self.dataDir, self.logCfg['httpServer'])
+            self.httpServer = startHttpServer(self.dataDir, self.logCfg['httpServer'], self.logCfg.get('dpidLogger'))
 
         # Set the window title and size
         self.setWindowTitle("pyCANdash")
@@ -592,6 +592,11 @@ class MainWindow(QMainWindow):
                 # Tell it to stop but don't wait for it to end, this likes to hang
                 # Not the right way to do it but it works
                 #threads.update({'httpServer': self.httpServer['thread']})
+
+            # Stop a running DPID logger cleanly, also if the worker is already gone (no-op if stopped)
+            if self.httpServer.get('dpidController') is not None:
+                logging.info("Stopping the DPID logger")
+                self.httpServer['dpidController'].shutdown()
 
         t_start = datetime.now()
 

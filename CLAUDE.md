@@ -34,7 +34,7 @@ CAN dash / control tooling for a GM LFX (3.6L V6, E39 ECM, OS 12648907) swapped 
 than editing in place.
 
 **Ownership:** pyCANdash owns everything in its `dbc/`; the dash uses
-`gmlan_v1.9_custom.dbc`. `gmlan_dpid_logger` keeps its own copies in its `dbc/`
+`gmlan_v1.8_custom.dbc` (`dbcName` in `config_files/config_default.py`). `gmlan_dpid_logger` keeps its own copies in its `dbc/`
 (v1.9, `e39_12648907_broadcast.dbc`, and v1.10 = v1.9 + the functional request IDs
 $101/$7DF). The two projects are not kept in sync. Both are copy-forward: never edit
 one project's DBC from the other.

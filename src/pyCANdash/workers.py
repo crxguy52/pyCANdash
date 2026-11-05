@@ -26,6 +26,8 @@ from bokeh.server.server import Server
 import http.server
 import socketserver
 
+from pyCANdash.http_routes import make_handler
+
 
 
 CAN_MSG_EXT = 0x80000000
@@ -576,12 +578,15 @@ class httpServerWorker(QObject):
     finishedSignal = pyqtSignal()
     _stop_event = threading.Event() 
 
-    def __init__(self, dataDir, port=8000):
+    def __init__(self, dataDir, port=8000, dpidController=None, dpidAutoStart=False, dpidConfig=None):
         QObject.__init__(self)
 
         self.dataDir = dataDir  # Directory to serve 
         self.port = port        # port to serve on
         self.httpd = None       # Reference to the server instance        
+        self.dpidController = dpidController    # DpidLoggerController for the /logger routes, None if disabled
+        self.dpidAutoStart = dpidAutoStart      # Start the DPID logger once when the server is up
+        self.dpidConfig = dpidConfig            # Config name for the auto start
 
 
     def initConnections(self, statusFcn):
@@ -592,7 +597,8 @@ class httpServerWorker(QObject):
     def run(self):
         # 1. Configure the handler to serve the specific directory
         # We use partial to pass the 'directory' arg to the SimpleHTTPRequestHandler
-        Handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=self.dataDir)
+        # The handler adds the /logger routes (DPID logger control) to the file serving
+        Handler = make_handler(self.dataDir, self.dpidController)
 
         # 2. Setup the server
         # allow_reuse_address prevents "Address already in use" errors if you restart quickly
@@ -601,6 +607,11 @@ class httpServerWorker(QObject):
         try:
             with socketserver.TCPServer(("", self.port), Handler) as self.httpd:
                 logging.info(f"httpServerWorker: Serving {self.dataDir} at port {self.port}")
+
+                # Auto start the DPID logger once (never restarted after it exits)
+                if self.dpidController is not None and self.dpidAutoStart:
+                    logging.info(f"httpServerWorker: Auto starting the DPID logger with {self.dpidConfig}")
+                    self.dpidController.start(self.dpidConfig)
                 
                 # 3. Start the blocking server loop
                 # This will block until shutdown() is called in the stop() method
@@ -620,6 +631,10 @@ class httpServerWorker(QObject):
     def stop(self):
 
         logging.info(f'httpServerWorker: Stopping')
+
+        # Stop a running DPID logger cleanly (stopSending) before the server goes away
+        if self.dpidController is not None:
+            self.dpidController.shutdown()
 
         # Trigger the server to stop accepting requests
         # This waits for all requests to stop and blocks! This is not called for now as it causes the GUi to hang

@@ -3,6 +3,7 @@ import logging
 
 from pyCANdash.workers import CANWorker, CANplayerWorker, logUploaderWorker, bokehServerWorker, gpioMonitorWorker, httpServerWorker
 import cantools
+from pyCANdash.dpid_logger_control import DpidLoggerController
 
 
 def configCAN(canCfg, dbcDir, statusFcn, dataDir, logEn=True):
@@ -114,16 +115,30 @@ def startGPIOmonitor(GPIOcfg, statusFcn):
 
     return gpioMonitor
 
-def startHttpServer(dataDir, httpServerConfig):
+def startHttpServer(dataDir, httpServerConfig, dpidLoggerConfig=None):
     # Need to assign this to a variable in the main thread or else
     # it gets deleted and the GUI crashes
     httpServer = {}
+
+    # DPID logger control (the /logger routes), only if enabled
+    httpServer['dpidController'] = None
+    if dpidLoggerConfig is not None and dpidLoggerConfig.get('enable') is True:
+        logging.info('httpServer: Creating DPID logger controller')
+        try:
+            httpServer['dpidController'] = DpidLoggerController(dpidLoggerConfig, data_dir=dataDir)
+        except Exception as e:
+            logging.error(f'httpServer: DPID logger controller not created: {e}')
+    else:
+        logging.info('httpServer: DPID logger control is disabled')
+    autoStart = httpServer['dpidController'] is not None and dpidLoggerConfig.get('autoStart') is True
 
     logging.info('httpServer: Creating thread')
     httpServer['thread'] = QThread()
 
     logging.info('httpServer: Creating worker')
-    httpServer['worker'] = httpServerWorker(dataDir, port=httpServerConfig['port'])
+    httpServer['worker'] = httpServerWorker(dataDir, port=httpServerConfig['port'],
+                                            dpidController=httpServer['dpidController'], dpidAutoStart=autoStart,
+                                            dpidConfig=dpidLoggerConfig.get('config') if autoStart else None)
 
     # Start it upppp
     logging.info('httpServer: Starting thread')
