@@ -27,6 +27,7 @@ import http.server
 import socketserver
 
 from pyCANdash.http_routes import make_handler
+from pyCANdash.utils import handleException
 
 
 
@@ -111,7 +112,7 @@ class CANWorker(QObject):
 
             self.logger = None
 
-            configSys.handleException()
+            handleException()
             self.stop()
 
     def queryStatus(self):
@@ -235,7 +236,7 @@ class CANplayerWorker(QObject):
             logging.info('Playback finished')
             self.finishedSignal.emit()
         except Exception:
-            configSys.handleException()
+            handleException()
 
 
 class logUploaderWorker(QObject):

@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import (
     QProgressBar,
     QFrame,
 )
-from PyQt6.QtCore import QTimer, QThread
+from PyQt6.QtCore import QTimer, QThread, pyqtSignal
 from PyQt6.QtGui import QKeySequence, QShortcut
 import PyQt6.sip as sip
 
@@ -25,6 +25,13 @@ from pyCANdash.GridStatusLayout import GridStatusLayout
 from pyCANdash.DTCStatusLayout import DTCStatusLayout
 from pyCANdash.GaugeLayouts import GaugeLayout1
 from pyCANdash.utils import handleException
+
+# Distance between odometer file writes. Key-off cuts power without a clean close, so the
+# last periodic write is what survives: this is the most distance a drive can lose
+ODO_WRITE_INTERVAL_MI = 0.1
+
+# File created and deleted at startup to check that the data directory is writable
+DATA_DIR_PROBE_FN = '.pyCANdash_write_test'
 
 
 class tabWidget(QTabWidget):
@@ -130,9 +137,14 @@ class tab4Widget(QWidget):
 
 
 class StatusBar(QFrame):
+    # Status text from any thread. Worker threads log too, and Qt widgets may only be
+    # touched from the GUI thread, so the handler emits this (queued across threads)
+    textSignal = pyqtSignal(str)
+
     def __init__(self, mainWindow):
         super(StatusBar, self).__init__()
         self.mainWindow = mainWindow
+        self.textSignal.connect(self.setText)
         #self.statusHandler = self.StatusHandler(self)
         progBarWidth = 75
 
@@ -207,7 +219,10 @@ class StatusBar(QFrame):
         def emit(self, record):
             # Append message (record) to the widget
             #self.widget.setText("  " + datetime.now().strftime("%d-%b-%Y %H:%M:%S") + ": " + record.message)
-            self.widget.setText(record.message)
+            try:
+                self.widget.textSignal.emit(record.message)
+            except RuntimeError:
+                pass    # StatusBar already deleted (late log from a thread at shutdown)
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -229,8 +244,19 @@ class MainWindow(QMainWindow):
         # Set the data directory
         internalDir = os.path.join(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data")), "")
         if self.logCfg['dataDir'] is not None:
-            if os.path.isdir(self.logCfg['dataDir']):
-                # If the directory exists, use it
+            # Usable only if we can actually write there: an empty mount point (USB stick
+            # not plugged in) still exists as a directory but may not be writable
+            # (Not tempfile: on Windows it retries "forever" on an ACL-protected dir)
+            probePath = os.path.join(self.logCfg['dataDir'], DATA_DIR_PROBE_FN)
+            try:
+                open(probePath, 'w').close()
+                os.remove(probePath)
+                dataDirUsable = True
+            except OSError:
+                dataDirUsable = False
+
+            if dataDirUsable:
+                # If the directory is writable, use it
                 self.dataDir = self.logCfg['dataDir']
                 logStr = f'Using data directory: {self.dataDir}'
             else:
@@ -483,19 +509,23 @@ class MainWindow(QMainWindow):
 
             distance_delta = self.odometer - self.odometer_distance_last_written
 
-            if distance_delta > 1:
+            if distance_delta > ODO_WRITE_INTERVAL_MI:
                 
                 # Write the new value to the odometer file
                 # Save it to a temp file first, then copy over to the real file to avoid corruption
                 path_temp = self.odoPath + '.tmp'
-                with open(path_temp, 'w') as f:
-                    f.write(str(self.odometer))
-                    f.flush()
-                    os.fsync(f.fileno()) # Force write to physical media
+                try:
+                    with open(path_temp, 'w') as f:
+                        f.write(str(self.odometer))
+                        f.flush()
+                        os.fsync(f.fileno()) # Force write to physical media
 
-                #Atomic rename (POSIX standard guarantees this is atomic)
-                # If power fails here, you either have the old file or the new one, never a half-written one.
-                os.replace(path_temp, self.odoPath)                      
+                    #Atomic rename (POSIX standard guarantees this is atomic)
+                    # If power fails here, you either have the old file or the new one, never a half-written one.
+                    os.replace(path_temp, self.odoPath)
+                except OSError as e:
+                    # Stick gone / read only: log it, retry next interval instead of on every frame
+                    logging.error(f'Odometer write failed: {e}')
 
                 # Update the last distance traveled value
                 self.odometer_distance_last_written = self.odometer     

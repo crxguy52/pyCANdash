@@ -5,7 +5,21 @@ from PyQt6.QtWidgets import QApplication
 from pyCANdash.layouts import MainWindow
 
 
+def logUnhandled(excType, excValue, excTb):
+    # PyQt6 aborts the process on an exception in a slot unless sys.excepthook is set:
+    # log it and keep the dash running instead
+    if issubclass(excType, KeyboardInterrupt):
+        # Ctrl + C in the terminal: close cleanly (closeEvent saves the odometer, stops workers)
+        if QApplication.instance() is not None:
+            QApplication.closeAllWindows()
+        else:
+            sys.__excepthook__(excType, excValue, excTb)
+        return
+    logging.critical("Unhandled exception", exc_info=(excType, excValue, excTb))
+
+
 def mainApp():
+    sys.excepthook = logUnhandled
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
