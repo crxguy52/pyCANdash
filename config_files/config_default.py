@@ -19,7 +19,7 @@
 
     # DPID logger (separate gmlan-dpid-logger project) controlled from the http server: http://<pi>:8000/logger
     'dpidLogger':{
-        'enable':       False,                      # Enable the /logger routes? If False no controller is created
+        'enable':       True,                       # Enable the /logger routes? If False no controller is created
         'autoStart':    False,                      # Start the logger once when pyCANdash starts (test periods only). Never restarted after it exits
         'projectDir':   '/git/gmlan-dpid-logger',   # gmlan_dpid_logger checkout (with its .venv and config/ dir)
         'python':       None,                       # Python to run it with. None = projectDir/.venv/bin/python (Linux) or .venv/Scripts/python.exe (Windows)
