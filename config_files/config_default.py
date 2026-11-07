@@ -17,9 +17,9 @@
         'port':         8000,                   # port to serve on
     },    
 
-    # DPID logger (separate gmlan-dpid-logger project) controlled from the http server: http://<pi>:8000/logger
+    # DPID logger (separate gmlan-dpid-logger project), started and stopped from the 'DPID Logger' tab
     'dpidLogger':{
-        'enable':       True,                       # Enable the /logger routes? If False no controller is created
+        'enable':       True,                       # Show the DPID Logger tab? If False no tab and no controller are created
         'autoStart':    False,                      # Start the logger once when pyCANdash starts (test periods only). Never restarted after it exits
         'projectDir':   '/git/gmlan-dpid-logger',   # gmlan_dpid_logger checkout (with its .venv and config/ dir)
         'python':       None,                       # Python to run it with. None = projectDir/.venv/bin/python (Linux) or .venv/Scripts/python.exe (Windows)
@@ -28,7 +28,7 @@
         'allowRootFs':  False,                      # Linux: allow a path on the root file system? False refuses it (on the Pi that is the RAM overlay: stick not mounted)
         'debug':        False,                      # Run the logger with --debug: simulated ECM on a virtual bus, nothing transmitted on the car
         'debugArgs':    [],                         # Extra logger args, used ONLY if debug is True, e.g. ['--debug-foreign-tester', '6']
-        'logLines':     50,                         # Number of log lines shown on the status page
+        'logLines':     20,                         # Number of log lines shown on the DPID Logger tab
     },
 
     # Option to upload log files via FTP to a remote server

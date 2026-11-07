@@ -19,7 +19,8 @@ from datetime import datetime
 import time
 
 
-from pyCANdash.config_system import configCAN, startPlayer, startLogUploader, startBokehServer, startGPIOmonitor, startHttpServer 
+from pyCANdash.config_system import configCAN, startPlayer, startLogUploader, startBokehServer, startGPIOmonitor, startHttpServer, createDpidLogger
+from pyCANdash.DpidLoggerTab import DpidLoggerTab
 from pyCANdash.TallStatusLayout import TallStatusLayout
 from pyCANdash.GridStatusLayout import GridStatusLayout
 from pyCANdash.DTCStatusLayout import DTCStatusLayout
@@ -36,9 +37,15 @@ LOG_UPLOADER_JOIN_TIMEOUT_S = 1.0
 # File created and deleted at startup to check that the data directory is writable
 DATA_DIR_PROBE_FN = '.pyCANdash_write_test'
 
+# DPID logger tab: label, and how often the display timer runs while it is shown (the tab polls
+# the logger on its own, so this only needs to be slow)
+DPID_LOGGER_TAB_NAME = 'DPID Logger'
+DPID_LOGGER_TAB_DISP_HZ = 2
+
 
 class tabWidget(QTabWidget):
-    def __init__(self, guiCfg, logCfg, canChans):
+    def __init__(self, guiCfg, logCfg, canChans, dpidLogger=None):
+        # dpidLogger: None (no logger tab) or (controller, error text) from createDpidLogger
         super(tabWidget, self).__init__()
 
         self.tab = []
@@ -53,6 +60,17 @@ class tabWidget(QTabWidget):
         self.addTab(self.tab[2], logCfg["tabCfg"][2]['name'])   
         self.addTab(self.tab[3], logCfg["tabCfg"][3]['name']) 
         # self.addTab(self.tab[4], logCfg["tabCfg"][4]['name'])     
+
+        # Display rate of each tab, by tab index
+        self.dispHz = [logCfg["tabCfg"][i]["dispHz"] for i in range(len(self.tab))]
+
+        # DPID logger tab, right of the Digital Dash
+        self.dpidLoggerTab = None
+        if dpidLogger is not None:
+            self.dpidLoggerTab = DpidLoggerTab(*dpidLogger)
+            self.tab.append(self.dpidLoggerTab)
+            self.addTab(self.dpidLoggerTab, DPID_LOGGER_TAB_NAME)
+            self.dispHz.append(DPID_LOGGER_TAB_DISP_HZ)
 
         self.setCurrentIndex(logCfg["startTab"])   
 
@@ -355,7 +373,17 @@ class MainWindow(QMainWindow):
             self.bokehServer = startBokehServer(self.dataDir, self.logCfg['dbcDir'], self.logCfg['bokehServer'])
 
         if self.logCfg['httpServer']['enable'] is True:
-            self.httpServer = startHttpServer(self.dataDir, self.logCfg['httpServer'], self.logCfg.get('dpidLogger'))
+            self.httpServer = startHttpServer(self.dataDir, self.logCfg['httpServer'])
+
+        # DPID logger controller (the logger tab), only if enabled
+        dpidCfg = self.logCfg.get('dpidLogger') or {}
+        self.dpidController = None
+        dpidLogger = None
+        if dpidCfg.get('enable') is True:
+            dpidLogger = createDpidLogger(dpidCfg, self.dataDir)
+            self.dpidController = dpidLogger[0]
+        else:
+            logging.info('dpidLogger: disabled, no logger tab')
 
         # Set the window title and size
         self.setWindowTitle("pyCANdash")
@@ -363,7 +391,12 @@ class MainWindow(QMainWindow):
 
         # Create instances of each of the layouts
         self.mainLayout = QGridLayout()
-        self.tabWidget = tabWidget(self.guiCfg, self.logCfg, self.canChans)        
+        self.tabWidget = tabWidget(self.guiCfg, self.logCfg, self.canChans, dpidLogger=dpidLogger)
+
+        # Start the DPID logger once at launch if configured (never restarted after it exits)
+        if self.dpidController is not None and dpidCfg.get('autoStart') is True:
+            logging.info(f"dpidLogger: auto starting with {dpidCfg.get('config')}")
+            self.tabWidget.dpidLoggerTab.requestStart(dpidCfg.get('config'))
         self.statBar = StatusBar(self)      # Dont' call it statusbar since that's a property of QMainWindow
 
         # Create a dictionary to store the current CAN status in
@@ -542,7 +575,7 @@ class MainWindow(QMainWindow):
     def updateDisplay(self):
         # If the display interval is different on the current tab, update the display interval
         tabIdx = self.tabWidget.currentIndex()
-        interval = int(1000/self.logCfg["tabCfg"][tabIdx]["dispHz"])
+        interval = int(1000/self.tabWidget.dispHz[tabIdx])
 
         if self.dispTimer.interval() != interval:
             #logging.info('Setting display interval to %i ms' % self.dispTimerInterval)        
@@ -617,10 +650,12 @@ class MainWindow(QMainWindow):
             logging.info(f"Stopping httpServer worker")
             self.httpServer['worker'].stop()
 
-            # Stop a running DPID logger cleanly, also if the worker is already gone (no-op if stopped)
-            if self.httpServer.get('dpidController') is not None:
-                logging.info("Stopping the DPID logger")
-                self.httpServer['dpidController'].shutdown()
+        # Stop a running DPID logger cleanly (no-op if stopped). Blocks until it has exited
+        if getattr(self, 'tabWidget', None) is not None and self.tabWidget.dpidLoggerTab is not None:
+            self.tabWidget.dpidLoggerTab.stopPolling()
+        if getattr(self, 'dpidController', None) is not None:
+            logging.info("Stopping the DPID logger")
+            self.dpidController.shutdown()
 
         t_start = datetime.now()
 

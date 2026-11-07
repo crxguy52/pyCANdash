@@ -7,7 +7,7 @@ or gpiozero imports so it can be tested on a PC.
 Contract: gmlan-dpid-logger/docs/interfaces.md (CLI, exit codes, <STEM>_* files, _status.json
 schema 1, stop rules, console rule).
 
-    HTTP thread                       DpidLoggerController                   logger process
+    DpidLoggerTab poll thread         DpidLoggerController                   logger process
     -----------                       --------------------                   --------------
     start(name)  -- validate -------> Popen(python -I -m gmlan_dpid_logger)  writes <STEM>_*
                                        '- waiter thread: popen.wait()  <---- exit code
@@ -17,7 +17,7 @@ schema 1, stop rules, console rule).
 
 Orphan (Linux): a logger left running by an earlier pyCANdash that died hard. At construction
 the controller looks in /proc for a process whose command line is exactly ours with this
-out_dir, and adopts it: shown on the page, Stop sends SIGTERM to it, start is refused until it
+out_dir, and adopts it: shown on the tab, Stop sends SIGTERM to it, start is refused until it
 has exited. It is never started or restarted, and a pid is signalled only after its command line
 was checked again right before.
 """
@@ -256,7 +256,7 @@ class DpidLoggerController:
         self._started = None                # Local time the process was started
         self._stop_requested = False
         self._killed = False
-        self._message = None                # Last controller message for the status page
+        self._message = None                # Last controller message for the logger tab
         self._shut_down = False
         self._shutdown_deadline = None      # time.monotonic() by which shutdown() gives up
 
@@ -353,12 +353,18 @@ class DpidLoggerController:
         Blocks up to stop_timeout_s + 2 * KILL_WAIT_S from the first call; a later (or concurrent)
         call waits only for what is left of that deadline.
         """
-        with self._lock:
+        # Bounded: start() holds the lock during USB I/O, and a hung stick must not hang app close
+        if not self._lock.acquire(timeout=self.stop_timeout_s + KILL_WAIT_S + KILL_WAIT_S):
+            logger.critical('dpidLogger: shutdown: controller busy (hung start?), giving up without stopping')
+            return
+        try:
             first = not self._shut_down
             if first:
                 self._shut_down = True
                 self._shutdown_deadline = time.monotonic() + self.stop_timeout_s + KILL_WAIT_S + KILL_WAIT_S
             running = self.is_running()
+        finally:
+            self._lock.release()
         if not running:
             return
         if first:
@@ -368,7 +374,7 @@ class DpidLoggerController:
             logger.critical('dpidLogger: shutdown: the logger process is still running after the kill')
 
     def status(self):
-        """Snapshot for the status page / status.json. Trusts the process over the status file."""
+        """Snapshot for the DPID Logger tab. Trusts the process over the status file."""
         with self._lock:
             popen, run_name = self._popen, self._run
             running = self.is_running()

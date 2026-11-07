@@ -71,31 +71,32 @@ one project's DBC from the other.
   `C:\git-personal\gmlan-dpid-logger\` (Pi: `/git/gmlan-dpid-logger`; folder with a hyphen, Python package `gmlan_dpid_logger`) (configs, PID library, generators and tests too).
   See its `CLAUDE.md`. pyCANdash only controls it (next section).
 
-## DPID logger control (`dpid_logger_control.py`, `http_routes.py`)
+## DPID logger control (`dpid_logger_control.py`, `DpidLoggerTab.py`)
 
-The HTTP server (`httpServer`, port 8000) controls the separate `gmlan_dpid_logger` project at
-`http://<pi>:8000/logger`. Contract: `gmlan-dpid-logger/docs/interfaces.md`. Config: the
-`dpidLogger` block in `config_files/config_default.py` (`enable` False by default). How to use
-it in the car: "In the car" in `gmlan-dpid-logger/CLAUDE.md`.
+The "DPID Logger" GUI tab (right of Digital Dash, only when `dpidLogger.enable`) controls the
+separate `gmlan_dpid_logger` project: config dropdown + Start (green) / Stop (red) / Stopping
+(grey) button, state, last message, log tail. (Until 2026-11-07 this was an HTTP page at
+`:8000/logger`; removed. The HTTP server now only serves the data dir again.) Contract:
+`gmlan-dpid-logger/docs/interfaces.md`. Config: the `dpidLogger` block in
+`config_files/config_default.py` (`enable` False by default).
+- `DpidLoggerTab` makes every controller call (`start`/`stop`/`status`, all touch the USB
+  stick) in one background poll thread and sends status snapshots to the GUI thread through a Qt
+  signal. Never call the controller from the GUI thread, except `shutdown()` at app close.
 - `DpidLoggerController` (no Qt) runs the logger as a **subprocess** in its own venv
   (`python -I -m gmlan_dpid_logger --config NAME --out-dir PATH --run-name STEM [--debug]`,
   cwd = PATH, stdout (the 5 Hz table) to DEVNULL, stderr to `<STEM>_stderr.txt`). Never import
   the logger into the Qt process. One run at a time; STEM = local start time. Stop = SIGTERM to
   its session (Linux) / CTRL_BREAK_EVENT to its process group (Windows), killed after
-  `STOP_TIMEOUT_S`. Never restarts a run (autoStart starts once at server start). Status trusts
+  `STOP_TIMEOUT_S`. Never restarts a run (autoStart starts once at pyCANdash start). Status trusts
   the process exit code over `<STEM>_status.json`. pyCANdash shutdown calls `controller.shutdown()`
   (clean stop; blocks the GUI thread about 1 s, at most ~30 s if the logger hangs).
 - Linux: a PATH on the root fs (`/`) is refused unless `allowRootFs` (Pi: stick not mounted, the
   run would land on the RAM overlay).
 - Orphan (Linux): at start the controller looks in `/proc` for a logger with exactly its command
-  line and PATH (left by a pyCANdash that died hard), adopts it (page banner, Stop = SIGTERM after
+  line and PATH (left by a pyCANdash that died hard), adopts it (tab warning, Stop = SIGTERM after
   re-checking the cmdline, start refused while it runs). Not on Windows (no `/proc`).
 - Windows: under `pythonw` (no console) CTRL_BREAK_EVENT can't be delivered, so Stop ends in the
   kill after `STOP_TIMEOUT_S` (no stopSending). Run pyCANdash with `python` on a PC.
-- `http_routes.DataDirRequestHandler`: `/logger` page, `/logger/status.json`, POST-only
-  `/logger/start` (form field `config`, one of `config/dpid_config*.py`) and `/logger/stop`
-  (both 303). Every other path is the old data dir file serving. The TCPServer is
-  single-threaded: no route may block.
 - `debugArgs` (e.g. `['--debug-foreign-tester', '6']`) is passed only when `debug` is True.
 - No tests in this repo (removed 2026-11-05, never committed; a local copy may still be in
   `C:\tmp\pyCANdash_tests_backup_2026-11-05\`, including the headless full-app runner).

@@ -24,7 +24,7 @@ Status: **planned, not started.** Started 2026-11-03.
 3. *(Ruled out by the symptom timing)*: DFCO on throttle close making the wideband read pure air.
 
 ## Logging: pyCANdash only, one file, no alignment needed
-Use the DPID logger, now its own project `C:\git-personal\gmlan-dpid-logger\` (Pi: `/git/gmlan-dpid-logger`) (GMW3110 `$2C`/`$AA`, fast rate = 25 ms). In the car, pyCANdash starts it from `http://<pi>:8000/logger` (see "In the car" in that project's `CLAUDE.md`). The Spartan broadcasts at 50 Hz (measured from the 2026-11-02 log).
+Use the DPID logger, now its own project `C:\git-personal\gmlan-dpid-logger\` (Pi: `/git/gmlan-dpid-logger`) (GMW3110 `$2C`/`$AA`, fast rate = 25 ms). In the car, pyCANdash starts it from its "DPID Logger" tab. The Spartan broadcasts at 50 Hz (measured from the 2026-11-02 log).
 
 **VCM Scanner must NOT be connected at the same time.** Two tools defining DPIDs on the same ECM will conflict.
 
@@ -40,7 +40,7 @@ Use the DPID logger, now its own project `C:\git-personal\gmlan-dpid-logger\` (P
 Not available without HPT: `cylinder_airmass_mem` and per-cylinder knock retard. These are HPT-style `$23` RAM reads and are untested.
 
 ### Decisions still open
-- [x] Config location: option (b) exists now. The logger has `--config`, and every `gmlan-dpid-logger/config/dpid_config*.py` shows up in the pyCANdash `/logger` config dropdown.
+- [x] Config location: option (b) exists now. The logger has `--config`, and every `gmlan-dpid-logger/config/dpid_config*.py` shows up in the config dropdown of the pyCANdash "DPID Logger" tab.
 - [ ] Write this selection as `gmlan-dpid-logger/config/dpid_config_tip_in.py`. Leave `dpid_config.py` (the clutch selection) and `dpid_config_follower.py` as they are.
 
 ### Test procedure

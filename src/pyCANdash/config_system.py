@@ -109,33 +109,30 @@ def startGPIOmonitor(GPIOcfg, statusFcn):
 
     return gpioMonitor
 
-def startHttpServer(dataDir, httpServerConfig, dpidLoggerConfig=None):
+def startHttpServer(dataDir, httpServerConfig):
     # Need to assign this to a variable in the main thread or else
     # it gets deleted and the GUI crashes
     httpServer = {}
 
-    # DPID logger control (the /logger routes), only if enabled
-    httpServer['dpidController'] = None
-    if dpidLoggerConfig is not None and dpidLoggerConfig.get('enable') is True:
-        logging.info('httpServer: Creating DPID logger controller')
-        try:
-            httpServer['dpidController'] = DpidLoggerController(dpidLoggerConfig, data_dir=dataDir)
-        except Exception as e:
-            logging.error(f'httpServer: DPID logger controller not created: {e}')
-    else:
-        logging.info('httpServer: DPID logger control is disabled')
-    autoStart = httpServer['dpidController'] is not None and dpidLoggerConfig.get('autoStart') is True
-
     logging.info('httpServer: Creating worker')
-    httpServer['worker'] = httpServerWorker(dataDir, port=httpServerConfig['port'],
-                                            dpidController=httpServer['dpidController'], dpidAutoStart=autoStart,
-                                            dpidConfig=dpidLoggerConfig.get('config') if autoStart else None)
+    httpServer['worker'] = httpServerWorker(dataDir, port=httpServerConfig['port'])
 
     # Start it upppp
     logging.info('httpServer: Starting thread')
     httpServer['thread'] = startPyThread(httpServer['worker'], 'httpServer')
 
     return httpServer    
+
+
+def createDpidLogger(dpidLoggerConfig, dataDir):
+    # DPID logger controller for the logger tab. Returns (controller, error message): the controller
+    # is None if creating it failed, the tab then shows the error
+    logging.info('dpidLogger: Creating controller')
+    try:
+        return DpidLoggerController(dpidLoggerConfig, data_dir=dataDir), None
+    except Exception as e:
+        logging.error(f'dpidLogger: controller not created: {e}')
+        return None, f'DPID logger controller not created: {e}'
  
 
 def startPyThread(worker, name):

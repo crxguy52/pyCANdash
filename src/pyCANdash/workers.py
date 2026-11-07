@@ -26,7 +26,6 @@ from bokeh.server.server import Server
 import http.server
 import socketserver
 
-from pyCANdash.http_routes import make_handler
 from pyCANdash.utils import handleException
 
 
@@ -534,23 +533,30 @@ class gpioMonitorWorker(QObject):
             return False
 
 
+# Per socket operation (request line, headers, body, each send). Without it an idle connection (a
+# browser's speculative preconnect) blocks the single-threaded file server until the browser drops
+# it. Long enough not to abort a big BLF download to a phone on weak Wi-Fi.
+HTTP_SOCKET_TIMEOUT_S = 15.0
+
+
+class DataDirRequestHandler(http.server.SimpleHTTPRequestHandler):
+    # Data dir file serving with a socket timeout (StreamRequestHandler.setup() applies it)
+    timeout = HTTP_SOCKET_TIMEOUT_S
+
+
 class httpServerWorker:
 
-    def __init__(self, dataDir, port=8000, dpidController=None, dpidAutoStart=False, dpidConfig=None):
+    def __init__(self, dataDir, port=8000):
         self._stop_event = threading.Event()
         self.dataDir = dataDir  # Directory to serve 
         self.port = port        # port to serve on
         self.httpd = None       # Reference to the server instance        
-        self.dpidController = dpidController    # DpidLoggerController for the /logger routes, None if disabled
-        self.dpidAutoStart = dpidAutoStart      # Start the DPID logger once when the server is up
-        self.dpidConfig = dpidConfig            # Config name for the auto start
 
 
     def run(self):
         # 1. Configure the handler to serve the specific directory
         # We use partial to pass the 'directory' arg to the SimpleHTTPRequestHandler
-        # The handler adds the /logger routes (DPID logger control) to the file serving
-        Handler = make_handler(self.dataDir, self.dpidController)
+        Handler = functools.partial(DataDirRequestHandler, directory=self.dataDir)
 
         # 2. Setup the server
         # allow_reuse_address prevents "Address already in use" errors if you restart quickly
@@ -559,11 +565,6 @@ class httpServerWorker:
         try:
             with socketserver.TCPServer(("", self.port), Handler) as self.httpd:
                 logging.info(f"httpServerWorker: Serving {self.dataDir} at port {self.port}")
-
-                # Auto start the DPID logger once (never restarted after it exits)
-                if self.dpidController is not None and self.dpidAutoStart:
-                    logging.info(f"httpServerWorker: Auto starting the DPID logger with {self.dpidConfig}")
-                    self.dpidController.start(self.dpidConfig)
                 
                 # 3. Start the blocking server loop
                 # This will block until shutdown() is called in the stop() method
@@ -584,10 +585,6 @@ class httpServerWorker:
         # Called from the GUI thread
         logging.info(f'httpServerWorker: Stopping')
         self._stop_event.set()
-
-        # Stop a running DPID logger cleanly (stopSending) before the server goes away
-        if self.dpidController is not None:
-            self.dpidController.shutdown()
 
         # shutdown() makes serve_forever() return (the with block then closes the socket), but it
         # blocks until the loop ends, e.g. until a file download finishes, so never wait for it here
