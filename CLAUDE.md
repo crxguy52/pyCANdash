@@ -34,10 +34,10 @@ CAN dash / control tooling for a GM LFX (3.6L V6, E39 ECM, OS 12648907) swapped 
 than editing in place.
 
 **Ownership:** pyCANdash owns everything in its `dbc/`; the dash uses
-`gmlan_v1.8_custom.dbc` (`dbcName` in `config_files/config_default.py`). `gmlan_dpid_logger` keeps its own copies in its `dbc/`
-(v1.9, `e39_12648907_broadcast.dbc`, and v1.10 = v1.9 + the functional request IDs
-$101/$7DF). The two projects are not kept in sync. Both are copy-forward: never edit
-one project's DBC from the other.
+`gmlan_v1.10_custom.dbc` (`dbcName` in `config_files/config_default.py`). This is
+the master GMLAN DBC. `gmlan_dpid_logger` keeps an identical copy of v1.10 in its
+`dbc/` (plus v1.9 and `e39_12648907_broadcast.dbc`). Make new versions here and copy
+them to the logger. Never edit them in place.
 
 - **v1.6** - baseline.
 - **v1.7** - added `platform_general_status` ($1F1) and
@@ -52,8 +52,12 @@ one project's DBC from the other.
   Added VAL_ tables for all of them.
 - **v1.9** - added diagnostic channels for the DPID logger: `ecm_diag_request`
   ($7E0), `ecm_diag_response` ($7E8), `ecm_uudt_periodic` ($5E8). Populated
-  `BU_` node list. The logger has since moved to `gmlan_dpid_logger`. Its v1.10
-  (adds $101/$7DF) lives in that project only.
+  `BU_` node list. The logger has since moved to `gmlan_dpid_logger`.
+- **v1.10** - v1.9 + the functional request IDs from `gmlan_dpid_logger`
+  (`diag_functional_request_allnodes` $101, `obd_functional_request` $7DF) +
+  `gaugedriver_status` ($780, 10 Hz, node `GaugeDriver`) from canGaugeDriver:
+  `gd_v_bus`, `gd_fuel_gal`, `gd_fuel_pct`, `gd_ac_req`, `gd_cel`. The source of
+  truth for $780 is `canGaugeDriver/dbc/gaugeDriver.dbc`.
 
 ## Scripts (`src/pyCANdash/examples/`)
 
